@@ -1,0 +1,16 @@
+{
+    "listGameOption": [
+        {
+            "key": "sky-garden",
+            "name": "Khu Vườn Trên Mây",
+            "disabled": false,
+            "order": 0
+        },
+        {
+            "key": "others",
+            "name": "Game Khác",
+            "disabled": true,
+            "order": 99
+        }
+    ]
+}

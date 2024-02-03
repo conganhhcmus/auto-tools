@@ -10,7 +10,7 @@ import Table from "./Table";
 const App = (props) => {
     const [refreshTime, setRefreshTime] = useState(moment().format('LTS'))
 
-    return <Layout>
+    return <Layout className={styles.layout}>
         <Header className={styles.header}>
             <h1>Welcome to Auto Tools!</h1>
         </Header>

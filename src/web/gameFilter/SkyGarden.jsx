@@ -8,13 +8,13 @@ const SkyGarden = (props) => {
     const [selectedAuto, setSelectedAuto] = useState('');
     const [frequency, setFrequency] = useState(1);
     const [openGameAfter, setOpenGameAfter] = useState(1);
-    const [gameOption, setGameOption] = useState([]);
+    const [gameOption, setGameOption] = useState(['sellItems']);
     const [autoOption, setAutoOption] = useState([]);
 
     useEffect(() => {
         axios.get(`/api/gameOptions?game=${selectedGame}`).then((response) => {
             setAutoOption(response.data);
-            setSelectedAuto(response.data[0].key);
+            setSelectedAuto(response.data.sort((a, b) => a.order - b.order)[0].key);
         })
     }, [])
 
@@ -31,7 +31,7 @@ const SkyGarden = (props) => {
             runAuto: selectedAuto,
             openGame: gameOption.includes('openGame'),
             hasEventTree: gameOption.includes('hasEventTree'),
-            openChest: gameOption.includes('openChest'),
+            sellItems: gameOption.includes('sellItems'),
             openGameAfter,
             frequency
         }
@@ -42,7 +42,7 @@ const SkyGarden = (props) => {
         <Col className="gutter-row" xs={24} sm={24} xl={16} xxl={16}>
             <h3>Game Option</h3>
             <Row>
-                <Checkbox.Group style={{ width: '100%' }} onChange={onSelectedGameOption}>
+                <Checkbox.Group style={{ width: '100%' }} onChange={onSelectedGameOption} defaultValue={gameOption}>
                     <Row gutter={[40, 20]}>
                         <Col className="gutter-row" xs={24} sm={24} xl={11} xxl={12}>
                             <Flex justify="space-between" gap="middle" align="center" vertical={false}>
@@ -53,12 +53,11 @@ const SkyGarden = (props) => {
                                     placeholder="Search to Select"
                                     optionFilterProp="children"
                                     filterOption={(input, option) => (option?.label ?? '').includes(input)}
-                                    filterSort={(optionA, optionB) =>
-                                        (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
-                                    }
+                                    filterSort={(optionA, optionB) => ((optionA?.order ?? 0) - (optionB?.order ?? 0))}
                                     options={autoOption.map(item => ({
                                         value: item.key,
-                                        label: item.name
+                                        label: item.name + (item.recommend ? " (★)" : ""),
+                                        disabled: item.disabled,
                                     }))}
                                     onChange={onSelectedAuto}
                                     value={selectedAuto}
@@ -69,7 +68,7 @@ const SkyGarden = (props) => {
                             <Flex justify="space-between" gap="middle" align="center" vertical={false}>
                                 <Checkbox value="openGame">Open Game</Checkbox>
                                 <Checkbox value="hasEventTree">Has Event Tree</Checkbox>
-                                <Checkbox value="openChest">Open Chest</Checkbox>
+                                <Checkbox value="sellItems">Sell Items</Checkbox>
                             </Flex>
                         </Col>
                         <Col xs={12} sm={8} xl={8} xxl={7}>

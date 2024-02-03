@@ -1,15 +1,19 @@
 {
-  "name": "adbkit-monkey",
+  "name": "auto-tools",
   "version": "1.0.0",
-  "description": "",
+  "description": "Auto Tools",
   "main": "server.js",
   "scripts": {
+    "host": "node src/server.js & node src/localtunnel.js && fg",
     "app": "node src/server.js",
     "build": "webpack --mode=development --watch",
     "release": "webpack --mode=production"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "Khu Vuon Tren May",
+    "Auto Tools"
+  ],
+  "author": "conganhhcmus",
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.23.7",
@@ -20,10 +24,13 @@
     "axios": "^1.6.4",
     "babel-loader": "^9.1.3",
     "bluebird": "^3.7.2",
+    "buffer": "^6.0.3",
     "css-loader": "^6.8.1",
     "express": "^4.18.2",
+    "express-async-errors": "^3.1.1",
     "html-webpack-plugin": "^5.6.0",
     "jimp": "^0.22.10",
+    "localtunnel": "^2.0.2",
     "mini-css-extract-plugin": "^2.7.6",
     "moment": "^2.29.4",
     "opencv-wasm": "^4.3.0-10",
