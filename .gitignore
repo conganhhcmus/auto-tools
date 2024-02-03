@@ -1,5 +1,9 @@
 node_modules
 dist/
+**/logs/
+**/**/device/
+**/assets/*
 # system file
 .vs
 .DS_Store
+src/data/logs.json
