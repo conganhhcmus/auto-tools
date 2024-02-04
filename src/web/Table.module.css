@@ -9,3 +9,38 @@
     overflow-y: auto;
     overflow-x: hidden;
 }
+
+.popupView img {
+    width: 400px;
+    object-fit: cover;
+}
+
+@media only screen and (min-width: 1440px) {
+    .popupView img {
+        width: 800px;
+        object-fit: cover;
+    }
+}
+
+@media only screen and (max-width: 900px) {
+    .popupView img {
+        width: 200px;
+        object-fit: cover;
+    }
+}
+
+.logButton span {
+    min-width: 40px;
+}
+
+.stopButton span {
+    min-width: 40px;
+}
+
+.detailButton span {
+    min-width: 40px;
+}
+
+.viewButton span {
+    min-width: 40px;
+}
