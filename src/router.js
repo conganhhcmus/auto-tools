@@ -14,9 +14,11 @@ router.get('/', function (req, res) {
 // settings api
 router.get('/settings', settings.getSettings)
 router.get('/gameOptions', settings.getGameOptions)
+router.get('/listGameOptions', settings.getListGameOptions)
 
 // device api
 router.get('/runningDevice', device.getRunningDevice)
+router.get('/viewDevice', device.viewCurrentScreenDevice)
 
 // auto api
 router.post('/start', auto.startAuto)

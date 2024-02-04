@@ -2,12 +2,14 @@ import React from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App'
 
+// Remove old meta
+// const oldMetaElement = document.getElementsByTagName('meta')
+// document.head.removeChild(oldMetaElement)
+
 // Append meta
-const oldMetaElement = document.querySelector('meta')
 const metaElement = document.createElement('meta')
-metaElement.content = 'width=device-width,initial-scale=1, maximum-scale=1'
 metaElement.name = 'viewport'
-document.head.removeChild(oldMetaElement)
+metaElement.content = 'width=device-width,initial-scale=1.0, maximum-scale=1.0'
 document.head.appendChild(metaElement)
 
 // Append div id app
