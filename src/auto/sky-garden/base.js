@@ -1,4 +1,5 @@
 const { SellSlotList, PlantSlotList, MakeSlotList, FirstRowSlotList, SecondRowSlotList, DefaultBasket, DefaultProduct, SellOptions } = require('./const')
+const { getCoordinatesItem } = require('../../utils/image')
 
 //#region private function
 const _Move = (client, pointA, pointB, steps = 1) => {
@@ -370,23 +371,35 @@ const _makeGoodsBySlot = (client, calc, slot = 0, number = 1) => {
         client.touchUp(produce_x, produce_y).sleep(500)
     }
 }
+
+const _sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 //#endregion
 
-const Sleep = (device, sec = 1) => {
+const Sleep = async (device, sec = 1) => {
+    await device.CreateClient()
+
     let client = device.client
     client.sleep(sec * 1000)
+
+    await device.Execute()
 }
 
-const GoDownLast = (device) => {
+const GoDownLast = async (device) => {
+    await device.CreateClient()
+
     const [calc_X, calc_Y] = device.Calculator()
 
     GoUp(device)
 
     let client = device.client
     client.tap(calc_X(405), calc_Y(430)).sleep(1 * 1000)
+
+    await device.Execute()
 }
 
-const GoDown = (device, number = 1) => {
+const GoDown = async (device, number = 1) => {
+    await device.CreateClient()
+
     const [calc_X, calc_Y] = device.Calculator()
 
     for (let i = 0; i < number; i++) {
@@ -407,9 +420,13 @@ const GoDown = (device, number = 1) => {
             .touchUp(calc_X(730), calc_Y(200))
             .sleep(i == number - 1 ? 500 : 5)
     }
+
+    await device.Execute()
 }
 
-const GoUp = (device, number = 1) => {
+const GoUp = async (device, number = 1) => {
+    await device.CreateClient()
+
     const [calc_X, calc_Y] = device.Calculator()
 
     for (let i = 0; i < number; i++) {
@@ -431,9 +448,12 @@ const GoUp = (device, number = 1) => {
             .touchUp(calc_X(730), calc_Y(300))
             .sleep(i == number - 1 ? 500 : 5)
     }
+    await device.Execute()
 }
 
-const OpenGame = (device) => {
+const OpenGame = async (device) => {
+    await device.CreateClient()
+
     const [calc_X, calc_Y] = device.Calculator()
     let client = device.client
 
@@ -485,9 +505,13 @@ const OpenGame = (device) => {
         .sleep(500)
         .tap(calc_X(470), calc_Y(325))
         .sleep(1 * 1000)
+
+    await device.Execute()
 }
 
-const HarvestTrees = (device) => {
+const HarvestTrees = async (device) => {
+    await device.CreateClient()
+
     const [calc_X, calc_Y] = device.Calculator()
     const [x, y] = DefaultBasket
 
@@ -545,16 +569,24 @@ const HarvestTrees = (device) => {
     }
 
     client.touchUp(calc_X(SecondRowSlotList[SecondRowSlotList.length - 1].x), calc_Y(SecondRowSlotList[SecondRowSlotList.length - 1].y)).sleep(500)
+
+    await device.Execute()
 }
 
-const BackToGame = (device) => {
+const BackToGame = async (device) => {
+    await device.CreateClient()
+
     const [calc_X, calc_Y] = device.Calculator()
     let client = device.client
 
     client.press('KEYCODE_BACK').sleep(100).press('KEYCODE_BACK').sleep(100).press('KEYCODE_BACK').sleep(100).tap(calc_X(470), calc_Y(325)).sleep(500)
+
+    await device.Execute()
 }
 
-const PlantTrees = (device, slot = 0, floor = 2) => {
+const PlantTrees = async (device, slot = 0, floor = 2) => {
+    await device.CreateClient()
+
     const [calc_X, calc_Y] = device.Calculator()
 
     let client = device.client
@@ -562,9 +594,12 @@ const PlantTrees = (device, slot = 0, floor = 2) => {
     client.tap(calc_X(300), calc_Y(380)).sleep(1 * 1000)
 
     _plantBySlot(client, [calc_X, calc_Y], slot, floor)
+
+    await device.Execute()
 }
 
-const PlantTrees_Half = (device, slot = 0, index, floor = 1) => {
+const PlantTrees_Half = async (device, slot = 0, index, floor = 1) => {
+    await device.CreateClient()
     const [calc_X, calc_Y] = device.Calculator()
 
     let client = device.client
@@ -573,9 +608,12 @@ const PlantTrees_Half = (device, slot = 0, index, floor = 1) => {
 
     if (floor == 1) _plantHalfBySlot_1st(client, [calc_X, calc_Y], slot, index)
     else _plantHalfBySlot_2nd(client, [calc_X, calc_Y], slot, index)
+
+    await device.Execute()
 }
 
-const MakeGoods = (device, slot = 0, number = 1) => {
+const MakeGoods = async (device, slot = 0, number = 1) => {
+    await device.CreateClient()
     let client = device.client
     const [calc_X, calc_Y] = device.Calculator()
 
@@ -597,9 +635,12 @@ const MakeGoods = (device, slot = 0, number = 1) => {
         .sleep(500)
         .press('KEYCODE_BACK')
         .sleep(1 * 1000)
+
+    await device.Execute()
 }
 
-const MakeGoods_2 = (device, slot = 0, number = 1) => {
+const MakeGoods_2 = async (device, slot = 0, number = 1) => {
+    await device.CreateClient()
     let client = device.client
     const [calc_X, calc_Y] = device.Calculator()
 
@@ -621,9 +662,12 @@ const MakeGoods_2 = (device, slot = 0, number = 1) => {
         .sleep(500)
         .press('KEYCODE_BACK')
         .sleep(1 * 1000)
+
+    await device.Execute()
 }
 
-const SellGoods = (device, slots = [], option = 1) => {
+const SellGoods = async (device, slots = [], option = 1) => {
+    await device.CreateClient()
     const [calc_X, calc_Y] = device.Calculator()
     let client = device.client
 
@@ -635,9 +679,13 @@ const SellGoods = (device, slots = [], option = 1) => {
 
     // close
     client.press('KEYCODE_BACK').sleep(100).press('KEYCODE_BACK').sleep(100).press('KEYCODE_BACK').sleep(100).tap(calc_X(470), calc_Y(325)).sleep(500)
+
+    await device.Execute()
 }
 
-const SellFullGoods = (device, slotA, slotB, slotC, option = 1) => {
+const SellFullGoods = async (device, slotA, slotB, slotC, option = 1) => {
+    await device.CreateClient()
+
     const [calc_X, calc_Y] = device.Calculator()
     let client = device.client
 
@@ -649,19 +697,28 @@ const SellFullGoods = (device, slotA, slotB, slotC, option = 1) => {
 
     // close
     client.press('KEYCODE_BACK').sleep(100).press('KEYCODE_BACK').sleep(100).press('KEYCODE_BACK').sleep(100).tap(calc_X(470), calc_Y(325)).sleep(500)
+
+    await device.Execute()
 }
 
-const NextTrees = (device, number = 1) => {
-    let client = device.client
-    const [calc_X, calc_Y] = device.Calculator()
+const NextTrees = async (device, item_id) => {
+    await device.CreateClient()
+    //const [calc_X, calc_Y] = device.Calculator()
 
-    client.tap(calc_X(300), calc_Y(380)).sleep(1 * 1000)
+    //await device.Shell(`input tap ${calc_X(300)} ${calc_Y(380)}`)
 
-    for (let i = 0; i < number; i++) {
-        client.tap(calc_X(325), calc_Y(305)).sleep(500)
-    }
+    // await _sleep(1000)
 
-    client.press('KEYCODE_BACK').sleep(500)
+    // // let found = false
+    // // let position = [0, 0]
+    // // while (found) {
+    // //     position = await getCoordinatesItem(device.id, item_id)
+    // //     found = JSON.stringify(position) != JSON.stringify([0, 0])
+    // //     await device.Shell(`input tap ${calc_X(325)} ${calc_Y(305)}`)
+    // //     await _sleep(500)
+    // // }
+
+    // await device.Shell(`input keyevent 4`) // BACK
 }
 
 const PrevTrees = (device, number = 1) => {
@@ -675,16 +732,6 @@ const PrevTrees = (device, number = 1) => {
     }
 
     client.press('KEYCODE_BACK').sleep(500)
-}
-
-const Execute = (device, callback = null) => {
-    device.client.sleep(5).execute((err) => {
-        if (err) {
-            console.error(err)
-        }
-        device.monkey.end()
-        callback && callback()
-    })
 }
 
 module.exports = {
@@ -702,6 +749,5 @@ module.exports = {
     GoDownLast,
     NextTrees,
     PrevTrees,
-    Execute,
     SellFullGoods,
 }

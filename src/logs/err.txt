@@ -1,0 +1,75 @@
+Command failed: node src/auto/sky-garden/index.js '{"selectedDevices":["emulator-5554"],"selectedGame":"sky-garden","gameOptions":{"runAuto":"PlantEventTree","openGame":false,"hasEventTree":false,"sellItems":true,"openGameAfter":1,"frequency":1}}' 0
+Error: test
+/Users/conganhhcmus/Downloads/projects/auto-tools/node_modules/opencv-wasm/opencv.js:94
+                            throw ex
+                            ^
+
+RuntimeError: abort(Error: test). Build with -s ASSERTIONS=1 for more info.
+    at process.abort (/Users/conganhhcmus/Downloads/projects/auto-tools/node_modules/opencv-wasm/opencv.js:775:27)
+    at process.emit (node:events:517:28)
+    at emit (node:internal/process/promises:149:20)
+    at processPromiseRejections (node:internal/process/promises:283:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:96:32)
+
+Node.js v18.18.0
+Command failed: adb -s emulator-5554 shell kill $(adb -s emulator-5554 shell pgrep monkey)
+usage:	kill [-s signame | -signum | -signame] { job | pid | pgrp } ...
+	kill -l [exit_status ...]
+Command failed: adb -s emulator-5554 shell kill $(adb -s emulator-5554 shell pgrep monkey)
+/system/bin/sh: kill: 24353: No such process
+Command failed: node src/auto/sky-garden/index.js '{"selectedDevices":["emulator-5554"],"selectedGame":"sky-garden","gameOptions":{"runAuto":"ProductItem-2","openGame":false,"hasEventTree":false,"sellItems":false,"openGameAfter":1,"frequency":1}}' 0
+FailError: Failure: 'closed'
+/Users/conganhhcmus/Downloads/projects/auto-tools/node_modules/opencv-wasm/opencv.js:94
+                            throw ex
+                            ^
+
+RuntimeError: abort(FailError: Failure: 'closed'). Build with -s ASSERTIONS=1 for more info.
+    at process.abort (/Users/conganhhcmus/Downloads/projects/auto-tools/node_modules/opencv-wasm/opencv.js:775:27)
+    at process.emit (node:events:517:28)
+    at emit (node:internal/process/promises:149:20)
+    at processPromiseRejections (node:internal/process/promises:283:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:96:32)
+
+Node.js v18.18.0
+Command failed: node src/auto/sky-garden/index.js '{"selectedDevices":["emulator-5554"],"selectedGame":"sky-garden","gameOptions":{"runAuto":"ProductItem-2","openGame":false,"hasEventTree":false,"sellItems":false,"openGameAfter":1,"frequency":1}}' 0
+FailError: Failure: 'closed'
+/Users/conganhhcmus/Downloads/projects/auto-tools/node_modules/opencv-wasm/opencv.js:94
+                            throw ex
+                            ^
+
+RuntimeError: abort(FailError: Failure: 'closed'). Build with -s ASSERTIONS=1 for more info.
+    at process.abort (/Users/conganhhcmus/Downloads/projects/auto-tools/node_modules/opencv-wasm/opencv.js:775:27)
+    at process.emit (node:events:517:28)
+    at emit (node:internal/process/promises:149:20)
+    at processPromiseRejections (node:internal/process/promises:283:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:96:32)
+
+Node.js v18.18.0
+Command failed: node src/auto/sky-garden/index.js '{"selectedDevices":["emulator-5554"],"selectedGame":"sky-garden","gameOptions":{"runAuto":"ProductItem-2","openGame":false,"hasEventTree":false,"sellItems":false,"openGameAfter":1,"frequency":1}}' 0
+FailError: Failure: 'closed'
+/Users/conganhhcmus/Downloads/projects/auto-tools/node_modules/opencv-wasm/opencv.js:94
+                            throw ex
+                            ^
+
+RuntimeError: abort(FailError: Failure: 'closed'). Build with -s ASSERTIONS=1 for more info.
+    at process.abort (/Users/conganhhcmus/Downloads/projects/auto-tools/node_modules/opencv-wasm/opencv.js:775:27)
+    at process.emit (node:events:517:28)
+    at emit (node:internal/process/promises:149:20)
+    at processPromiseRejections (node:internal/process/promises:283:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:96:32)
+
+Node.js v18.18.0
+Command failed: node src/auto/sky-garden/index.js '{"selectedDevices":["emulator-5554"],"selectedGame":"sky-garden","gameOptions":{"runAuto":"ProductItem-2","openGame":false,"hasEventTree":false,"sellItems":false,"openGameAfter":1,"frequency":1}}' 0
+FailError: Failure: 'closed'
+/Users/conganhhcmus/Downloads/projects/auto-tools/node_modules/opencv-wasm/opencv.js:94
+                            throw ex
+                            ^
+
+RuntimeError: abort(FailError: Failure: 'closed'). Build with -s ASSERTIONS=1 for more info.
+    at process.abort (/Users/conganhhcmus/Downloads/projects/auto-tools/node_modules/opencv-wasm/opencv.js:775:27)
+    at process.emit (node:events:517:28)
+    at emit (node:internal/process/promises:149:20)
+    at processPromiseRejections (node:internal/process/promises:283:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:96:32)
+
+Node.js v18.18.0

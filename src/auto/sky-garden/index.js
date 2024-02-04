@@ -10,11 +10,44 @@ const auto = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../data/auto
 const gameName = 'sky-garden'
 
 class Device {
-    constructor(id, monkey, vmSize) {
+    constructor(id, client, adb) {
         this.id = id
-        this.size = Helpers.getSize(vmSize.toString())
-        this.monkey = monkey
-        this.client = this.monkey.multi()
+        this.ADBclient = client
+        this.ADB = adb
+        this.size = null
+        this.monkey = null
+        this.client = null
+    }
+
+    async CreateClient() {
+        console.log('Creating client')
+        let output = [this.id, this.ADBclient, this.size, this.monkey, this.client]
+        // kill all process monkey
+        await this.Shell('kill $(pgrep monkey)')
+        //output.push(await this.ADBclient.shell(this.id, 'kill $(pgrep monkey)').then(this.ADB.util.readAll))
+        // output.push(await Client.shell(this.id, 'nohup monkey --port 1080 &').then(ADB.util.readAll))
+        // output.push(await Client.forward(this.id, 'tcp:1080', 'tcp:1080'))
+
+        // let vmSize = await Client.shell(this.id, 'wm size').then(ADB.util.readAll)
+        // let monkey = await Client.openMonkey(this.id)
+        // console.log(output)
+        // this.size = Helpers.getSize(vmSize.toString())
+        // this.monkey = monkey
+        // this.client = this.monkey.multi()
+        console.log(output)
+        return
+    }
+
+    Execute() {
+        return new Promise((resolve) => {
+            this.client.sleep(5).execute((err) => {
+                if (err) {
+                    console.error(err)
+                }
+                this.monkey.end()
+                resolve()
+            })
+        })
     }
 
     Calculator() {
@@ -22,63 +55,67 @@ class Device {
         const calc_Y = (y) => Helpers.calc_Y(y, this.size)
         return [calc_X, calc_Y]
     }
+
+    Shell(command) {
+        return this.ADBclient.shell(this.id, command)
+    }
 }
 
 const ProduceItems = async (device, gameOptions = {}, index) => {
-    const runningDevice = await CreateDevice(device)
-
+    const runningDevice = new Device(device.id, Client, ADB)
     const { runAuto, hasEventTree } = gameOptions
     const isLast = index === 9
-    switch (runAuto) {
-        case auto[gameName][1].key:
-            AutoFunc.ProduceItems_1(runningDevice, hasEventTree, isLast)
-            break
 
-        case auto[gameName][2].key:
-            AutoFunc.ProduceItems_2(runningDevice, hasEventTree, isLast)
-            break
+    await AutoFunc.ProduceItems_2(runningDevice, hasEventTree, isLast)
 
-        case auto[gameName][3].key:
-            AutoFunc.ProduceItems_3(runningDevice, hasEventTree, isLast)
-            break
+    // switch (runAuto) {
+    //     // case auto[gameName][1].key:
+    //     //     AutoFunc.ProduceItems_1(runningDevice, hasEventTree, isLast)
+    //     //     break
 
-        case auto[gameName][4].key:
-            AutoFunc.ProduceItems_4(runningDevice, hasEventTree, isLast)
-            break
+    //     // case auto[gameName][2].key:
+    //     //     await AutoFunc.ProduceItems_2(runningDevice, hasEventTree, isLast)
+    //     //     break
 
-        case auto[gameName][5].key:
-            AutoFunc.ProduceItems_5(runningDevice, hasEventTree, isLast)
-            break
+    //     // case auto[gameName][3].key:
+    //     //     AutoFunc.ProduceItems_3(runningDevice, hasEventTree, isLast)
+    //     //     break
 
-        case auto[gameName][6].key:
-            AutoFunc.ProduceItems_6(runningDevice, hasEventTree, isLast)
-            break
+    //     // case auto[gameName][4].key:
+    //     //     AutoFunc.ProduceItems_4(runningDevice, hasEventTree, isLast)
+    //     //     break
 
-        case auto[gameName][7].key:
-            AutoFunc.ProduceItems_7(runningDevice, hasEventTree, isLast)
-            break
+    //     // case auto[gameName][5].key:
+    //     //     AutoFunc.ProduceItems_5(runningDevice, hasEventTree, isLast)
+    //     //     break
 
-        case auto[gameName][8].key:
-            AutoFunc.ProduceItems_8(runningDevice, hasEventTree, isLast)
-            break
+    //     // case auto[gameName][6].key:
+    //     //     AutoFunc.ProduceItems_6(runningDevice, hasEventTree, isLast)
+    //     //     break
 
-        default:
-            AutoFunc.PlantEventTree(runningDevice)
-            break
-    }
+    //     // case auto[gameName][7].key:
+    //     //     AutoFunc.ProduceItems_7(runningDevice, hasEventTree, isLast)
+    //     //     break
 
-    return AutoFunc.Execute(runningDevice)
+    //     // case auto[gameName][8].key:
+    //     //     AutoFunc.ProduceItems_8(runningDevice, hasEventTree, isLast)
+    //     //     break
+
+    //     // default:
+    //     //     AutoFunc.PlantEventTree(runningDevice)
+    //     //     break
+    // }
 }
 
 const SellItems = async (device, gameOptions) => {
     const { runAuto, sellItems } = gameOptions
     if (!sellItems) return
 
-    const runningDevice = await CreateDevice(device)
+    const runningDevice = new Device(device.id, Client)
 
     switch (runAuto) {
         case auto[gameName][1].key:
-            AutoFunc.SellItems_1(runningDevice)
+            await AutoFunc.SellItems_1(runningDevice)
             break
 
         case auto[gameName][2].key:
@@ -112,31 +149,14 @@ const SellItems = async (device, gameOptions) => {
         default:
             break
     }
-
-    return AutoFunc.Execute(runningDevice)
 }
 
 const OpenGame = async (device, gameOptions = {}, index) => {
-    const runningDevice = await CreateDevice(device)
+    const runningDevice = new Device(device.id, Client)
 
     const { openGame, openGameAfter } = gameOptions
     const needOpen = openGame && index % openGameAfter == 0
     needOpen && AutoFunc.OpenGame(runningDevice)
-
-    return AutoFunc.Execute(runningDevice)
-}
-
-const CreateDevice = async (device) => {
-    let output = [device.id]
-    // kill all process monkey
-    output.push(await Client.shell(device.id, 'kill $(pgrep monkey)').then(ADB.util.readAll))
-    output.push(await Client.shell(device.id, 'nohup monkey --port 1080 &').then(ADB.util.readAll))
-    output.push(await Client.forward(device.id, 'tcp:1080', 'tcp:1080'))
-
-    let vmSize = await Client.shell(device.id, 'wm size').then(ADB.util.readAll)
-    let monkey = await Client.openMonkey(device.id)
-
-    return new Device(device.id, monkey, vmSize)
 }
 
 const Main = async (state = {}, index = 0) => {
@@ -145,11 +165,11 @@ const Main = async (state = {}, index = 0) => {
 
     return await Promise.all(
         listDevices.map(async (device) => {
-            await OpenGame(device, gameOptions, index)
-            for (let i = 0; i < 10; i++) {
+            //await OpenGame(device, gameOptions, index)
+            for (let i = 0; i < 1; i++) {
                 await ProduceItems(device, gameOptions, i)
             }
-            await SellItems(device, gameOptions)
+            //await SellItems(device, gameOptions)
         })
     )
 }

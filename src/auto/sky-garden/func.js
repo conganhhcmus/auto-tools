@@ -28,39 +28,41 @@ const ProduceItems_1 = (device, hasEventTree, isLast) => {
     }
 }
 
-const SellItems_1 = (device) => {
+const SellItems_1 = async (device) => {
     // Sell Goods
-    Scripts.SellGoods(device, [0, 1, 2, 3, 4, 5, 6, 7], 1)
+    await Scripts.SellGoods(device, [0, 1, 2, 3, 4, 5, 6, 7], 1)
 }
 
 // Cao vai tim
-const ProduceItems_2 = (device, hasEventTree, isLast) => {
-    const NUMBER_OF_MAKE_GOODS = 2
+const ProduceItems_2 = async (device, hasEventTree, isLast) => {
+    // const NUMBER_OF_MAKE_GOODS = 2
 
-    for (let k = 0; k < NUMBER_OF_MAKE_GOODS; k++) {
-        // Floor 1
-        Scripts.GoUp(device)
-        Scripts.HarvestTrees(device)
-        if (hasEventTree) {
-            Scripts.NextTrees(device, 1)
-            Scripts.PlantTrees(device, 2)
-        } else {
-            Scripts.PlantTrees(device, 3)
-        }
-        Scripts.MakeGoods(device, 2, 4)
+    // for (let k = 0; k < NUMBER_OF_MAKE_GOODS; k++) {
+    //     // Floor 1
+    //     Scripts.GoUp(device)
+    //     Scripts.HarvestTrees(device)
+    //     if (hasEventTree) {
+    //         Scripts.NextTrees(device, 1)
+    //         Scripts.PlantTrees(device, 2)
+    //     } else {
+    //         Scripts.PlantTrees(device, 3)
+    //     }
+    //     Scripts.MakeGoods(device, 2, 4)
 
-        // Floor 3
-        Scripts.GoUp(device, 2)
-        Scripts.HarvestTrees(device)
-        hasEventTree && Scripts.PrevTrees(device, 1)
-        Scripts.PlantTrees(device, 0)
-        Scripts.MakeGoods(device, 2, 4)
+    //     // Floor 3
+    //     Scripts.GoUp(device, 2)
+    //     Scripts.HarvestTrees(device)
+    //     hasEventTree && Scripts.PrevTrees(device, 1)
+    //     Scripts.PlantTrees(device, 0)
+    //     Scripts.MakeGoods(device, 2, 4)
 
-        // Go Down
-        Scripts.BackToGame(device)
-        Scripts.GoDownLast(device)
-        if (k < NUMBER_OF_MAKE_GOODS - 1 || !isLast) Scripts.Sleep(device, hasEventTree ? 10 : 14)
-    }
+    //     // Go Down
+    //     Scripts.BackToGame(device)
+    //     Scripts.GoDownLast(device)
+    //     if (k < NUMBER_OF_MAKE_GOODS - 1 || !isLast) Scripts.Sleep(device, hasEventTree ? 10 : 14)
+    // }
+
+    await Scripts.NextTrees(device, 'oai-uong')
 }
 
 const SellItems_2 = (device) => {
@@ -375,12 +377,6 @@ const PlantEventTree = (device) => {
     Scripts.GoDownLast(device)
 }
 
-const Execute = (device) => {
-    return new Promise((resolve) => {
-        Scripts.Execute(device, resolve)
-    })
-}
-
 module.exports = {
     OpenGame,
     // Produce Items
@@ -402,5 +398,4 @@ module.exports = {
     SellItems_6,
     SellItems_7,
     SellItems_8,
-    Execute,
 }
