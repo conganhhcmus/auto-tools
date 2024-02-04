@@ -1,13 +1,16 @@
 const moment = require('moment')
 import React, { useEffect, useState } from "react";
-import { Divider, Table, Button, Flex, Row, Col, Popover } from 'antd';
+import { Divider, Table, Button, Flex, Row, Col, Popover, Spin } from 'antd';
 import axios from "axios";
+import { Buffer } from 'buffer';
 import styles from './Table.module.css'
 
 const RunningTable = (props) => {
     const [runningDevice, setRunningDevice] = useState([]);
     const [selectedDevices, setSelectedDevices] = useState([]);
-    const [logContent, setLogContent] = useState((<p>No Content</p>));
+    const [logContent, setLogContent] = useState('<p>No Content</p>');
+    const [viewContent, setViewContent] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     const refreshData = () => {
         axios.get('/api/runningDevice').then(response => {
@@ -39,14 +42,6 @@ const RunningTable = (props) => {
         })
     }
 
-    const viewLogsDevice = (device) => {
-        axios.get(`/api/logs?device=${device}`).then(response => {
-            let logs = response.data && response.data.logs
-            logs = logs.replaceAll('\n', '<br/>')
-            setLogContent(`<p>${logs}</p>`);
-        })
-    }
-
     const gameOptionContent = (gameOptions) => {
         let propertyNames = Object.getOwnPropertyNames(gameOptions).filter(x => x !== 'runAuto')
         return <div>
@@ -56,11 +51,46 @@ const RunningTable = (props) => {
         </div>
     }
 
+    const getLogsDevice = (device) => {
+        setLoading(true)
+        axios.get(`/api/logs?device=${device}`).then(response => {
+            let logs = response.data && response.data.logs
+            logs = logs.replaceAll('\n', '<br/>')
+            setLogContent(`<p>${logs}</p>`)
+            setLoading(false)
+        })
+    }
+
+    const getCurrentScreenDevice = (device) => {
+        setLoading(true)
+        axios.get(`/api/viewDevice?device=${device}`, {
+            responseType: 'arraybuffer'
+        }).then(response => {
+            const screen = Buffer.from(response.data, 'binary').toString('base64')
+            setViewContent(screen)
+            setLoading(false)
+        })
+    }
+
+    const viewLogContent = () => {
+        return <>
+            <Spin spinning={loading} size="small" />
+            {!loading && <div dangerouslySetInnerHTML={{ __html: logContent }} />}
+        </>
+    }
+
+    const viewCurrentDevice = () => {
+        return <>
+            <Spin spinning={loading} size="small" />
+            {!loading && <img src={`data:image/jpeg;base64,${viewContent}`} />}
+        </>
+    }
+
     const columns = [
         {
             title: 'Device',
             width: 200,
-            dataIndex: 'device',
+            dataIndex: 'deviceName',
         },
         {
             title: 'Game',
@@ -77,23 +107,34 @@ const RunningTable = (props) => {
             width: 250,
             dataIndex: '',
             render: (text, record) => <Row gutter={[20, 20]} justify="center" type="flex">
-                <Col className="gutter-row" xs={24} sm={24} xl={8} xxl={8} style={{ textAlign: 'center' }}>
-                    <Button type="primary" danger onClick={() => stopDevice(record.key)}>
+                <Col className="gutter-row" xs={24} sm={24} xl={12} xxl={6} style={{ textAlign: 'center' }}>
+                    <Button className={styles.stopButton} type="primary" danger onClick={() => stopDevice(record.key)}>
                         Stop
                     </Button>
                 </Col>
-                <Col className="gutter-row" xs={24} sm={24} xl={8} xxl={8} style={{ textAlign: 'center' }}>
+                <Col className="gutter-row" xs={24} sm={24} xl={12} xxl={6} style={{ textAlign: 'center' }}>
+                    <Popover
+                        key={`view-${record.key}`}
+                        rootClassName={styles.popupView}
+                        placement="leftBottom"
+                        content={viewCurrentDevice}
+                        title={`Current screen of ${record.key}`}
+                        trigger="click">
+                        <Button className={styles.viewButton} type="primary" onClick={() => getCurrentScreenDevice(record.key)}>View</Button>
+                    </Popover>
+                </Col>
+                <Col className="gutter-row" xs={24} sm={24} xl={12} xxl={6} style={{ textAlign: 'center' }}>
                     <Popover
                         key={`log-${record.key}`}
                         rootClassName={styles.popupLogs}
                         placement="leftBottom"
-                        content={<div dangerouslySetInnerHTML={{ __html: logContent }} />}
+                        content={viewLogContent}
                         title={`Log of ${record.key}`}
                         trigger="click">
-                        <Button type="primary" onClick={() => viewLogsDevice(record.key)}>Logs</Button>
+                        <Button className={styles.logButton} type="primary" onClick={() => getLogsDevice(record.key)}>Logs</Button>
                     </Popover>
                 </Col>
-                <Col className="gutter-row" xs={24} sm={24} xl={8} xxl={8} style={{ textAlign: 'center' }}>
+                <Col className="gutter-row" xs={24} sm={24} xl={12} xxl={6} style={{ textAlign: 'center' }}>
                     <Popover
                         key={`detail-${record.key}`}
                         rootClassName={styles.popupDetail}
@@ -101,7 +142,7 @@ const RunningTable = (props) => {
                         content={gameOptionContent(record.gameOptions)}
                         title={`Game Option of ${record.key}`}
                         trigger="click">
-                        <Button type="primary">Detail</Button>
+                        <Button className={styles.detailButton} type="primary">Detail</Button>
                     </Popover>
                 </Col>
             </Row >,
@@ -133,7 +174,6 @@ const RunningTable = (props) => {
             bordered={true}
             rowSelection={rowSelection}
             columns={columns}
-            //scroll={{ x: 2000 }}
             dataSource={runningDevice.map(item => ({
                 ...item,
                 key: item.device

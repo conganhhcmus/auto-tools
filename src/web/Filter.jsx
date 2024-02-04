@@ -90,11 +90,11 @@ const Filter = (props) => {
                                 placeholder="Search to Select"
                                 optionFilterProp="children"
                                 filterOption={(input, option) => (option?.label ?? '').includes(input)}
-                                filterSort={(optionA, optionB) =>
-                                    (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
-                                }
+                                filterSort={(optionA, optionB) => ((optionA?.order ?? 0) - (optionB?.order ?? 0))}
                                 options={listGameOption.map(item => ({
-                                    value: item.key, label: item.name
+                                    value: item.key,
+                                    label: item.name,
+                                    disabled: item.disabled,
                                 }))}
                                 onChange={onSelectedGame}
                                 value={selectedGame}

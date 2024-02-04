@@ -2,8 +2,6 @@ const moment = require('moment')
 const fs = require('fs')
 const path = require('path')
 const { runShell } = require('../utils/shell')
-const games = require('../const/game')
-const auto = require('../const/auto')
 
 exports.stopAuto = async (req, res, next) => {
     let data = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/data.json'), 'utf8'))
@@ -34,6 +32,8 @@ exports.stopAllAuto = async (req, res, next) => {
 
 exports.startAuto = (req, res, next) => {
     let data = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/data.json'), 'utf8'))
+    const games = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/game.json'), 'utf8'))
+    const auto = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/auto.json'), 'utf8'))
     let payload = req.body
     let newData = []
     payload.selectedDevices.forEach((device) => {
@@ -50,11 +50,9 @@ exports.startAuto = (req, res, next) => {
     res.json(data)
 }
 
-exports.getState = function (req, res, next) {}
-
 const startAuto = async (payload) => {
     const { selectedDevices, selectedGame } = payload
-    const { frequency, openGameAfter, openGame } = payload.gameOptions
+    const { frequency } = payload.gameOptions
     let logs = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/logs.json'), 'utf8'))
 
     // clear old logs
@@ -74,12 +72,7 @@ const startAuto = async (payload) => {
 
         // run auto
         let gameState = await getPayload(payload)
-        if (openGame && i % openGameAfter === 0) {
-            command = `node src/auto/${selectedGame}/index.js '${openGame}' '${JSON.stringify(gameState)}'`
-            await runShell(command)
-        }
-        gameState = await getPayload(payload)
-        command = `node src/auto/${selectedGame}/index.js '${false}' '${JSON.stringify(gameState)}'`
+        command = `node src/auto/${selectedGame}/index.js '${JSON.stringify(gameState)}' ${i}`
         await runShell(command)
     }
     // write logs

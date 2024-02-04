@@ -1,10 +1,20 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Col } from "antd";
-import { listGameOption } from '../../const/game';
 import SkyGarden from "./SkyGarden";
+import axios from "axios";
 
 const GameOptionsFilter = (props) => {
+    useEffect(() => {
+        axios.get('/api/listGameOptions').then(response => {
+            setListGameOption(response.data.listGameOption)
+        })
+    }, [])
+
+    const [listGameOption, setListGameOption] = useState([]);
     const { selectedGame } = props;
+
+    if (listGameOption.length <= 0) return <></>
+
     switch (selectedGame) {
         case listGameOption[0].key:
             return <SkyGarden {...props} />
