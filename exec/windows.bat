@@ -1,7 +1,7 @@
 @echo off
 setlocal ENABLEDELAYEDEXPANSION
 
-cls
+call cls
 REM set enviroment
 for /f %%l in (.env) do (
     set %%l
@@ -13,20 +13,20 @@ if not !IS_BUILDED!==TRUE (
     call npm run release
     call cls
     call cd exec/
-    call type .env > .temp
-    call break > .env
-    for /f "" %%l in (.temp) do (
+    for /f "" %%l in (.env) do (
         if "%%l"=="IS_BUILDED=FALSE" (
-            echo IS_BUILDED=TRUE >> .env
+            echo IS_BUILDED=TRUE >> .temp
         ) else (
-            echo %%l >> .env
+            echo %%l >> .temp
         )
     )
+    call type .temp > .env
     call del .temp
-    echo "build finished"
+    echo "build succeeded"
 ) else (
-    echo "skip build"
+    echo "built before"
 )
-cd
+
+call cd ..
 call npm run all-server
-popd
+pause

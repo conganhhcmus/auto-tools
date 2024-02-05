@@ -7,9 +7,9 @@ if [[ $IS_BUILDED != TRUE ]]; then
     && npm run release
     clear
     sed -i '' 's/IS_BUILDED=FALSE/IS_BUILDED=TRUE/g' exec/.env
-    echo "build finished"
+    echo "build succeeded"
 else
-    echo "skip build"
+    echo "built before"
 fi
 
 npm run all-server
