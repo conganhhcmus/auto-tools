@@ -8,9 +8,9 @@ exports.runShell = async (command) => {
         const { stdout, stderr, error } = await exec(command)
         stdout && fs.appendFileSync(path.resolve(__dirname, '../logs/out.txt'), stdout)
         stderr && fs.appendFileSync(path.resolve(__dirname, '../logs/err.txt'), stderr)
-        return stdout || stderr
+        return stdout || ''
     } catch (e) {
         fs.appendFileSync(path.resolve(__dirname, '../logs/err.txt'), e.message)
-        return e.message
+        return ''
     }
 }
