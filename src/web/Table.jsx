@@ -14,7 +14,10 @@ const RunningTable = (props) => {
 
     const refreshData = () => {
         axios.get('/api/runningDevice').then(response => {
-            setRunningDevice(response.data)
+            if (JSON.stringify(runningDevice) !== JSON.stringify(response.data)) {
+                setRunningDevice(response.data)
+                props.setRefreshTime(moment().format('LTS'))
+            }
         })
     }
     useEffect(() => {
@@ -104,7 +107,7 @@ const RunningTable = (props) => {
         },
         {
             title: 'Action',
-            width: 250,
+            width: 300,
             dataIndex: '',
             render: (text, record) => <Row gutter={[20, 20]} justify="center" type="flex">
                 <Col className="gutter-row" xs={24} sm={24} xl={12} xxl={6} style={{ textAlign: 'center' }}>

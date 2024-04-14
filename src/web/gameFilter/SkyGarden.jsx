@@ -66,8 +66,8 @@ const SkyGarden = (props) => {
                         </Col>
                         <Col className="gutter-row" xs={24} sm={18} xl={13} xxl={12}>
                             <Flex justify="space-between" gap="middle" align="center" vertical={false}>
-                                <Checkbox value="openGame">Open Game</Checkbox>
                                 <Checkbox value="hasEventTree">Has Event Tree</Checkbox>
+                                <Checkbox value="openGame">Open Game</Checkbox>
                                 <Checkbox value="sellItems">Sell Items</Checkbox>
                             </Flex>
                         </Col>
