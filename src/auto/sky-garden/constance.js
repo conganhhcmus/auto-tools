@@ -1,5 +1,3 @@
-const DefaultSize = [800, 450]
-
 const DefaultBasket = [210, 255]
 
 const DefaultProduct = [305, 185]
@@ -70,7 +68,6 @@ module.exports = {
     SellSlotList,
     PlantSlotList,
     MakeSlotList,
-    DefaultSize,
     FirstRowSlotList,
     SecondRowSlotList,
     DefaultBasket,

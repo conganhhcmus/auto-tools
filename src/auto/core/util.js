@@ -1,4 +1,4 @@
-const { DefaultSize } = require('./const')
+const { DefaultSize } = require('./constance')
 
 const calc_X = (x, size) => {
     if (size[0] <= DefaultSize[0]) {
