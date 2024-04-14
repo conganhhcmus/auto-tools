@@ -3,7 +3,7 @@ const path = require('path')
 const { runShell } = require('../utils/shell')
 
 exports.getRunningDevice = async function (req, res, next) {
-    var dataRaw = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/data.json'), 'utf8'))
+    var dataRaw = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/device.json'), 'utf8'))
     let data = await Promise.all(
         dataRaw.map(async (raw) => {
             let name = await runShell(`adb -s ${raw.device} emu avd name`)

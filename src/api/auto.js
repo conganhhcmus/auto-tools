@@ -4,20 +4,20 @@ const path = require('path')
 const { runShell } = require('../utils/shell')
 
 exports.stopAuto = async (req, res, next) => {
-    let data = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/data.json'), 'utf8'))
+    let data = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/device.json'), 'utf8'))
     let device = req.body.device
     let processId = await runShell(`adb -s ${device} shell pgrep monkey`)
     let command = `adb -s ${device} shell kill ${processId}`
     await runShell(command)
     data = data.filter((x) => x.device !== device)
 
-    fs.writeFileSync(path.resolve(__dirname, '../data/data.json'), JSON.stringify(data))
+    fs.writeFileSync(path.resolve(__dirname, '../data/device.json'), JSON.stringify(data))
 
     res.json(data)
 }
 
 exports.stopAllAuto = async (req, res, next) => {
-    let data = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/data.json'), 'utf8'))
+    let data = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/device.json'), 'utf8'))
     let listDevices = req.body.listDevices
 
     for await (const device of listDevices) {
@@ -27,13 +27,13 @@ exports.stopAllAuto = async (req, res, next) => {
         data = data.filter((x) => x.device !== device)
     }
 
-    fs.writeFileSync(path.resolve(__dirname, '../data/data.json'), JSON.stringify(data))
+    fs.writeFileSync(path.resolve(__dirname, '../data/device.json'), JSON.stringify(data))
 
     res.json(data)
 }
 
 exports.startAuto = (req, res, next) => {
-    let data = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/data.json'), 'utf8'))
+    let data = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/device.json'), 'utf8'))
     const games = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/game.json'), 'utf8'))
     const auto = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/auto.json'), 'utf8'))
     let payload = req.body
@@ -47,7 +47,7 @@ exports.startAuto = (req, res, next) => {
         })
     })
     data = data.concat(newData)
-    fs.writeFileSync(path.resolve(__dirname, '../data/data.json'), JSON.stringify(data))
+    fs.writeFileSync(path.resolve(__dirname, '../data/device.json'), JSON.stringify(data))
     startAuto(payload)
     res.json(data)
 }
@@ -85,9 +85,9 @@ const startAuto = async (payload) => {
     fs.writeFileSync(path.resolve(__dirname, '../data/logs.json'), JSON.stringify(logs))
 
     // remove running list
-    let data = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/data.json'), 'utf8'))
+    let data = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/device.json'), 'utf8'))
     data = data.filter((x) => !selectedDevices.includes(x.device))
-    fs.writeFileSync(path.resolve(__dirname, '../data/data.json'), JSON.stringify(data))
+    fs.writeFileSync(path.resolve(__dirname, '../data/device.json'), JSON.stringify(data))
 }
 
 const getPayload = async (payload) => {
@@ -113,13 +113,13 @@ const getDeviceLogs = (selectedDevices, logs) => {
 }
 
 const getRunningDevices = (selectedDevices) => {
-    let data = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/data.json'), 'utf8'))
+    let data = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/device.json'), 'utf8'))
     let listRunningDevice = data.filter((x) => selectedDevices.includes(x.device)).map((x) => x.device)
     return listRunningDevice
 }
 
 const getAllRunningDevices = () => {
-    let data = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/data.json'), 'utf8'))
+    let data = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/device.json'), 'utf8'))
     let listRunningDevice = data.map((x) => x.device)
     return listRunningDevice
 }
