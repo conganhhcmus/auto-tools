@@ -5,6 +5,8 @@ const exec = util.promisify(require('child_process').exec)
 
 exports.GetCoordinatesItem = async (deviceId, itemId, defaultPosition) => {
     try {
+        if (itemId === null || itemId === undefined) return defaultPosition
+
         await exec(`adb -s ${deviceId} exec-out screencap -p > src/assets/device/${deviceId}.png`)
         const imageTemplate = await Jimp.read(__dirname + `/../assets/items/${itemId}.png`)
         const imageSource = await Jimp.read(__dirname + `/../assets/device/${deviceId}.png`)

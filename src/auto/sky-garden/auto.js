@@ -61,7 +61,7 @@ const ProduceItems_2 = async (device, hasEventTree, isLast) => {
 
 const SellItems_2 = async (device) => {
     // Sell Goods
-    await Scripts.SellGoods(device, [0, 1, 2, 3, 4, 5, 6, 7], 1)
+    await Scripts.SellGoods(device, [0, 1, 2, 3, 4, 5, 6, 7], 1, 'vai-tim')
 }
 
 // Cao vai do + nuoc tuyet

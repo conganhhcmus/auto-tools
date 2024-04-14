@@ -2,7 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const Promise = require('bluebird')
 const AutoFunc = require('./auto')
-const Device = require('../core/device');
+const Device = require('../core/device')
 
 const Main = async (argv) => {
     const auto = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../data/auto.json'), 'utf8'))
@@ -11,7 +11,7 @@ const Main = async (argv) => {
     const state = JSON.parse(Buffer.from(argv[2], 'base64').toString('ascii'))
     const index = parseInt(argv[3])
     const { gameOptions, selectedDevices } = state
-    const listDevices = await Device.GetListDevices(selectedDevices);
+    const listDevices = await Device.GetListDevices(selectedDevices)
 
     return await Promise.all(
         listDevices.map(async (device) => {

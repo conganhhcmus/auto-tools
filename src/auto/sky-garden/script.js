@@ -22,52 +22,6 @@ const _Move = (client, pointA, pointB, steps = 1) => {
     }
 }
 
-const _sellBySlot = (client, calc, slots = [], option = 1) => {
-    const [calc_X, calc_Y] = calc
-    const { x: option_x, y: option_y } = SellOptions[option]
-
-    slots.forEach((slot) => {
-        const { x, y } = SellSlotList[slot]
-        client
-            .tap(calc_X(x), calc_Y(y))
-            .sleep(500)
-            .tap(calc_X(x), calc_Y(y))
-            .sleep(500)
-            .tap(calc_X(option_x), calc_Y(option_y))
-            .sleep(500)
-            .tap(calc_X(70), calc_Y(130))
-            .sleep(500)
-            // increase price
-            .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
-            .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
-            .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
-            .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
-            .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
-            .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
-            .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
-            .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
-            .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
-            .tap(calc_X(660), calc_Y(270))
-            .sleep(500)
-            // stop increase price
-            .tap(calc_X(590), calc_Y(410))
-            .sleep(500)
-            .tap(calc_X(400), calc_Y(420))
-            .sleep(500)
-            .tap(calc_X(500), calc_Y(35))
-            .sleep(500)
-    })
-}
-
 const _sellFullSlot = (client, slotA = [], slotB = [], slotC = [], calc, option = 1) => {
     const [calc_X, calc_Y] = calc
     const { x: option_x, y: option_y } = SellOptions[option]
@@ -658,18 +612,75 @@ const MakeGoods_2 = async (device, slot = 0, number = 1) => {
     return await Execute(runningDevice)
 }
 
-const SellGoods = async (device, slots = [], option = 1) => {
-    const runningDevice = await Device.CreateDevice(device)
-    const [calc_X, calc_Y] = runningDevice.Calculator()
+const SellGoods = async (device, slots = [], option = 1, itemId = undefined) => {
+    let runningDevice = await Device.CreateDevice(device)
+    let [calc_X, calc_Y] = runningDevice.Calculator()
     let client = runningDevice.client
 
     // open
     client.tap(555, 340).sleep(1 * 1000)
 
+    await Execute(runningDevice)
+
     //sell by slots
-    _sellBySlot(client, [calc_X, calc_Y], slots, option)
+    const { x: option_x, y: option_y } = SellOptions[option]
+
+    for (const slot of slots) {
+        runningDevice = await Device.CreateDevice(device)
+        client = runningDevice.client
+        ;[calc_X, calc_Y] = runningDevice.Calculator()
+
+        const { x, y } = SellSlotList[slot]
+        client.tap(calc_X(x), calc_Y(y)).sleep(500).tap(calc_X(x), calc_Y(y)).sleep(500).tap(calc_X(option_x), calc_Y(option_y)).sleep(500)
+        await Execute(runningDevice)
+
+        // choose item by image
+        const [pointX, pointY] = await Image.GetCoordinatesItem(device.id, itemId, [70, 130])
+
+        runningDevice = await Device.CreateDevice(device)
+        client = runningDevice.client
+        ;[calc_X, calc_Y] = runningDevice.Calculator()
+
+        client
+            .tap(calc_X(pointX), calc_Y(pointY))
+            .sleep(500)
+            // increase price
+            .tap(calc_X(660), calc_Y(270))
+            .sleep(5)
+            .tap(calc_X(660), calc_Y(270))
+            .sleep(5)
+            .tap(calc_X(660), calc_Y(270))
+            .sleep(5)
+            .tap(calc_X(660), calc_Y(270))
+            .sleep(5)
+            .tap(calc_X(660), calc_Y(270))
+            .sleep(5)
+            .tap(calc_X(660), calc_Y(270))
+            .sleep(5)
+            .tap(calc_X(660), calc_Y(270))
+            .sleep(5)
+            .tap(calc_X(660), calc_Y(270))
+            .sleep(5)
+            .tap(calc_X(660), calc_Y(270))
+            .sleep(5)
+            .tap(calc_X(660), calc_Y(270))
+            .sleep(500)
+            // stop increase price
+            .tap(calc_X(590), calc_Y(410))
+            .sleep(500)
+            .tap(calc_X(400), calc_Y(420))
+            .sleep(500)
+            .tap(calc_X(500), calc_Y(35))
+            .sleep(500)
+
+        await Execute(runningDevice)
+    }
 
     // close
+    runningDevice = await Device.CreateDevice(device)
+    client = runningDevice.client
+    ;[calc_X, calc_Y] = runningDevice.Calculator()
+
     client.press('KEYCODE_BACK').sleep(100).press('KEYCODE_BACK').sleep(100).press('KEYCODE_BACK').sleep(100).tap(calc_X(470), calc_Y(325)).sleep(500)
 
     return await Execute(runningDevice)
@@ -760,17 +771,17 @@ const Execute = (runningDevice) =>
 module.exports = {
     Sleep,
     OpenGame,
+    BackToGame,
     MakeGoods,
     MakeGoods_2,
     SellGoods,
+    SellFullGoods,
     PlantTrees,
     PlantTrees_Half,
     HarvestTrees,
     GoDown,
     GoUp,
-    BackToGame,
     GoDownLast,
     NextTrees,
     PrevTrees,
-    SellFullGoods,
 }
