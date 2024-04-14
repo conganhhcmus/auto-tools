@@ -38,7 +38,7 @@ const ProduceItems_2 = async (device, hasEventTree, isLast) => {
         await Scripts.GoUp(device)
         await Scripts.HarvestTrees(device)
         if (hasEventTree) {
-            await Scripts.NextTrees(device, 1)
+            await Scripts.NextTrees(device, 'oai-huong')
             await Scripts.PlantTrees(device, 2)
         } else {
             await Scripts.PlantTrees(device, 3)
@@ -48,7 +48,7 @@ const ProduceItems_2 = async (device, hasEventTree, isLast) => {
         // Floor 3
         await Scripts.GoUp(device, 2)
         await Scripts.HarvestTrees(device)
-        hasEventTree && (await Scripts.PrevTrees(device, 1))
+        hasEventTree && (await Scripts.PrevTrees(device, 'bong'))
         await Scripts.PlantTrees(device, 0)
         await Scripts.MakeGoods(device, 2, 4)
 
@@ -105,7 +105,7 @@ const ProduceItems_4 = async (device, hasEventTree, isLast) => {
     await Scripts.GoUp(device)
     await Scripts.HarvestTrees(device)
     if (hasEventTree) {
-        await Scripts.NextTrees(device, 1)
+        await Scripts.NextTrees(device, 'oai-huong')
         await Scripts.PlantTrees(device, 2)
     } else {
         await Scripts.PlantTrees(device, 3)
@@ -115,7 +115,7 @@ const ProduceItems_4 = async (device, hasEventTree, isLast) => {
     // Floor 3
     await Scripts.GoUp(device, 2)
     await Scripts.HarvestTrees(device)
-    hasEventTree && (await Scripts.PrevTrees(device, 1))
+    hasEventTree && (await Scripts.PrevTrees(device, 'bong'))
     await Scripts.PlantTrees(device, hasEventTree ? 3 : 4)
     await Scripts.MakeGoods(device, 2, 4)
 
@@ -380,7 +380,6 @@ const OpenGame = async (device, gameOptions = {}, index) => {
 }
 
 const ProduceItems = async (device, gameOptions = {}, index, auto, gameName) => {
-
     const { runAuto, hasEventTree } = gameOptions
     const isLast = index === 9
     switch (runAuto) {
@@ -467,5 +466,5 @@ const SellItems = async (device, gameOptions, auto, gameName) => {
 module.exports = {
     OpenGame,
     ProduceItems,
-    SellItems
+    SellItems,
 }

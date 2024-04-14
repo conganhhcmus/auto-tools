@@ -1,5 +1,6 @@
 const { SellSlotList, PlantSlotList, MakeSlotList, FirstRowSlotList, SecondRowSlotList, DefaultBasket, DefaultProduct, SellOptions } = require('./constance')
 const Device = require('../core/device')
+const Image = require('../../utils/image')
 
 //#region private function
 const _Move = (client, pointA, pointB, steps = 1) => {
@@ -691,32 +692,55 @@ const SellFullGoods = async (device, slotA, slotB, slotC, option = 1) => {
     return await Execute(runningDevice)
 }
 
-const NextTrees = async (device, number = 1) => {
-    const runningDevice = await Device.CreateDevice(device)
+const NextTrees = async (device, itemId) => {
+    let runningDevice = await Device.CreateDevice(device)
     let client = runningDevice.client
-    const [calc_X, calc_Y] = runningDevice.Calculator()
+    let [calc_X, calc_Y] = runningDevice.Calculator()
 
     client.tap(calc_X(300), calc_Y(380)).sleep(1 * 1000)
 
-    for (let i = 0; i < number; i++) {
+    await Execute(runningDevice)
+
+    while (!(await Image.IsIncludeItem(device.id, itemId))) {
+        runningDevice = await Device.CreateDevice(device)
+        client = runningDevice.client
+        ;[calc_X, calc_Y] = runningDevice.Calculator()
+
         client.tap(calc_X(325), calc_Y(305)).sleep(500)
+
+        await Execute(runningDevice)
     }
+
+    runningDevice = await Device.CreateDevice(device)
+    client = runningDevice.client
+    ;[calc_X, calc_Y] = runningDevice.Calculator()
 
     client.press('KEYCODE_BACK').sleep(500)
 
     return await Execute(runningDevice)
 }
 
-const PrevTrees = async (device, number = 1) => {
-    const runningDevice = await Device.CreateDevice(device)
+const PrevTrees = async (device, itemId) => {
+    let runningDevice = await Device.CreateDevice(device)
     let client = runningDevice.client
-    const [calc_X, calc_Y] = runningDevice.Calculator()
+    let [calc_X, calc_Y] = runningDevice.Calculator()
 
     client.tap(calc_X(300), calc_Y(380)).sleep(1 * 1000)
 
-    for (let i = 0; i < number; i++) {
+    await Execute(runningDevice)
+
+    while (!(await Image.IsIncludeItem(device.id, itemId))) {
+        runningDevice = await Device.CreateDevice(device)
+        client = runningDevice.client
+        ;[calc_X, calc_Y] = runningDevice.Calculator()
+
         client.tap(calc_X(80), calc_Y(305)).sleep(500)
+        await Execute(runningDevice)
     }
+
+    runningDevice = await Device.CreateDevice(device)
+    client = runningDevice.client
+    ;[calc_X, calc_Y] = runningDevice.Calculator()
 
     client.press('KEYCODE_BACK').sleep(500)
     return await Execute(runningDevice)
