@@ -7,18 +7,21 @@ exports.getSettings = async function (req, res, next) {
     let games = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/game.json'), 'utf8'))
 
     let runningDevices = data.map((x) => x.device)
-    let output = await runShell('adb devices | grep emulator | cut -f1')
-    let listDevices = !!output ? output.trim('\n').split('\n') : []
+    let output = await runShell('adb devices')
+    let listDevices = output.match(/(emulator[^\t]+)/g) ?? []
     let listDevicesWithName = await Promise.all(
-        listDevices.map(async (device) => ({
-            value: device,
-            label: await runShell(`adb -s ${device} emu avd name | awk '!/OK/'`),
-        }))
+        listDevices.map(async (device) => {
+            let name = await runShell(`adb -s ${device} emu avd name`)
+            return {
+                value: device,
+                label: !!name ? name.match(/([^\r\n|OK]+)/g)[0].replaceAll('_', ' ') : device,
+            }
+        })
     )
     let result = {
         listDevices: listDevicesWithName.map((device) => ({
             value: device.value,
-            label: device.label.replaceAll('_', ' '),
+            label: device.label,
             disabled: runningDevices.includes(device.value),
         })),
         listGameOption: [...games.listGameOption],

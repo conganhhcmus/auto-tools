@@ -5,10 +5,13 @@ const { runShell } = require('../utils/shell')
 exports.getRunningDevice = async function (req, res, next) {
     var dataRaw = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/data.json'), 'utf8'))
     let data = await Promise.all(
-        dataRaw.map(async (raw) => ({
-            ...raw,
-            deviceName: (await runShell(`adb -s ${raw.device} emu avd name | awk '!/OK/'`)).replaceAll('_', ' '),
-        }))
+        dataRaw.map(async (raw) => {
+            let name = await runShell(`adb -s ${raw.device} emu avd name`)
+            return {
+                ...raw,
+                deviceName: !!name ? name.match(/([^\r\n|OK]+)/g)[0].replaceAll('_', ' ') : raw.device,
+            }
+        })
     )
     res.json(data)
 }

@@ -6,7 +6,8 @@ const { runShell } = require('../utils/shell')
 exports.stopAuto = async (req, res, next) => {
     let data = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/data.json'), 'utf8'))
     let device = req.body.device
-    let command = `adb -s ${device} shell kill $(adb -s ${device} shell pgrep monkey)`
+    let processId = await runShell(`adb -s ${device} shell pgrep monkey`)
+    let command = `adb -s ${device} shell kill ${processId}`
     await runShell(command)
     data = data.filter((x) => x.device !== device)
 
@@ -20,7 +21,8 @@ exports.stopAllAuto = async (req, res, next) => {
     let listDevices = req.body.listDevices
 
     for await (const device of listDevices) {
-        let command = `adb -s ${device} shell kill $(adb -s ${device} shell pgrep monkey)`
+        let processId = await runShell(`adb -s ${device} shell pgrep monkey`)
+        let command = `adb -s ${device} shell kill ${processId}`
         await runShell(command)
         data = data.filter((x) => x.device !== device)
     }
@@ -72,7 +74,8 @@ const startAuto = async (payload) => {
 
         // run auto
         let gameState = await getPayload(payload)
-        command = `node src/auto/${selectedGame}/index.js '${JSON.stringify(gameState)}' ${i}`
+        const buffer = new Buffer.from(JSON.stringify(gameState)).toString('base64')
+        command = `node src/auto/${selectedGame}/index.js ${buffer} ${i}`
         await runShell(command)
     }
     // write logs

@@ -139,7 +139,10 @@ const CreateDevice = async (device) => {
     return new Device(device.id, monkey, vmSize)
 }
 
-const Main = async (state = {}, index = 0) => {
+const Main = async (argv) => {
+    // parse data
+    const state = JSON.parse(Buffer.from(argv[2], 'base64').toString('ascii'))
+    const index = parseInt(argv[3])
     const { gameOptions, selectedDevices } = state
     let listDevices = await Client.listDevices().then((devices) => devices.filter((device) => selectedDevices.includes(device.id)))
 
@@ -155,4 +158,4 @@ const Main = async (state = {}, index = 0) => {
 }
 
 //Run Main Function
-Main(JSON.parse(process.argv[2]), process.argv[3])
+Main(process.argv)
