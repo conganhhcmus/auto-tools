@@ -2,6 +2,7 @@ const express = require('express')
 require('express-async-errors')
 const router = require('./router')
 const path = require('path')
+const fs = require('fs')
 const app = express()
 const port = process.env.PORT || 8080
 
@@ -21,3 +22,7 @@ app.use((err, req, res, next) => {
 app.listen(port, function () {
     console.log('Your app running on http://localhost:' + port)
 })
+
+// clear logs when server start
+fs.writeFileSync(path.resolve(__dirname, 'logs/out.txt'), '')
+fs.writeFileSync(path.resolve(__dirname, 'logs/err.txt'), '')
