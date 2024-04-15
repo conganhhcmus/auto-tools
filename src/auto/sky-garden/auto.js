@@ -1,4 +1,5 @@
 const Scripts = require('./script')
+const { SellItemOptions } = require('./constance')
 
 // Cao vai do
 const ProduceItems_1 = async (device, hasEventTree, isLast) => {
@@ -26,7 +27,7 @@ const ProduceItems_1 = async (device, hasEventTree, isLast) => {
 
 const SellItems_1 = async (device) => {
     // Sell Goods
-    await Scripts.SellGoods(device, [0, 1, 2, 3, 4, 5, 6, 7], 1)
+    await Scripts.SellGoods(device, [0, 1, 2, 3, 4, 5, 6, 7], SellItemOptions.goods, 'vai-do')
 }
 
 // Cao vai tim
@@ -61,7 +62,7 @@ const ProduceItems_2 = async (device, hasEventTree, isLast) => {
 
 const SellItems_2 = async (device) => {
     // Sell Goods
-    await Scripts.SellGoods(device, [0, 1, 2, 3, 4, 5, 6, 7], 1, 'vai-tim')
+    await Scripts.SellGoods(device, [0, 1, 2, 3, 4, 5, 6, 7], SellItemOptions.goods, 'vai-tim')
 }
 
 // Cao vai do + nuoc tuyet
@@ -96,7 +97,10 @@ const ProduceItems_3 = async (device, hasEventTree, isLast) => {
 
 const SellItems_3 = async (device) => {
     // Sell Goods
-    await Scripts.SellGoods(device, [0, 1, 2, 3, 4, 5, 6], 1)
+    await Scripts.SellGoods(device, [0, 1, 2, 3, 4, 5, 6], SellItemOptions.goods, [
+        { key: 'vai-do', value: 4 },
+        { key: 'nuoc-tuyet', value: 3 },
+    ])
 }
 
 // Cao vai tim + nuoc tuyet
@@ -137,7 +141,10 @@ const ProduceItems_4 = async (device, hasEventTree, isLast) => {
 
 const SellItems_4 = async (device) => {
     // Sell Goods
-    await Scripts.SellGoods(device, [0, 1, 2, 3, 4, 5, 6], 1)
+    await Scripts.SellGoods(device, [0, 1, 2, 3, 4, 5, 6], SellItemOptions.goods, [
+        { key: 'vai-tim', value: 4 },
+        { key: 'nuoc-tuyet', value: 3 },
+    ])
 }
 
 // Cao Vai Do + TD HH + Tra HH
@@ -209,7 +216,11 @@ const SellItems_5 = async (device) => {
     const slotA = [0, 1, 2, 3, 4, 5, 6, 7]
     const slotB = []
     const slotC = [0, 1, 2, 4, 5]
-    await Scripts.SellFullGoods(device, slotA, slotB, slotC, 1)
+    await Scripts.SellFullGoods(device, slotA, slotB, slotC, SellItemOptions.goods, [
+        { key: 'vai-do', value: 4 },
+        { key: 'tinh-dau-hoa-hong', value: 6 },
+        { key: 'tra-hoa-hong', value: 3 },
+    ])
 }
 
 // Cao vai vang + Tra hoa hong
@@ -252,7 +263,10 @@ const ProduceItems_6 = async (device, hasEventTree, isLast) => {
 
 const SellItems_6 = async (device) => {
     // Sell Goods
-    await Scripts.SellGoods(device, [0, 1, 2, 3, 4, 5, 6], 1)
+    await Scripts.SellGoods(device, [0, 1, 2, 3, 4, 5, 6], SellItemOptions.goods, [
+        { key: 'vai-vang', value: 4 },
+        { key: 'tra-hoa-hong', value: 3 },
+    ])
 }
 
 // Cao Vai Vang + TD HH + Tra HH
@@ -296,7 +310,11 @@ const ProduceItems_7 = async (device, hasEventTree, isLast) => {
 
 const SellItems_7 = async (device) => {
     // Sell Goods
-    await Scripts.SellGoods(device, [0, 1, 2, 3, 4, 5, 6], 1)
+    await Scripts.SellGoods(device, [0, 1, 2, 3, 4, 5, 6], SellItemOptions.goods, [
+        { key: 'vai-vang', value: 4 },
+        { key: 'tinh-dau-hoa-hong', value: 2 },
+        { key: 'tra-hoa-hong', value: 1 },
+    ])
 }
 
 // Cao Vai Vang + TD Tao + Tra HH
@@ -354,7 +372,11 @@ const SellItems_8 = async (device) => {
     const slotA = [0, 1, 2, 3, 4, 5, 6, 7]
     const slotB = [0, 1]
     const slotC = []
-    await Scripts.SellFullGoods(device, slotA, slotB, slotC, 1)
+    await Scripts.SellFullGoods(device, slotA, slotB, slotC, SellItemOptions.goods, [
+        { key: 'vai-vang', value: 4 },
+        { key: 'tinh-dau-tao', value: 4 },
+        { key: 'tra-hoa-hong', value: 2 },
+    ])
 }
 
 const PlantEventTree = async (device) => {
@@ -383,6 +405,10 @@ const ProduceItems = async (device, gameOptions = {}, index, auto, gameName) => 
     const { runAuto, hasEventTree } = gameOptions
     const isLast = index === 9
     switch (runAuto) {
+        case auto[gameName][0].key:
+            await PlantEventTree(device)
+            break
+
         case auto[gameName][1].key:
             await ProduceItems_1(device, hasEventTree, isLast)
             break
@@ -416,7 +442,6 @@ const ProduceItems = async (device, gameOptions = {}, index, auto, gameName) => 
             break
 
         default:
-            await PlantEventTree(device)
             break
     }
 }

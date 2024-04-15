@@ -64,6 +64,14 @@ const MakeSlotList = [
     { x: 485, y: 130 },
 ]
 
+const SellItemOptions = {
+    tree: 0,
+    goods: 1,
+    other: 2,
+    mineral: 3,
+    events: 4,
+}
+
 module.exports = {
     SellSlotList,
     PlantSlotList,
@@ -73,4 +81,5 @@ module.exports = {
     DefaultBasket,
     DefaultProduct,
     SellOptions,
+    SellItemOptions,
 }
