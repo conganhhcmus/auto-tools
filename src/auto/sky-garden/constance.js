@@ -1,5 +1,3 @@
-const DefaultSize = [800, 450]
-
 const DefaultBasket = [210, 255]
 
 const DefaultProduct = [305, 185]
@@ -66,14 +64,22 @@ const MakeSlotList = [
     { x: 485, y: 130 },
 ]
 
+const SellItemOptions = {
+    tree: 0,
+    goods: 1,
+    other: 2,
+    mineral: 3,
+    events: 4,
+}
+
 module.exports = {
     SellSlotList,
     PlantSlotList,
     MakeSlotList,
-    DefaultSize,
     FirstRowSlotList,
     SecondRowSlotList,
     DefaultBasket,
     DefaultProduct,
     SellOptions,
+    SellItemOptions,
 }
