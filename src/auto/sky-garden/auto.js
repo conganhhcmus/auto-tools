@@ -379,6 +379,58 @@ const SellItems_8 = async (device) => {
     ])
 }
 
+// Cao vai tim + nuoc chanh
+const ProduceItems_9 = async (device, hasEventTree, isLast) => {
+    const NUMBER_OF_MAKE_GOODS = 2
+
+    for (let k = 0; k < NUMBER_OF_MAKE_GOODS; k++) {
+        // Floor 1
+        await Scripts.GoUp(device)
+        await Scripts.HarvestTrees(device)
+        await Scripts.NextTrees(device, 'chanh')
+        await Scripts.PlantTrees(device, hasEventTree ? 0 : 1) // trong chanh
+
+        await Scripts.MakeGoods(device, 2, 4)
+
+        // Floor 3
+        await Scripts.GoUp(device, 2)
+        await Scripts.HarvestTrees(device)
+        await Scripts.PlantTrees(device, hasEventTree ? 0 : 1) // trong chanh
+        await Scripts.MakeGoods(device, 2, 4)
+
+        // Go Down
+        await Scripts.BackToGame(device)
+        await Scripts.GoDownLast(device)
+
+        await Scripts.GoUp(device)
+        await Scripts.HarvestTrees(device)
+        await Scripts.PrevTrees(device, 'oai-huong')
+        await Scripts.PlantTrees(device, hasEventTree ? 2 : 3) // trong oai-huong
+        await Scripts.MakeGoods_2(device, 3, 6)
+
+        await Scripts.GoUp(device, 2)
+        await Scripts.HarvestTrees(device)
+        await Scripts.PrevTrees(device, 'bong')
+        await Scripts.PlantTrees(device, 0)
+
+        // Go Down
+        await Scripts.BackToGame(device)
+        await Scripts.GoDownLast(device)
+    }
+}
+
+const SellItems_9 = async (device) => {
+    // Sell Goods
+    const slotA = [0, 1, 2, 3, 4, 5, 6, 7]
+    const slotB = [0, 1, 2, 3, 4, 5, 6, 7]
+    const slotC = [1, 2, 5, 6]
+
+    await Scripts.SellFullGoods(device, slotA, slotB, slotC, SellItemOptions.goods, [
+        { key: 'vai-tim', value: 8 },
+        { key: 'nuoc-chanh', value: 12 },
+    ])
+}
+
 const PlantEventTree = async (device) => {
     await Scripts.GoUp(device)
 
@@ -441,6 +493,10 @@ const ProduceItems = async (device, gameOptions = {}, index, auto, gameName) => 
             await ProduceItems_8(device, hasEventTree, isLast)
             break
 
+        case auto[gameName][9].key:
+            await ProduceItems_9(device, hasEventTree, isLast)
+            break
+
         default:
             break
     }
@@ -481,6 +537,10 @@ const SellItems = async (device, gameOptions, auto, gameName) => {
 
         case auto[gameName][8].key:
             await SellItems_8(device)
+            break
+
+        case auto[gameName][9].key:
+            await SellItems_9(device)
             break
 
         default:

@@ -769,7 +769,7 @@ const SellFullGoods = async (device, slotA, slotB, slotC, option, items) => {
     ;[calc_X, calc_Y] = runningDevice.Calculator()
 
     client.touchDown(calc_X(630), calc_Y(270)).sleep(5)
-    _Move(client, { x: calc_X(630), y: calc_Y(270) }, { x: calc_X(130), y: calc_Y(270) }, 500)
+    _Move(client, { x: calc_X(650), y: calc_Y(270) }, { x: calc_X(150), y: calc_Y(270) }, 650)
     client.touchUp(calc_X(130), calc_Y(270)).sleep(500)
 
     await Execute(runningDevice)
@@ -780,7 +780,9 @@ const SellFullGoods = async (device, slotA, slotB, slotC, option, items) => {
         ;[calc_X, calc_Y] = runningDevice.Calculator()
 
         const { x, y } = SellSlotList[slot]
+
         client.tap(calc_X(x), calc_Y(y)).sleep(500).tap(calc_X(x), calc_Y(y)).sleep(500).tap(calc_X(option_x), calc_Y(option_y)).sleep(500)
+
         await Execute(runningDevice)
 
         const [pointX, pointY] = await Image.GetCoordinatesItem(device.id, GetItemId(items), [70, 130])
@@ -829,7 +831,7 @@ const SellFullGoods = async (device, slotA, slotB, slotC, option, items) => {
     ;[calc_X, calc_Y] = runningDevice.Calculator()
 
     client.touchDown(calc_X(630), calc_Y(270)).sleep(5)
-    _Move(client, { x: calc_X(630), y: calc_Y(270) }, { x: calc_X(130), y: calc_Y(270) }, 500)
+    _Move(client, { x: calc_X(650), y: calc_Y(270) }, { x: calc_X(150), y: calc_Y(270) }, 650)
     client.touchUp(calc_X(130), calc_Y(270)).sleep(500)
 
     await Execute(runningDevice)
@@ -840,7 +842,9 @@ const SellFullGoods = async (device, slotA, slotB, slotC, option, items) => {
         ;[calc_X, calc_Y] = runningDevice.Calculator()
 
         const { x, y } = SellSlotList[slot]
+
         client.tap(calc_X(x), calc_Y(y)).sleep(500).tap(calc_X(x), calc_Y(y)).sleep(500).tap(calc_X(option_x), calc_Y(option_y)).sleep(500)
+
         await Execute(runningDevice)
 
         const [pointX, pointY] = await Image.GetCoordinatesItem(device.id, GetItemId(items), [70, 130])

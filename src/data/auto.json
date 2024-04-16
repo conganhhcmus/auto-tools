@@ -62,6 +62,13 @@
             "disabled": false,
             "order": 4,
             "recommend": false
+        },
+        {
+            "key": "ProductItem-9",
+            "name": "SX Vải Tím + Nước Chanh",
+            "disabled": false,
+            "order": 0,
+            "recommend": true
         }
     ]
 }

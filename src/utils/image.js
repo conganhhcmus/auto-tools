@@ -3,6 +3,8 @@ const { cv, cvTranslateError } = require('opencv-wasm')
 const util = require('util')
 const exec = util.promisify(require('child_process').exec)
 
+const exactRate = 0.8
+
 exports.GetCoordinatesItem = async (deviceId, itemId, defaultPosition) => {
     try {
         if (itemId === null || itemId === undefined) return defaultPosition
@@ -17,7 +19,7 @@ exports.GetCoordinatesItem = async (deviceId, itemId, defaultPosition) => {
         let mask = new cv.Mat()
 
         cv.matchTemplate(src, templ, processedImage, cv.TM_CCOEFF_NORMED, mask)
-        cv.threshold(processedImage, processedImage, 0.9, 1, cv.THRESH_BINARY)
+        cv.threshold(processedImage, processedImage, exactRate, 1, cv.THRESH_BINARY)
         processedImage.convertTo(processedImage, cv.CV_8UC1)
 
         let contours = new cv.MatVector()
@@ -55,7 +57,7 @@ exports.IsIncludeItem = async (deviceId, itemId) => {
         let mask = new cv.Mat()
 
         cv.matchTemplate(src, templ, processedImage, cv.TM_CCOEFF_NORMED, mask)
-        cv.threshold(processedImage, processedImage, 0.9, 1, cv.THRESH_BINARY)
+        cv.threshold(processedImage, processedImage, exactRate, 1, cv.THRESH_BINARY)
         processedImage.convertTo(processedImage, cv.CV_8UC1)
 
         let contours = new cv.MatVector()
