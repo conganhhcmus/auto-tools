@@ -3,7 +3,7 @@ const path = require('path')
 const { runShell } = require('../utils/shell')
 
 exports.getSettings = async function (req, res, next) {
-    let data = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/data.json'), 'utf8'))
+    let data = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/device.json'), 'utf8'))
     let games = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/game.json'), 'utf8'))
 
     let runningDevices = data.map((x) => x.device)
