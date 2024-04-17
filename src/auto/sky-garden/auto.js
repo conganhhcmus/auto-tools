@@ -379,55 +379,33 @@ const SellItems_8 = async (device) => {
     ])
 }
 
-// Cao vai tim + nuoc chanh
+// Cao vai tim + hat dua say
 const ProduceItems_9 = async (device, hasEventTree, isLast) => {
-    const NUMBER_OF_MAKE_GOODS = 2
+    // Floor 1,2
+    await Scripts.GoUp(device)
+    await Scripts.HarvestTrees(device)
+    await Scripts.NextTrees(device, 'dua-hau')
+    await Scripts.PlantTrees(device, hasEventTree ? 4 : 0) // trong dua hau
 
-    for (let k = 0; k < NUMBER_OF_MAKE_GOODS; k++) {
-        // Floor 1
-        await Scripts.GoUp(device)
-        await Scripts.HarvestTrees(device)
-        await Scripts.NextTrees(device, 'chanh')
-        await Scripts.PlantTrees(device, hasEventTree ? 0 : 1) // trong chanh
+    await Scripts.MakeGoods(device, 4, 4)
+    await Scripts.MakeGoods_2(device, 3, 3)
 
-        await Scripts.MakeGoods(device, 2, 4)
+    // Floor 3
+    await Scripts.GoUp(device, 2)
+    await Scripts.HarvestTrees(device)
+    await Scripts.PlantTrees(device, hasEventTree ? 0 : 1) // trong chanh
 
-        // Floor 3
-        await Scripts.GoUp(device, 2)
-        await Scripts.HarvestTrees(device)
-        await Scripts.PlantTrees(device, hasEventTree ? 0 : 1) // trong chanh
-        await Scripts.MakeGoods(device, 2, 4)
-
-        // Go Down
-        await Scripts.BackToGame(device)
-        await Scripts.GoDownLast(device)
-
-        await Scripts.GoUp(device)
-        await Scripts.HarvestTrees(device)
-        await Scripts.PrevTrees(device, 'oai-huong')
-        await Scripts.PlantTrees(device, hasEventTree ? 2 : 3) // trong oai-huong
-        await Scripts.MakeGoods_2(device, 3, 6)
-
-        await Scripts.GoUp(device, 2)
-        await Scripts.HarvestTrees(device)
-        await Scripts.PrevTrees(device, 'bong')
-        await Scripts.PlantTrees(device, 0)
-
-        // Go Down
-        await Scripts.BackToGame(device)
-        await Scripts.GoDownLast(device)
-    }
+    // Go Down
+    await Scripts.BackToGame(device)
+    await Scripts.GoDownLast(device)
+    if (!isLast) await Scripts.Sleep(device, 10)
 }
 
 const SellItems_9 = async (device) => {
     // Sell Goods
-    const slotA = [0, 1, 2, 3, 4, 5, 6, 7]
-    const slotB = [0, 1, 2, 3, 4, 5, 6, 7]
-    const slotC = [1, 2, 5, 6]
-
-    await Scripts.SellFullGoods(device, slotA, slotB, slotC, SellItemOptions.goods, [
-        { key: 'vai-tim', value: 8 },
-        { key: 'nuoc-chanh', value: 12 },
+    await Scripts.SellGoods(device, [0, 1, 2, 3, 4, 5, 6], SellItemOptions.goods, [
+        { key: 'hat-dua-say', value: 4 },
+        { key: 'nuoc-chanh', value: 3 },
     ])
 }
 
