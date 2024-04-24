@@ -537,7 +537,7 @@ const PlantTrees = async (device, slot = 0, floor = 2) => {
 
     let client = runningDevice.client
     // open
-    client.tap(calc_X(300), calc_Y(380)).sleep(1 * 1000)
+    client.tap(calc_X(300), calc_Y(380)).sleep(1.5 * 1000)
 
     _plantBySlot(client, [calc_X, calc_Y], slot, floor)
 
@@ -550,7 +550,7 @@ const PlantTrees_Half = async (device, slot = 0, index, floor = 1) => {
 
     let client = runningDevice.client
     // open
-    client.tap(calc_X(300), calc_Y(380)).sleep(1 * 1000)
+    client.tap(calc_X(300), calc_Y(380)).sleep(1.5 * 1000)
 
     if (floor == 1) _plantHalfBySlot_1st(client, [calc_X, calc_Y], slot, index)
     else _plantHalfBySlot_2nd(client, [calc_X, calc_Y], slot, index)
@@ -903,11 +903,12 @@ const NextTrees = async (device, itemId) => {
     let client = runningDevice.client
     let [calc_X, calc_Y] = runningDevice.Calculator()
 
-    client.tap(calc_X(300), calc_Y(380)).sleep(1 * 1000)
+    client.tap(calc_X(300), calc_Y(380)).sleep(1.5 * 1000)
 
     await Execute(runningDevice)
+    let count = 0
 
-    while (!(await Image.IsIncludeItem(device.id, itemId))) {
+    while (!(await Image.IsIncludeItem(device.id, itemId)) && count < 10) {
         runningDevice = await Device.CreateDevice(device)
         client = runningDevice.client
         ;[calc_X, calc_Y] = runningDevice.Calculator()
@@ -915,6 +916,7 @@ const NextTrees = async (device, itemId) => {
         client.tap(calc_X(325), calc_Y(305)).sleep(500)
 
         await Execute(runningDevice)
+        count++
     }
 
     runningDevice = await Device.CreateDevice(device)
@@ -923,7 +925,9 @@ const NextTrees = async (device, itemId) => {
 
     client.press('KEYCODE_BACK').sleep(500)
 
-    return await Execute(runningDevice)
+    await Execute(runningDevice)
+
+    if (count >= 10) return await NextTrees(device, itemId)
 }
 
 const PrevTrees = async (device, itemId) => {
@@ -931,17 +935,19 @@ const PrevTrees = async (device, itemId) => {
     let client = runningDevice.client
     let [calc_X, calc_Y] = runningDevice.Calculator()
 
-    client.tap(calc_X(300), calc_Y(380)).sleep(1 * 1000)
+    client.tap(calc_X(300), calc_Y(380)).sleep(1.5 * 1000)
 
     await Execute(runningDevice)
+    let count = 0
 
-    while (!(await Image.IsIncludeItem(device.id, itemId))) {
+    while (!(await Image.IsIncludeItem(device.id, itemId)) && count < 10) {
         runningDevice = await Device.CreateDevice(device)
         client = runningDevice.client
         ;[calc_X, calc_Y] = runningDevice.Calculator()
 
         client.tap(calc_X(80), calc_Y(305)).sleep(500)
         await Execute(runningDevice)
+        count++
     }
 
     runningDevice = await Device.CreateDevice(device)
@@ -949,7 +955,8 @@ const PrevTrees = async (device, itemId) => {
     ;[calc_X, calc_Y] = runningDevice.Calculator()
 
     client.press('KEYCODE_BACK').sleep(500)
-    return await Execute(runningDevice)
+    await Execute(runningDevice)
+    if (count >= 10) return await PrevTrees(device, itemId)
 }
 
 const Execute = (runningDevice) =>

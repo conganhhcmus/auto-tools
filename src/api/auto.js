@@ -6,13 +6,10 @@ const { runShell } = require('../utils/shell')
 exports.stopAuto = async (req, res, next) => {
     let data = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/device.json'), 'utf8'))
     let device = req.body.device
-    let processId = await runShell(`adb -s ${device} shell pgrep monkey`)
-    let command = `adb -s ${device} shell kill ${processId}`
-    await runShell(command)
+    await stopAuto(device)
     data = data.filter((x) => x.device !== device)
 
     fs.writeFileSync(path.resolve(__dirname, '../data/device.json'), JSON.stringify(data))
-
     res.json(data)
 }
 
@@ -21,14 +18,11 @@ exports.stopAllAuto = async (req, res, next) => {
     let listDevices = req.body.listDevices
 
     for await (const device of listDevices) {
-        let processId = await runShell(`adb -s ${device} shell pgrep monkey`)
-        let command = `adb -s ${device} shell kill ${processId}`
-        await runShell(command)
+        await stopAuto(device)
         data = data.filter((x) => x.device !== device)
     }
 
     fs.writeFileSync(path.resolve(__dirname, '../data/device.json'), JSON.stringify(data))
-
     res.json(data)
 }
 
@@ -50,6 +44,18 @@ exports.startAuto = (req, res, next) => {
     fs.writeFileSync(path.resolve(__dirname, '../data/device.json'), JSON.stringify(data))
     startAuto(payload)
     res.json(data)
+}
+
+const stopAuto = async (device) => {
+    let isSuccess = false
+    let maxRun = 3
+    while (!isSuccess && maxRun > 0) {
+        isSuccess = true
+        let processId = await runShell(`adb -s ${device} shell pgrep monkey`)
+        let command = `adb -s ${device} shell kill ${processId}`
+        await runShell(command, () => isSuccess = false)
+        maxRun--
+    }
 }
 
 const startAuto = async (payload) => {
