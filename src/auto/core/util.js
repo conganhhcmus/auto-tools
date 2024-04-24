@@ -8,7 +8,7 @@ const calc_X = (x, size) => {
 }
 
 const calc_Y = (y, size) => {
-    if (size[1] <= DefaultSize[0]) {
+    if (size[1] <= DefaultSize[1]) {
         return y
     }
     return Math.floor(y * (size[1] / DefaultSize[1]))
@@ -21,7 +21,7 @@ const getSize = (sizeText) => {
             .split('x')
             .map((x) => parseInt(x))
     }
-    return [800, 450]
+    return DefaultSize
 }
 
 module.exports = {
