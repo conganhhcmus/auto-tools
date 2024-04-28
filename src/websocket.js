@@ -11,6 +11,10 @@ exports.getLiveScreen = (ws, req) => {
     streamProcess.stdout.on('data', (data) => {
         if (isBeginChunk(data)) {
             if (chunk.length > 0) {
+                if (ws.readyState == 2 || ws.readyState == 3) {
+                    clearInterval(interval)
+                    return
+                }
                 ws.send(chunk, { binary: true }, (error) => {
                     if (error) console.error(error)
                 })
@@ -34,10 +38,14 @@ exports.getLiveScreen = (ws, req) => {
 
 function intervalSendData(ws, chunk) {
     return setInterval(() => {
+        if (ws.readyState == 2 || ws.readyState == 3) {
+            clearInterval(interval)
+            return
+        }
         ws.send(chunk, { binary: true }, (error) => {
             if (error) console.error(error)
         })
-    }, 800)
+    }, 100)
 }
 
 function isBeginChunk(buffer) {

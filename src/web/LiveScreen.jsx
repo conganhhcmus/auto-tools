@@ -7,19 +7,17 @@ const LiveScreen = (props) => {
         var protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
         var socketURL = protocol + '//' + window.location.host + '/live/' + props.deviceId
         var jmuxer = new JMuxer({
-            node: 'player',
+            node: `player-${props.deviceId}`,
             mode: 'video',
             flushingTime: 0,
             fps: 60,
             debug: false,
-            onReady: () => document.getElementById('player').play(),
         })
         var ws = new WebSocket(socketURL)
         ws.binaryType = 'arraybuffer'
         ws.addEventListener('message', function (event) {
             jmuxer.feed({
                 video: new Uint8Array(event.data),
-                // duration: Number.POSITIVE_INFINITY,
             })
         })
         ws.addEventListener('error', function (e) {
@@ -29,7 +27,7 @@ const LiveScreen = (props) => {
         props.webSocketHandler && props.webSocketHandler(ws)
     }, [])
 
-    return <video controls autoPlay id="player" />
+    return <video key={props.deviceId} controls autoPlay id={`player-${props.deviceId}`} />
 }
 
 export default React.memo(LiveScreen)
