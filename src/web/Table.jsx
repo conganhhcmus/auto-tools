@@ -2,6 +2,8 @@ const moment = require('moment')
 import React, { useEffect, useState } from 'react'
 import { Divider, Table, Button, Flex, Row, Col, Popover, Spin } from 'antd'
 import LiveScreen from './LiveScreen'
+import ImageScreen from './ImageScreen'
+import useDeviceDetection from './customHook/useDeviceDetection'
 import axios from 'axios'
 import styles from './Table.module.css'
 
@@ -12,6 +14,7 @@ const RunningTable = (props) => {
     const [loading, setLoading] = useState(false)
     const [webSocket, setWebSocket] = useState(null)
     const [liveRefreshTime, setLiveRefreshTime] = useState(moment().format('LTS'))
+    const device = useDeviceDetection()
 
     const refreshData = () => {
         axios.get('/api/runningDevice').then((response) => {
@@ -79,6 +82,9 @@ const RunningTable = (props) => {
     }
 
     const viewCurrentDevice = (deviceId) => {
+        if (device === 'Mobile') {
+            return <ImageScreen key={`live-screen-${deviceId}${liveRefreshTime}`} deviceId={deviceId} loading={loading} setLoading={(val) => setLoading(val)} />
+        }
         return <LiveScreen key={`live-screen-${deviceId}${liveRefreshTime}`} deviceId={deviceId} webSocketHandler={(ws) => setWebSocket(ws)} />
     }
 
@@ -126,7 +132,11 @@ const RunningTable = (props) => {
                                 if (isOpen) {
                                     return
                                 }
-                                exitLiveScreenHandler()
+                                if (device === 'Mobile') {
+                                    setLiveRefreshTime(moment().format('LTS'))
+                                } else {
+                                    exitLiveScreenHandler()
+                                }
                             }}
                         >
                             <Button key="view-button" className={styles.viewButton} type="primary">
