@@ -29,7 +29,9 @@
     "buffer": "^6.0.3",
     "express": "^4.18.2",
     "express-async-errors": "^3.1.1",
+    "express-ws": "^5.0.2",
     "jimp": "^0.22.10",
+    "jmuxer": "^1.1.1",
     "localtunnel": "^2.0.2",
     "moment": "^2.30.1",
     "opencv-wasm": "^4.3.0-10"
@@ -47,6 +49,7 @@
     "commitizen": "^4.3.0",
     "concurrently": "^8.2.2",
     "css-loader": "^6.8.1",
+    "css-minimizer-webpack-plugin": "^6.0.0",
     "html-webpack-plugin": "^5.6.0",
     "husky": "^9.0.10",
     "mini-css-extract-plugin": "^2.7.6",
@@ -54,6 +57,7 @@
     "react-dom": "^18.2.0",
     "terser-webpack-plugin": "^5.3.10",
     "webpack": "^5.89.0",
+    "webpack-bundle-analyzer": "^4.10.2",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^4.15.1"
   }

@@ -1,10 +1,12 @@
 const path = require('path')
+const webpack = require('webpack')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
-module.exports = {
-    mode: 'production',
+var webpackConfig = {
     watch: false,
     entry: './src/web/index.js',
     output: {
@@ -36,12 +38,25 @@ module.exports = {
             title: 'Auto Tools',
             inject: 'body',
         }),
+        new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /(en)$/),
     ],
     optimization: {
         minimizer: [
             new TerserPlugin({
                 extractComments: false,
             }),
+            new CssMinimizerPlugin(),
         ],
     },
+}
+
+module.exports = (env, argv) => {
+    if (argv.mode === 'development') {
+        webpackConfig.devtool = 'source-map'
+    }
+    if (argv.mode === 'production') {
+        webpackConfig.plugins.push(new BundleAnalyzerPlugin({ analyzerMode: 'static', openAnalyzer: false }))
+    }
+
+    return webpackConfig
 }

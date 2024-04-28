@@ -2,10 +2,6 @@ import React from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App'
 
-// Remove old meta
-// const oldMetaElement = document.getElementsByTagName('meta')
-// document.head.removeChild(oldMetaElement)
-
 // Append meta
 const metaElement = document.createElement('meta')
 metaElement.name = 'viewport'
