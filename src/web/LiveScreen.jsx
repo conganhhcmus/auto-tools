@@ -29,7 +29,7 @@ const LiveScreen = (props) => {
         props.webSocketHandler && props.webSocketHandler(ws)
     }, [])
 
-    return <video className={styles.liveScreen} controls autoPlay id="player" />
+    return <video controls autoPlay id="player" />
 }
 
 export default React.memo(LiveScreen)
