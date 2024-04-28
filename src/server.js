@@ -1,9 +1,11 @@
 const express = require('express')
 require('express-async-errors')
 const router = require('./router')
+const { getLiveScreen } = require('./websocket')
 const path = require('path')
 const fs = require('fs')
 const app = express()
+require('express-ws')(app)
 const port = process.env.PORT || 8080
 
 // UI
@@ -12,6 +14,9 @@ app.use(express.json())
 
 // API
 app.use('/api', router)
+
+// Web Socket
+app.ws('/live/:id', getLiveScreen)
 
 // Error Handler
 app.use((err, req, res, next) => {
