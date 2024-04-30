@@ -25,7 +25,7 @@ const ImageScreen = (props) => {
     return (
         <>
             <Spin spinning={loading} size="small" />
-            {!loading && <img src={`data:image/jpeg;base64,${data}`} />}
+            {!loading && <img className={styles.imageScreen} src={`data:image/jpeg;base64,${data}`} />}
         </>
     )
 }

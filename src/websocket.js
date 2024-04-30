@@ -3,24 +3,18 @@ const { runShellSpawn } = require('./utils/shell')
 exports.getLiveScreen = (ws, req) => {
     const deviceId = req.params.id
     // console.log('Client connected', deviceId)
-    let interval = null
 
     const streamProcess = runShellSpawn(`adb -s ${deviceId} exec-out screenrecord --output-format=h264 -`)
-    let prevChunk = Buffer.from([])
     let chunk = Buffer.from([])
     streamProcess.stdout.on('data', (data) => {
         if (isBeginChunk(data)) {
             if (chunk.length > 0) {
                 if (ws.readyState == 2 || ws.readyState == 3) {
-                    clearInterval(interval)
                     return
                 }
                 ws.send(chunk, { binary: true }, (error) => {
                     if (error) console.error(error)
                 })
-                prevChunk = chunk
-                interval && clearInterval(interval)
-                interval = intervalSendData(ws, prevChunk)
             }
             chunk = Buffer.from(data)
         } else {
@@ -32,20 +26,7 @@ exports.getLiveScreen = (ws, req) => {
         // console.log('Client closed', deviceId)
         streamProcess.stdin.pause()
         streamProcess.kill()
-        interval && clearInterval(interval)
     })
-}
-
-function intervalSendData(ws, chunk) {
-    return setInterval(() => {
-        if (ws.readyState == 2 || ws.readyState == 3) {
-            clearInterval(interval)
-            return
-        }
-        ws.send(chunk, { binary: true }, (error) => {
-            if (error) console.error(error)
-        })
-    }, 100)
 }
 
 function isBeginChunk(buffer) {

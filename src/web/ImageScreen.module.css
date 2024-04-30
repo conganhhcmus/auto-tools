@@ -1,0 +1,18 @@
+.imageScreen img {
+    width: 400px;
+    object-fit: cover;
+}
+
+@media only screen and (min-width: 1440px) {
+    .imageScreen {
+        width: 800px;
+        object-fit: cover;
+    }
+}
+
+@media only screen and (max-width: 900px) {
+    .imageScreen {
+        width: 200px;
+        object-fit: cover;
+    }
+}
