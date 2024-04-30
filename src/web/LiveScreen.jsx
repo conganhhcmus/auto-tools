@@ -10,6 +10,7 @@ const LiveScreen = (props) => {
             node: `player-${props.deviceId}`,
             mode: 'video',
             flushingTime: 0,
+            clearBuffer: true,
             fps: 60,
             debug: false,
         })
@@ -27,7 +28,7 @@ const LiveScreen = (props) => {
         props.webSocketHandler && props.webSocketHandler(ws)
     }, [])
 
-    return <video key={props.deviceId} controls autoPlay id={`player-${props.deviceId}`} />
+    return <video className={styles.liveVideo} key={props.deviceId} id={`player-${props.deviceId}`} autoPlay muted playsInline />
 }
 
 export default React.memo(LiveScreen)
