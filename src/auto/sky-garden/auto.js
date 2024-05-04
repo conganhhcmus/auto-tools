@@ -431,6 +431,12 @@ const OpenGame = async (device, gameOptions = {}, index) => {
     needOpen && (await Scripts.OpenGame(device))
 }
 
+const OpenChests = async (device, gameOptions = {}) => {
+    const { openChests } = gameOptions
+
+    openChests && (await Scripts.OpenChests(device))
+}
+
 const ProduceItems = async (device, gameOptions = {}, index, auto, gameName) => {
     const { runAuto, hasEventTree } = gameOptions
     const isLast = index === 9
@@ -530,4 +536,5 @@ module.exports = {
     OpenGame,
     ProduceItems,
     SellItems,
+    OpenChests,
 }

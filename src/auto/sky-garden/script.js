@@ -458,6 +458,64 @@ const OpenGame = async (device) => {
     return await Execute(runningDevice)
 }
 
+const OpenChests = async (device) => {
+    const itemId = 'ruong-bau'
+    let found = false
+    let count = 3
+
+    while (!found && count > 0) {
+        found = await Image.IsIncludeItem(device.id, itemId)
+        count--
+    }
+
+    if (found) {
+        const runningDevice = await Device.CreateDevice(device)
+        const [calc_X, calc_Y] = runningDevice.Calculator()
+        let client = runningDevice.client
+
+        client
+            .tap(calc_X(280), calc_Y(100))
+            .sleep(500)
+            .tap(calc_X(280), calc_Y(100))
+            .sleep(1 * 1000)
+            .tap(calc_X(170), calc_Y(355))
+            .sleep(500)
+            .tap(calc_X(170), calc_Y(355))
+            .sleep(1 * 1000)
+            .tap(calc_X(400), calc_Y(280))
+            .sleep(500)
+            .tap(calc_X(400), calc_Y(280))
+            .sleep(500)
+            .tap(calc_X(400), calc_Y(280))
+            .sleep(500)
+            .tap(calc_X(400), calc_Y(280))
+            .sleep(500)
+            .tap(calc_X(400), calc_Y(280))
+            .sleep(500)
+            .tap(calc_X(400), calc_Y(280))
+            .sleep(500)
+            .tap(calc_X(400), calc_Y(280))
+            .sleep(500)
+            .tap(calc_X(400), calc_Y(280))
+            .sleep(500)
+            .tap(calc_X(400), calc_Y(280))
+            .sleep(500)
+            .tap(calc_X(400), calc_Y(280))
+            .sleep(1 * 1000)
+            //back to game
+            .press('KEYCODE_BACK')
+            .sleep(100)
+            .press('KEYCODE_BACK')
+            .sleep(100)
+            .press('KEYCODE_BACK')
+            .sleep(100)
+            .tap(calc_X(470), calc_Y(325))
+            .sleep(500)
+
+        return await Execute(runningDevice)
+    }
+}
+
 const HarvestTrees = async (device) => {
     const runningDevice = await Device.CreateDevice(device)
     const [calc_X, calc_Y] = runningDevice.Calculator()
@@ -990,6 +1048,7 @@ const GetItemId = (items) => {
 module.exports = {
     Sleep,
     OpenGame,
+    OpenChests,
     BackToGame,
     MakeGoods,
     MakeGoods_2,
