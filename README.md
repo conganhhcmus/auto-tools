@@ -1,11 +1,20 @@
 # Welcome to Auto Tools!
-Hi! I'm Cong Anh. Here are some images of my tools
+
+<a href="https://www.paypal.me/conganhhcmus/1"><img src="https://img.shields.io/badge/Donate-PayPal-green.svg" alt="Donate" height="36" ></a>
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://github.com/conganhhcmus/auto-tools/blob/master/momo.jpeg)
+
+Hi! I'm Cong Anh. Here are some images of my tools. Hope the tool is useful to you!
 
 - Desktop
+  
 ![desktop view](https://github.com/conganhhcmus/auto-tools/blob/master/desktop.gif)
 
 - Mobile
+
 <img src="https://github.com/conganhhcmus/auto-tools/blob/master/mobile.gif" alt="mobile view" width="400"/>
+
+## Demo
+Please watch the video [here](https://www.youtube.com/watch?v=MuV9AzbgCOw).
 
 ## Notes
 - The device must be initialized with a length and width ratio of 16:9.
