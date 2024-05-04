@@ -19,6 +19,7 @@ const Main = async (argv) => {
             for (let i = 0; i < 10; i++) {
                 await AutoFunc.ProduceItems(device, gameOptions, i, auto, gameName)
             }
+            await AutoFunc.OpenChests(device, gameOptions)
             await AutoFunc.SellItems(device, gameOptions, auto, gameName)
         })
     )
