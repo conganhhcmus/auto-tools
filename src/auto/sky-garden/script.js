@@ -1,6 +1,6 @@
 const { SellSlotList, PlantSlotList, MakeSlotList, FirstRowSlotList, SecondRowSlotList, DefaultBasket, DefaultProduct, SellOptions } = require('./constance')
 const Device = require('../core/device')
-const Image = require('../../utils/image')
+const Image = require('../core/image')
 
 //#region private function
 const _Move = (client, pointA, pointB, steps = 1) => {

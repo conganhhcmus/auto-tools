@@ -1,17 +1,25 @@
 const Jimp = require('jimp')
 const { cv, cvTranslateError } = require('opencv-wasm')
+const path = require('path')
 const util = require('util')
 const exec = util.promisify(require('child_process').exec)
+const { DefaultSize } = require('./constance')
 
 const exactRate = 0.8
+
+readAndResizeImage = async (srcPath, deviceSize) => {
+    const imageSource = await Jimp.read(srcPath)
+    imageSource.resize(deviceSize[0], deviceSize[1])
+
+    return imageSource
+}
 
 exports.GetCoordinatesItem = async (deviceId, itemId, defaultPosition) => {
     try {
         if (itemId === null || itemId === undefined) return defaultPosition
-
-        await exec(`adb -s ${deviceId} exec-out screencap -p > src/assets/device/${deviceId}.png`)
-        const imageTemplate = await Jimp.read(__dirname + `/../assets/items/${itemId}.png`)
-        const imageSource = await Jimp.read(__dirname + `/../assets/device/${deviceId}.png`)
+        await exec(`adb -s ${deviceId} exec-out screencap -p > ${path.resolve(__dirname, `../../assets/device/${deviceId}.png`)}`)
+        const imageTemplate = await Jimp.read(path.resolve(__dirname, `../../assets/items/${itemId}.png`))
+        const imageSource = await readAndResizeImage(path.resolve(__dirname, `../../assets/device/${deviceId}.png`), DefaultSize)
 
         let src = cv.matFromImageData(imageSource.bitmap)
         let templ = cv.matFromImageData(imageTemplate.bitmap)
@@ -47,9 +55,9 @@ exports.GetCoordinatesItem = async (deviceId, itemId, defaultPosition) => {
 
 exports.IsIncludeItem = async (deviceId, itemId) => {
     try {
-        await exec(`adb -s ${deviceId} exec-out screencap -p > src/assets/device/${deviceId}.png`)
-        const imageTemplate = await Jimp.read(__dirname + `/../assets/items/${itemId}.png`)
-        const imageSource = await Jimp.read(__dirname + `/../assets/device/${deviceId}.png`)
+        await exec(`adb -s ${deviceId} exec-out screencap -p > ${path.resolve(__dirname, `../../assets/device/${deviceId}.png`)}`)
+        const imageTemplate = await Jimp.read(path.resolve(__dirname, `../../assets/items/${itemId}.png`))
+        const imageSource = await readAndResizeImage(path.resolve(__dirname, `../../assets/device/${deviceId}.png`), DefaultSize)
 
         let src = cv.matFromImageData(imageSource.bitmap)
         let templ = cv.matFromImageData(imageTemplate.bitmap)

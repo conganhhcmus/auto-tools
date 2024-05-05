@@ -1,7 +1,7 @@
 const express = require('express')
 require('express-async-errors')
 const router = require('./router')
-const { getLiveScreen } = require('./websocket')
+const websocket = require('./websocket')
 const path = require('path')
 const fs = require('fs')
 const app = express()
@@ -16,7 +16,7 @@ app.use(express.json())
 app.use('/api', router)
 
 // Web Socket
-app.ws('/live/:id', getLiveScreen)
+app.ws('/live/:id', websocket.getLiveScreen)
 
 // Error Handler
 app.use((err, req, res, next) => {
@@ -27,6 +27,10 @@ app.use((err, req, res, next) => {
 app.listen(port, function () {
     console.log('Your app running on http://localhost:' + port)
 })
+
+// clear old data
+fs.writeFileSync(path.resolve(__dirname, 'data/logs.json'), '[]')
+fs.writeFileSync(path.resolve(__dirname, 'data/device.json'), '[]')
 
 // clear logs when server start
 fs.writeFileSync(path.resolve(__dirname, 'logs/out.txt'), '')
