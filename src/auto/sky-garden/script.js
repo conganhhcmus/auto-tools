@@ -22,155 +22,6 @@ const _Move = (client, pointA, pointB, steps = 1) => {
     }
 }
 
-const _sellFullSlot = (client, slotA = [], slotB = [], slotC = [], calc, option = 1) => {
-    const [calc_X, calc_Y] = calc
-    const { x: option_x, y: option_y } = SellOptions[option]
-    // const slotA = [0, 1, 2, 3, 4, 5, 6, 7]
-    // const slotB = [0, 1, 2, 3, 4, 5, 6, 7]
-    // const slotC = [1, 2, 5, 6]
-
-    // back front market
-    client.touchDown(calc_X(130), calc_Y(270)).sleep(5)
-    _Move(client, { x: calc_X(130), y: calc_Y(270) }, { x: calc_X(630), y: calc_Y(270) }, 50)
-    client.touchUp(calc_X(630), calc_Y(270)).sleep(500)
-
-    // back front market
-    client.touchDown(calc_X(130), calc_Y(270)).sleep(5)
-    _Move(client, { x: calc_X(130), y: calc_Y(270) }, { x: calc_X(630), y: calc_Y(270) }, 50)
-    client.touchUp(calc_X(630), calc_Y(270)).sleep(500)
-
-    slotA.forEach((slot) => {
-        const { x, y } = SellSlotList[slot]
-        client
-            .tap(calc_X(x), calc_Y(y))
-            .sleep(500)
-            .tap(calc_X(x), calc_Y(y))
-            .sleep(500)
-            .tap(calc_X(option_x), calc_Y(option_y))
-            .sleep(500)
-            .tap(calc_X(70), calc_Y(130))
-            .sleep(500)
-            // increase price
-            .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
-            .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
-            .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
-            .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
-            .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
-            .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
-            .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
-            .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
-            .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
-            .tap(calc_X(660), calc_Y(270))
-            .sleep(500)
-            // stop increase price
-            .tap(calc_X(590), calc_Y(410))
-            .sleep(500)
-            .tap(calc_X(400), calc_Y(420))
-            .sleep(500)
-            .tap(calc_X(500), calc_Y(35))
-            .sleep(500)
-    })
-
-    client.touchDown(calc_X(630), calc_Y(270)).sleep(5)
-    _Move(client, { x: calc_X(630), y: calc_Y(270) }, { x: calc_X(130), y: calc_Y(270) }, 500)
-    client.touchUp(calc_X(130), calc_Y(270)).sleep(500)
-
-    slotB.forEach((slot) => {
-        const { x, y } = SellSlotList[slot]
-        client
-            .tap(calc_X(x), calc_Y(y))
-            .sleep(500)
-            .tap(calc_X(x), calc_Y(y))
-            .sleep(500)
-            .tap(calc_X(option_x), calc_Y(option_y))
-            .sleep(500)
-            .tap(calc_X(70), calc_Y(130))
-            .sleep(500)
-            // increase price
-            .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
-            .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
-            .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
-            .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
-            .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
-            .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
-            .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
-            .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
-            .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
-            .tap(calc_X(660), calc_Y(270))
-            .sleep(500)
-            // stop increase price
-            .tap(calc_X(590), calc_Y(410))
-            .sleep(500)
-            .tap(calc_X(400), calc_Y(420))
-            .sleep(500)
-            .tap(calc_X(500), calc_Y(35))
-            .sleep(500)
-    })
-
-    client.touchDown(calc_X(630), calc_Y(270)).sleep(5)
-    _Move(client, { x: calc_X(630), y: calc_Y(270) }, { x: calc_X(130), y: calc_Y(270) }, 500)
-    client.touchUp(calc_X(130), calc_Y(270)).sleep(500)
-
-    slotC.forEach((slot) => {
-        const { x, y } = SellSlotList[slot]
-        client
-            .tap(calc_X(x), calc_Y(y))
-            .sleep(500)
-            .tap(calc_X(x), calc_Y(y))
-            .sleep(500)
-            .tap(calc_X(option_x), calc_Y(option_y))
-            .sleep(500)
-            .tap(calc_X(70), calc_Y(130))
-            .sleep(500)
-            // increase price
-            .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
-            .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
-            .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
-            .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
-            .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
-            .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
-            .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
-            .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
-            .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
-            .tap(calc_X(660), calc_Y(270))
-            .sleep(500)
-            // stop increase price
-            .tap(calc_X(590), calc_Y(410))
-            .sleep(500)
-            .tap(calc_X(400), calc_Y(420))
-            .sleep(500)
-            .tap(calc_X(500), calc_Y(35))
-            .sleep(500)
-    })
-}
-
 const _plantBySlot = (client, calc, slot, floor = 2) => {
     const [calc_X, calc_Y] = calc
     const { x, y } = PlantSlotList[slot]
@@ -321,9 +172,9 @@ const _makeGoodsBySlot = (client, calc, slot = 0, number = 1) => {
     const [produce_x, produce_y] = DefaultProduct
 
     for (let i = 0; i < number; i++) {
-        client.touchDown(x, y).sleep(5)
+        client.touchDown(calc_X(x), calc_Y(y)).sleep(5)
         _Move(client, { x: calc_X(x), y: calc_Y(y) }, { x: calc_X(produce_x), y: calc_Y(produce_y) }, 5)
-        client.touchUp(produce_x, produce_y).sleep(500)
+        client.touchUp(calc_X(produce_x), calc_Y(produce_y)).sleep(500)
     }
 }
 //#endregion
