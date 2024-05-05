@@ -9,7 +9,11 @@ const exactRate = 0.8
 
 readAndResizeImage = async (srcPath, deviceSize) => {
     const imageSource = await Jimp.read(srcPath)
-    imageSource.resize(deviceSize[0], deviceSize[1])
+    if (imageSource.bitmap.width > imageSource.bitmap.height) {
+        imageSource.resize(deviceSize[0], deviceSize[1])
+    } else {
+        imageSource.resize(deviceSize[1], deviceSize[0])
+    }
 
     return imageSource
 }

@@ -253,8 +253,8 @@ const GoUp = async (device, number = 1) => {
 }
 
 const OpenGame = async (device) => {
-    const runningDevice = await Device.CreateDevice(device)
-    const [calc_X, calc_Y] = runningDevice.Calculator()
+    let runningDevice = await Device.CreateDevice(device)
+    let [calc_X, calc_Y] = runningDevice.Calculator()
     let client = runningDevice.client
 
     client.press('KEYCODE_APP_SWITCH').sleep(500)
@@ -271,13 +271,28 @@ const OpenGame = async (device) => {
     _Move(client, { x: calc_X(400), y: calc_Y(300) }, { x: calc_X(400), y: calc_Y(0) }, 10)
     client.touchUp(calc_X(400), calc_Y(0)).sleep(500)
 
+    // go home
+    client.press('KEYCODE_HOME').sleep(1 * 1000)
+    await Execute(runningDevice)
+
+    runningDevice = await Device.CreateDevice(device)
+    client = runningDevice.client
+    ;[calc_X, calc_Y] = runningDevice.Calculator()
+
+    let items = 'game'
+    let [pointX, pointY] = await Image.GetCoordinatesItem(device.id, GetItemId(items), [750, 288])
     // open game
+    client.tap(calc_X(pointX), calc_Y(pointY)).sleep(15 * 1000)
+    await Execute(runningDevice)
+
+    runningDevice = await Device.CreateDevice(device)
+    client = runningDevice.client
+    ;[calc_X, calc_Y] = runningDevice.Calculator()
+
+    items = 'game-2'
+    ;[pointX, pointY] = await Image.GetCoordinatesItem(device.id, GetItemId(items), [80, 510])
     client
-        .press('KEYCODE_HOME')
-        .sleep(1 * 1000)
-        .tap(calc_X(750), calc_Y(288))
-        .sleep(15 * 1000)
-        .tap(calc_X(80), calc_Y(510))
+        .tap(calc_X(pointX), calc_Y(pointY))
         .sleep(15 * 1000)
         .press('KEYCODE_BACK')
         .sleep(1 * 1000)
