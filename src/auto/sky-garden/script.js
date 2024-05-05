@@ -542,7 +542,7 @@ const SellGoods = async (device, slots = [], option, items) => {
     let client = runningDevice.client
 
     // open
-    client.tap(555, 340).sleep(1 * 1000)
+    client.tap(calc_X(555), calc_Y(340)).sleep(1 * 1000)
 
     await Execute(runningDevice)
 
@@ -621,7 +621,7 @@ const SellFullGoods = async (device, slotA, slotB, slotC, option, items) => {
     // const slotC = [1, 2, 5, 6]
 
     // open
-    client.tap(555, 340).sleep(1 * 1000)
+    client.tap(calc_X(555), calc_Y(340)).sleep(1 * 1000)
 
     // back front market
     client.touchDown(calc_X(130), calc_Y(270)).sleep(5)
