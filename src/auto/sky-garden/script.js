@@ -253,44 +253,25 @@ const GoUp = async (device, number = 1) => {
 }
 
 const OpenGame = async (device) => {
+    const packageName = 'vn.kvtm.js'
+    const items = 'game'
+
+    await Device.CloseApp(device, packageName)
+    await Device.OpenApp(device, packageName)
+
     let runningDevice = await Device.CreateDevice(device)
     let [calc_X, calc_Y] = runningDevice.Calculator()
     let client = runningDevice.client
 
-    client.press('KEYCODE_APP_SWITCH').sleep(500)
-    // close app
-    client.touchDown(calc_X(400), calc_Y(300)).sleep(5)
-    _Move(client, { x: calc_X(400), y: calc_Y(300) }, { x: calc_X(400), y: calc_Y(0) }, 10)
-    client.touchUp(calc_X(400), calc_Y(0)).sleep(500)
-    // close app
-    client.touchDown(calc_X(400), calc_Y(300)).sleep(5)
-    _Move(client, { x: calc_X(400), y: calc_Y(300) }, { x: calc_X(400), y: calc_Y(0) }, 10)
-    client.touchUp(calc_X(400), calc_Y(0)).sleep(500)
-    // close app
-    client.touchDown(calc_X(400), calc_Y(300)).sleep(5)
-    _Move(client, { x: calc_X(400), y: calc_Y(300) }, { x: calc_X(400), y: calc_Y(0) }, 10)
-    client.touchUp(calc_X(400), calc_Y(0)).sleep(500)
-
-    // go home
-    client.press('KEYCODE_HOME').sleep(1 * 1000)
+    // wait 10s
+    client.sleep(10 * 1000)
     await Execute(runningDevice)
 
     runningDevice = await Device.CreateDevice(device)
     client = runningDevice.client
     ;[calc_X, calc_Y] = runningDevice.Calculator()
 
-    let items = 'game'
-    let [pointX, pointY] = await Image.GetCoordinatesItem(device.id, GetItemId(items), [750, 288])
-    // open game
-    client.tap(calc_X(pointX), calc_Y(pointY)).sleep(15 * 1000)
-    await Execute(runningDevice)
-
-    runningDevice = await Device.CreateDevice(device)
-    client = runningDevice.client
-    ;[calc_X, calc_Y] = runningDevice.Calculator()
-
-    items = 'game-2'
-    ;[pointX, pointY] = await Image.GetCoordinatesItem(device.id, GetItemId(items), [80, 510])
+    const [pointX, pointY] = await Image.GetCoordinatesItem(device.id, GetItemId(items), [80, 510])
     client
         .tap(calc_X(pointX), calc_Y(pointY))
         .sleep(15 * 1000)

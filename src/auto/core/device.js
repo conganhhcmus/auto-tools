@@ -21,8 +21,8 @@ const CreateDevice = async (device) => {
     let output = [device.id]
     // kill all process monkey
     output.push(await Client.shell(device.id, 'kill $(pgrep monkey)').then(ADB.util.readAll))
-    output.push(await Client.shell(device.id, 'nohup monkey --port 1080 &').then(ADB.util.readAll))
     output.push(await Client.forward(device.id, 'tcp:1080', 'tcp:1080'))
+    output.push(await Client.shell(device.id, 'nohup monkey --port 1080 &').then(ADB.util.readAll))
 
     let vmSize = await Client.shell(device.id, 'wm size').then(ADB.util.readAll)
     let monkey = await Client.openMonkey(device.id)
@@ -32,7 +32,17 @@ const CreateDevice = async (device) => {
 
 const GetListDevices = async (selectedDevices) => await Client.listDevices().then((devices) => devices.filter((device) => selectedDevices.includes(device.id)))
 
+const OpenApp = async (device, packageName) => {
+    await Client.shell(device.id, `monkey -p ${packageName} 1`).then(ADB.util.readAll)
+}
+
+const CloseApp = async (device, packageName) => {
+    await Client.shell(device.id, `am force-stop ${packageName}`).then(ADB.util.readAll)
+}
+
 module.exports = {
     CreateDevice,
     GetListDevices,
+    OpenApp,
+    CloseApp,
 }
