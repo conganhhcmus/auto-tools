@@ -1,43 +1,46 @@
-const ADB = require('adbkit')
-const Helpers = require('./util')
-const Client = ADB.createClient({ port: 5037, host: '127.0.0.1' })
+const { Adb } = require('@devicefarmer/adbkit')
+const util = require('./util')
+const client = Adb.createClient({ port: 5037, host: '127.0.0.1' })
 
 class Device {
     constructor(id, monkey, vmSize) {
         this.id = id
-        this.size = Helpers.getSize(vmSize.toString())
+        this.size = util.getSize(vmSize.toString())
         this.monkey = monkey
         this.client = this.monkey.multi()
     }
 
     Calculator() {
-        const calc_X = (x) => Helpers.calc_X(x, this.size)
-        const calc_Y = (y) => Helpers.calc_Y(y, this.size)
+        const calc_X = (x) => util.calc_X(x, this.size)
+        const calc_Y = (y) => util.calc_Y(y, this.size)
         return [calc_X, calc_Y]
     }
 }
 
 const CreateDevice = async (device) => {
+    const selectedDevice = client.getDevice(device.id)
     let output = [device.id]
     // kill all process monkey
-    output.push(await Client.shell(device.id, 'kill $(pgrep monkey)').then(ADB.util.readAll))
-    output.push(await Client.forward(device.id, 'tcp:1080', 'tcp:1080'))
-    output.push(await Client.shell(device.id, 'nohup monkey --port 1080 &').then(ADB.util.readAll))
+    output.push(await selectedDevice.shell('kill $(pgrep monkey)').then(Adb.util.readAll))
+    output.push(await selectedDevice.forward('tcp:1080', 'tcp:1080'))
+    output.push(await selectedDevice.shell('nohup monkey --port 1080 &').then(Adb.util.readAll))
 
-    let vmSize = await Client.shell(device.id, 'wm size').then(ADB.util.readAll)
-    let monkey = await Client.openMonkey(device.id)
+    let vmSize = await selectedDevice.shell('wm size').then(Adb.util.readAll)
+    let monkey = await selectedDevice.openMonkey()
 
     return new Device(device.id, monkey, vmSize)
 }
 
-const GetListDevices = async (selectedDevices) => await Client.listDevices().then((devices) => devices.filter((device) => selectedDevices.includes(device.id)))
+const GetListDevices = async (selectedDevices) => await client.listDevices().then((devices) => devices.filter((device) => selectedDevices.includes(device.id)))
 
 const OpenApp = async (device, packageName) => {
-    await Client.shell(device.id, `monkey -p ${packageName} 1`).then(ADB.util.readAll)
+    const selectedDevice = client.getDevice(device.id)
+    await selectedDevice.shell(`monkey -p ${packageName} 1`).then(Adb.util.readAll)
 }
 
 const CloseApp = async (device, packageName) => {
-    await Client.shell(device.id, `am force-stop ${packageName}`).then(ADB.util.readAll)
+    const selectedDevice = client.getDevice(device.id)
+    await selectedDevice.shell(`am force-stop ${packageName}`).then(Adb.util.readAll)
 }
 
 module.exports = {

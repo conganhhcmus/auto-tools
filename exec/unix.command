@@ -12,4 +12,4 @@ else
     echo "built before"
 fi
 
-npm run all-server
+npm run app
