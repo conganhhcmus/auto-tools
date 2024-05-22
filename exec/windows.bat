@@ -28,5 +28,5 @@ if not !IS_BUILDED!==TRUE (
 )
 
 call cd ..
-call npm run all-server
+call npm run app
 pause
