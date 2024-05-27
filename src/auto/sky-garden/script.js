@@ -1,23 +1,24 @@
 const { SellSlotList, PlantSlotList, MakeSlotList, FirstRowSlotList, SecondRowSlotList, DefaultBasket, DefaultProduct, SellOptions } = require('./constance')
 const Device = require('../core/device')
 const Image = require('../core/image')
+const DELAY_TIME_MS = 3
 
 //#region private function
 const _Move = (client, pointA, pointB, steps = 1) => {
     const distance_x = Math.abs(pointA.x - pointB.x) / steps
     const distance_y = Math.abs(pointA.y - pointB.y) / steps
 
-    client.touchMove(pointA.x, pointA.y).sleep(5)
+    client.touchMove(pointA.x, pointA.y).sleep(DELAY_TIME_MS)
 
     for (let i = 0; i < steps; i++) {
         if (pointA.x <= pointB.x && pointA.y <= pointB.y) {
-            client.touchMove(Math.floor(pointA.x + i * distance_x), Math.floor(pointA.y + i * distance_y)).sleep(5)
+            client.touchMove(Math.floor(pointA.x + i * distance_x), Math.floor(pointA.y + i * distance_y)).sleep(DELAY_TIME_MS)
         } else if (pointA.x >= pointB.x && pointA.y <= pointB.y) {
-            client.touchMove(Math.floor(pointA.x - i * distance_x), Math.floor(pointA.y + i * distance_y)).sleep(5)
+            client.touchMove(Math.floor(pointA.x - i * distance_x), Math.floor(pointA.y + i * distance_y)).sleep(DELAY_TIME_MS)
         } else if (pointA.x <= pointB.x && pointA.y >= pointB.y) {
-            client.touchMove(Math.floor(pointA.x + i * distance_x), Math.floor(pointA.y - i * distance_y)).sleep(5)
+            client.touchMove(Math.floor(pointA.x + i * distance_x), Math.floor(pointA.y - i * distance_y)).sleep(DELAY_TIME_MS)
         } else {
-            client.touchMove(Math.floor(pointA.x - i * distance_x), Math.floor(pointA.y - i * distance_y)).sleep(5)
+            client.touchMove(Math.floor(pointA.x - i * distance_x), Math.floor(pointA.y - i * distance_y)).sleep(DELAY_TIME_MS)
         }
     }
 }
@@ -26,7 +27,7 @@ const _plantBySlot = (client, calc, slot, floor = 2) => {
     const [calc_X, calc_Y] = calc
     const { x, y } = PlantSlotList[slot]
 
-    client.touchDown(calc_X(x), calc_Y(y)).sleep(5)
+    client.touchDown(calc_X(x), calc_Y(y)).sleep(DELAY_TIME_MS)
 
     _Move(client, { x: calc_X(x), y: calc_Y(y) }, { x: calc_X(FirstRowSlotList[0].x), y: calc_Y(FirstRowSlotList[0].y) }, 5)
 
@@ -86,7 +87,7 @@ const _plantHalfBySlot_1st = (client, calc, slot, index = 6) => {
     const [calc_X, calc_Y] = calc
     const { x, y } = PlantSlotList[slot]
 
-    client.touchDown(calc_X(x), calc_Y(y)).sleep(5)
+    client.touchDown(calc_X(x), calc_Y(y)).sleep(DELAY_TIME_MS)
 
     _Move(client, { x: calc_X(x), y: calc_Y(y) }, { x: calc_X(FirstRowSlotList[0].x), y: calc_Y(FirstRowSlotList[0].y) }, 5)
 
@@ -106,14 +107,14 @@ const _plantHalfBySlot_1st = (client, calc, slot, index = 6) => {
         )
     }
 
-    client.touchUp(calc_X(FirstRowSlotList[index - 1].x), calc_Y(FirstRowSlotList[index - 1].y)).sleep(500)
+    client.touchUp(calc_X(FirstRowSlotList[index].x), calc_Y(FirstRowSlotList[index].y)).sleep(500)
 }
 
 const _plantHalfBySlot_2nd = (client, calc, slot, index = 6) => {
     const [calc_X, calc_Y] = calc
     const { x, y } = PlantSlotList[slot]
 
-    client.touchDown(calc_X(x), calc_Y(y)).sleep(5)
+    client.touchDown(calc_X(x), calc_Y(y)).sleep(DELAY_TIME_MS)
 
     _Move(client, { x: calc_X(x), y: calc_Y(y) }, { x: calc_X(FirstRowSlotList[0].x), y: calc_Y(FirstRowSlotList[0].y) }, 5)
 
@@ -163,7 +164,7 @@ const _plantHalfBySlot_2nd = (client, calc, slot, index = 6) => {
         )
     }
 
-    client.touchUp(calc_X(SecondRowSlotList[index].x), calc_Y(SecondRowSlotList[index].y)).sleep(500)
+    client.touchUp(calc_X(SecondRowSlotList[index + 1].x), calc_Y(SecondRowSlotList[index + 1].y)).sleep(500)
 }
 
 const _makeGoodsBySlot = (client, calc, slot = 0, number = 1) => {
@@ -172,7 +173,7 @@ const _makeGoodsBySlot = (client, calc, slot = 0, number = 1) => {
     const [produce_x, produce_y] = DefaultProduct
 
     for (let i = 0; i < number; i++) {
-        client.touchDown(calc_X(x), calc_Y(y)).sleep(5)
+        client.touchDown(calc_X(x), calc_Y(y)).sleep(DELAY_TIME_MS)
         _Move(client, { x: calc_X(x), y: calc_Y(y) }, { x: calc_X(produce_x), y: calc_Y(produce_y) }, 5)
         client.touchUp(calc_X(produce_x), calc_Y(produce_y)).sleep(500)
     }
@@ -192,7 +193,7 @@ const GoDownLast = async (device) => {
     const [calc_X, calc_Y] = runningDevice.Calculator()
 
     let client = runningDevice.client
-    client.tap(calc_X(405), calc_Y(430)).sleep(1 * 1000)
+    client.tap(calc_X(405), calc_Y(430)).sleep(0.75 * 1000)
 
     return await Execute(runningDevice)
 }
@@ -206,19 +207,19 @@ const GoDown = async (device, number = 1) => {
         let client = runningDevice.client
         client
             .touchDown(calc_X(730), calc_Y(300))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .touchMove(calc_X(730), calc_Y(280))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .touchMove(calc_X(730), calc_Y(260))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .touchMove(calc_X(730), calc_Y(240))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .touchMove(calc_X(730), calc_Y(220))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .touchMove(calc_X(730), calc_Y(200))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .touchUp(calc_X(730), calc_Y(200))
-            .sleep(i == number - 1 ? 500 : 5)
+            .sleep(i == number - 1 ? 200 : DELAY_TIME_MS)
     }
 
     return await Execute(runningDevice)
@@ -234,19 +235,19 @@ const GoUp = async (device, number = 1) => {
 
         client
             .touchDown(calc_X(730), calc_Y(200))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .touchMove(calc_X(730), calc_Y(220))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .touchMove(calc_X(730), calc_Y(240))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .touchMove(calc_X(730), calc_Y(260))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .touchMove(calc_X(730), calc_Y(280))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .touchMove(calc_X(730), calc_Y(300))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .touchUp(calc_X(730), calc_Y(300))
-            .sleep(i == number - 1 ? 500 : 5)
+            .sleep(i == number - 1 ? 200 : DELAY_TIME_MS)
     }
 
     return await Execute(runningDevice)
@@ -370,9 +371,9 @@ const HarvestTrees = async (device) => {
 
     let client = runningDevice.client
 
-    client.tap(calc_X(300), calc_Y(380)).sleep(1 * 1000)
+    client.tap(calc_X(300), calc_Y(380)).sleep(200)
 
-    client.touchDown(calc_X(x), calc_Y(y)).sleep(5)
+    client.touchDown(calc_X(x), calc_Y(y)).sleep(DELAY_TIME_MS)
 
     _Move(client, { x: calc_X(x), y: calc_Y(y) }, { x: calc_X(FirstRowSlotList[0].x), y: calc_Y(FirstRowSlotList[0].y) }, 5)
 
@@ -442,7 +443,7 @@ const PlantTrees = async (device, slot = 0, floor = 2) => {
 
     let client = runningDevice.client
     // open
-    client.tap(calc_X(300), calc_Y(380)).sleep(1.5 * 1000)
+    client.tap(calc_X(300), calc_Y(380)).sleep(200)
 
     _plantBySlot(client, [calc_X, calc_Y], slot, floor)
 
@@ -455,7 +456,7 @@ const PlantTrees_Half = async (device, slot = 0, index, floor = 1) => {
 
     let client = runningDevice.client
     // open
-    client.tap(calc_X(300), calc_Y(380)).sleep(1.5 * 1000)
+    client.tap(calc_X(300), calc_Y(380)).sleep(200)
 
     if (floor == 1) _plantHalfBySlot_1st(client, [calc_X, calc_Y], slot, index)
     else _plantHalfBySlot_2nd(client, [calc_X, calc_Y], slot, index)
@@ -551,23 +552,23 @@ const SellGoods = async (device, slots = [], option, items) => {
             .sleep(500)
             // increase price
             .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .tap(calc_X(660), calc_Y(270))
             .sleep(500)
             // stop increase price
@@ -605,12 +606,12 @@ const SellFullGoods = async (device, slotA, slotB, slotC, option, items) => {
     client.tap(calc_X(555), calc_Y(340)).sleep(1 * 1000)
 
     // back front market
-    client.touchDown(calc_X(130), calc_Y(270)).sleep(5)
+    client.touchDown(calc_X(130), calc_Y(270)).sleep(DELAY_TIME_MS)
     _Move(client, { x: calc_X(130), y: calc_Y(270) }, { x: calc_X(630), y: calc_Y(270) }, 50)
     client.touchUp(calc_X(630), calc_Y(270)).sleep(500)
 
     // back front market
-    client.touchDown(calc_X(130), calc_Y(270)).sleep(5)
+    client.touchDown(calc_X(130), calc_Y(270)).sleep(DELAY_TIME_MS)
     _Move(client, { x: calc_X(130), y: calc_Y(270) }, { x: calc_X(630), y: calc_Y(270) }, 50)
     client.touchUp(calc_X(630), calc_Y(270)).sleep(500)
 
@@ -639,23 +640,23 @@ const SellFullGoods = async (device, slotA, slotB, slotC, option, items) => {
             .sleep(500)
             // increase price
             .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .tap(calc_X(660), calc_Y(270))
             .sleep(500)
             // stop increase price
@@ -673,7 +674,7 @@ const SellFullGoods = async (device, slotA, slotB, slotC, option, items) => {
     client = runningDevice.client
     ;[calc_X, calc_Y] = runningDevice.Calculator()
 
-    client.touchDown(calc_X(630), calc_Y(270)).sleep(5)
+    client.touchDown(calc_X(630), calc_Y(270)).sleep(DELAY_TIME_MS)
     _Move(client, { x: calc_X(650), y: calc_Y(270) }, { x: calc_X(150), y: calc_Y(270) }, 650)
     client.touchUp(calc_X(130), calc_Y(270)).sleep(500)
 
@@ -701,23 +702,23 @@ const SellFullGoods = async (device, slotA, slotB, slotC, option, items) => {
             .sleep(500)
             // increase price
             .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .tap(calc_X(660), calc_Y(270))
             .sleep(500)
             // stop increase price
@@ -735,7 +736,7 @@ const SellFullGoods = async (device, slotA, slotB, slotC, option, items) => {
     client = runningDevice.client
     ;[calc_X, calc_Y] = runningDevice.Calculator()
 
-    client.touchDown(calc_X(630), calc_Y(270)).sleep(5)
+    client.touchDown(calc_X(630), calc_Y(270)).sleep(DELAY_TIME_MS)
     _Move(client, { x: calc_X(650), y: calc_Y(270) }, { x: calc_X(150), y: calc_Y(270) }, 650)
     client.touchUp(calc_X(130), calc_Y(270)).sleep(500)
 
@@ -763,23 +764,23 @@ const SellFullGoods = async (device, slotA, slotB, slotC, option, items) => {
             .sleep(500)
             // increase price
             .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .tap(calc_X(660), calc_Y(270))
-            .sleep(5)
+            .sleep(DELAY_TIME_MS)
             .tap(calc_X(660), calc_Y(270))
             .sleep(500)
             // stop increase price
@@ -808,7 +809,7 @@ const NextTrees = async (device, itemId) => {
     let client = runningDevice.client
     let [calc_X, calc_Y] = runningDevice.Calculator()
 
-    client.tap(calc_X(300), calc_Y(380)).sleep(1.5 * 1000)
+    client.tap(calc_X(300), calc_Y(380)).sleep(1 * 1000)
 
     await Execute(runningDevice)
     let count = 0
@@ -840,7 +841,7 @@ const PrevTrees = async (device, itemId) => {
     let client = runningDevice.client
     let [calc_X, calc_Y] = runningDevice.Calculator()
 
-    client.tap(calc_X(300), calc_Y(380)).sleep(1.5 * 1000)
+    client.tap(calc_X(300), calc_Y(380)).sleep(1 * 1000)
 
     await Execute(runningDevice)
     let count = 0
@@ -866,7 +867,7 @@ const PrevTrees = async (device, itemId) => {
 
 const Execute = (runningDevice) =>
     new Promise((resolve) =>
-        runningDevice.client.sleep(5).execute((err) => {
+        runningDevice.client.sleep(DELAY_TIME_MS).execute((err) => {
             if (err) {
                 console.error(err)
             }

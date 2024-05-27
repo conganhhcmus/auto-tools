@@ -33,8 +33,8 @@ const SkyGarden = (props) => {
             openChests: gameOption.includes('openChests'),
             hasEventTree: gameOption.includes('hasEventTree'),
             sellItems: gameOption.includes('sellItems'),
-            openGameAfter,
-            frequency,
+            openGameAfter: openGameAfter ? openGameAfter : 1,
+            frequency: frequency ? frequency : 1,
         }
         props.runAuto(data)
     }

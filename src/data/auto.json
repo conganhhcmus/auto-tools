@@ -9,65 +9,9 @@
         },
         {
             "key": "ProductItem-1",
-            "name": "SX Vải Đỏ",
+            "name": "SX Tinh Dầu Dừa + Trà Hoa Hồng",
             "disabled": false,
             "order": 1,
-            "recommend": false
-        },
-        {
-            "key": "ProductItem-2",
-            "name": "SX Vải Tím",
-            "disabled": false,
-            "order": 1,
-            "recommend": false
-        },
-        {
-            "key": "ProductItem-3",
-            "name": "SX Vải Đỏ + Nước Tuyết",
-            "disabled": false,
-            "order": 2,
-            "recommend": false
-        },
-        {
-            "key": "ProductItem-4",
-            "name": "SX Vải Tím + Nước Tuyết",
-            "disabled": false,
-            "order": 2,
-            "recommend": false
-        },
-        {
-            "key": "ProductItem-5",
-            "name": "SX Vải Đỏ + TD HH + Trà HH",
-            "disabled": false,
-            "order": 4,
-            "recommend": false
-        },
-        {
-            "key": "ProductItem-6",
-            "name": "SX Vải Vàng + Trà Hoa Hồng",
-            "disabled": false,
-            "order": 3,
-            "recommend": true
-        },
-        {
-            "key": "ProductItem-7",
-            "name": "SX Vải Vàng + TD HH + Trà HH",
-            "disabled": false,
-            "order": 4,
-            "recommend": false
-        },
-        {
-            "key": "ProductItem-8",
-            "name": "SX Vải Vàng + TD Táo + Trà HH",
-            "disabled": false,
-            "order": 4,
-            "recommend": false
-        },
-        {
-            "key": "ProductItem-9",
-            "name": "SX Hạt Dưa Sấy + Nước Chanh",
-            "disabled": false,
-            "order": 5,
             "recommend": true
         }
     ]
