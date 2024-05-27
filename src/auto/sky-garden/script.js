@@ -371,7 +371,7 @@ const HarvestTrees = async (device) => {
 
     let client = runningDevice.client
 
-    client.tap(calc_X(300), calc_Y(380)).sleep(200)
+    client.tap(calc_X(300), calc_Y(380)).sleep(300)
 
     client.touchDown(calc_X(x), calc_Y(y)).sleep(DELAY_TIME_MS)
 
@@ -443,7 +443,7 @@ const PlantTrees = async (device, slot = 0, floor = 2) => {
 
     let client = runningDevice.client
     // open
-    client.tap(calc_X(300), calc_Y(380)).sleep(200)
+    client.tap(calc_X(300), calc_Y(380)).sleep(300)
 
     _plantBySlot(client, [calc_X, calc_Y], slot, floor)
 
@@ -456,7 +456,7 @@ const PlantTrees_Half = async (device, slot = 0, index, floor = 1) => {
 
     let client = runningDevice.client
     // open
-    client.tap(calc_X(300), calc_Y(380)).sleep(200)
+    client.tap(calc_X(300), calc_Y(380)).sleep(300)
 
     if (floor == 1) _plantHalfBySlot_1st(client, [calc_X, calc_Y], slot, index)
     else _plantHalfBySlot_2nd(client, [calc_X, calc_Y], slot, index)
@@ -474,19 +474,13 @@ const MakeGoods = async (device, slot = 0, number = 1) => {
         client.tap(calc_X(175), calc_Y(410)).sleep(200)
     }
 
-    client.sleep(1 * 1000)
+    client.sleep(500)
 
     // make goods
     _makeGoodsBySlot(client, [calc_X, calc_Y], slot, number)
 
     // fix & close
-    client
-        .tap(calc_X(80), calc_Y(313))
-        .sleep(500)
-        .tap(calc_X(630), calc_Y(320))
-        .sleep(500)
-        .press('KEYCODE_BACK')
-        .sleep(1 * 1000)
+    client.tap(calc_X(80), calc_Y(313)).sleep(500).tap(calc_X(630), calc_Y(320)).sleep(500).press('KEYCODE_BACK').sleep(500)
 
     return await Execute(runningDevice)
 }
@@ -501,19 +495,13 @@ const MakeGoods_2 = async (device, slot = 0, number = 1) => {
         client.tap(calc_X(175), calc_Y(200)).sleep(200)
     }
 
-    client.sleep(1 * 1000)
+    client.sleep(500)
 
     // make goods
     _makeGoodsBySlot(client, [calc_X, calc_Y], slot, number)
 
     // fix & close
-    client
-        .tap(calc_X(80), calc_Y(110))
-        .sleep(500)
-        .tap(calc_X(630), calc_Y(320))
-        .sleep(500)
-        .press('KEYCODE_BACK')
-        .sleep(1 * 1000)
+    client.tap(calc_X(80), calc_Y(110)).sleep(500).tap(calc_X(630), calc_Y(320)).sleep(500).press('KEYCODE_BACK').sleep(500)
 
     return await Execute(runningDevice)
 }
@@ -809,7 +797,7 @@ const NextTrees = async (device, itemId) => {
     let client = runningDevice.client
     let [calc_X, calc_Y] = runningDevice.Calculator()
 
-    client.tap(calc_X(300), calc_Y(380)).sleep(1 * 1000)
+    client.tap(calc_X(300), calc_Y(380)).sleep(500)
 
     await Execute(runningDevice)
     let count = 0
@@ -829,7 +817,7 @@ const NextTrees = async (device, itemId) => {
     client = runningDevice.client
     ;[calc_X, calc_Y] = runningDevice.Calculator()
 
-    client.press('KEYCODE_BACK').sleep(500)
+    client.press('KEYCODE_BACK').sleep(300)
 
     await Execute(runningDevice)
 
@@ -841,7 +829,7 @@ const PrevTrees = async (device, itemId) => {
     let client = runningDevice.client
     let [calc_X, calc_Y] = runningDevice.Calculator()
 
-    client.tap(calc_X(300), calc_Y(380)).sleep(1 * 1000)
+    client.tap(calc_X(300), calc_Y(380)).sleep(500)
 
     await Execute(runningDevice)
     let count = 0
@@ -860,7 +848,7 @@ const PrevTrees = async (device, itemId) => {
     client = runningDevice.client
     ;[calc_X, calc_Y] = runningDevice.Calculator()
 
-    client.press('KEYCODE_BACK').sleep(500)
+    client.press('KEYCODE_BACK').sleep(300)
     await Execute(runningDevice)
     if (count >= 10) return await PrevTrees(device, itemId)
 }
