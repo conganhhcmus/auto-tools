@@ -6,10 +6,10 @@ const { runShell } = require('../utils/shell')
 exports.stopAuto = async (req, res, next) => {
     let data = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/device.json'), 'utf8'))
     let device = req.body.device
-    await stopAuto(device)
     data = data.filter((x) => x.device !== device)
 
     fs.writeFileSync(path.resolve(__dirname, '../data/device.json'), JSON.stringify(data))
+    await stopAuto(device)
     res.json(data)
 }
 
@@ -17,12 +17,16 @@ exports.stopAllAuto = async (req, res, next) => {
     let data = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/device.json'), 'utf8'))
     let listDevices = req.body.listDevices
 
-    for await (const device of listDevices) {
-        await stopAuto(device)
+    for (const device of listDevices) {
         data = data.filter((x) => x.device !== device)
     }
 
     fs.writeFileSync(path.resolve(__dirname, '../data/device.json'), JSON.stringify(data))
+
+    for await (const device of listDevices) {
+        await stopAuto(device)
+    }
+
     res.json(data)
 }
 
@@ -48,12 +52,14 @@ exports.startAuto = (req, res, next) => {
 
 const stopAuto = async (device) => {
     let isSuccess = false
-    let maxRun = 3
+    let maxRun = 5
     while (!isSuccess && maxRun > 0) {
         isSuccess = true
-        let processId = await runShell(`adb -s ${device} shell pgrep monkey`)
-        let command = `adb -s ${device} shell kill ${processId}`
-        await runShell(command, () => isSuccess = false)
+        const processIdList = await runShell(`adb -s ${device} shell pgrep monkey`)
+        for (const processId of processIdList.split('\n')) {
+            const command = `adb -s ${device} shell kill ${processId}`
+            await runShell(command, () => isSuccess = false)
+        }
         maxRun--
     }
 }

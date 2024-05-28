@@ -3,8 +3,10 @@ const util = require('util')
 const exec = util.promisify(require('child_process').exec)
 const spawn = require('child_process').spawn
 const path = require('path')
+const moment = require('moment')
 
 defaultErrorHandler = (err) => {
+    fs.appendFileSync(path.resolve(__dirname, '../logs/err.txt'), moment().format('LTS') + " : ")
     fs.appendFileSync(path.resolve(__dirname, '../logs/err.txt'), err)
 }
 
