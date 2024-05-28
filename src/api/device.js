@@ -6,10 +6,14 @@ exports.getRunningDevice = async function (req, res, next) {
     var dataRaw = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/device.json'), 'utf8'))
     let data = await Promise.all(
         dataRaw.map(async (raw) => {
-            let name = await runShell(`adb -s ${raw.device} emu avd name`)
+            const isMacOs = process.platform === "darwin";
+            let name = raw.device;
+            if (isMacOs) {
+                name = (await runShell(`adb -s ${raw.device} emu avd name`)).match(/([^\r\n|OK]+)/g)[0].replaceAll('_', ' ')
+            }
             return {
                 ...raw,
-                deviceName: !!name ? name.match(/([^\r\n|OK]+)/g)[0].replaceAll('_', ' ') : raw.device,
+                deviceName: name,
             }
         })
     )

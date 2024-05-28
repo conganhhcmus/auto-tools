@@ -1,3 +1,4 @@
+const moment = require('moment')
 const express = require('express')
 require('express-async-errors')
 const router = require('./router')
@@ -20,7 +21,8 @@ app.ws('/live/:id', websocket.getLiveScreen)
 
 // Error Handler
 app.use((err, req, res, next) => {
-    console.error(err.stack)
+    fs.appendFileSync(path.resolve(__dirname, 'logs/err.txt'), moment().format('LTS') + " : ")
+    fs.appendFileSync(path.resolve(__dirname, 'logs/err.txt'), err.stack)
     res.status(500).send(err.stack)
 })
 

@@ -1,18 +1,18 @@
 {
     "sky-garden": [
         {
-            "key": "PlantEventTree",
-            "name": "Trồng Cây Sự Kiện",
+            "key": "kvtm-auto-1",
+            "name": "Tinh Dầu Dừa + Trà Hoa Hồng",
             "disabled": false,
             "order": 0,
-            "recommend": false
+            "recommend": true
         },
         {
-            "key": "ProductItem-1",
-            "name": "SX Tinh Dầu Dừa + Trà Hoa Hồng",
+            "key": "kvtm-event-tree",
+            "name": "Trồng Cây Sự Kiện",
             "disabled": false,
-            "order": 1,
-            "recommend": true
+            "order": 99,
+            "recommend": false
         }
     ]
 }

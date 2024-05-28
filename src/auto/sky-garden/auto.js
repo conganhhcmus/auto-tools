@@ -68,19 +68,24 @@ const PlantEventTree = async (device) => {
     await Scripts.GoUp(device)
 
     // trong cay
-    for (let j = 0; j < 5; j++) {
+    for (let j = 0; j < 4; j++) {
         await Scripts.PlantTrees(device, 4)
         await Scripts.GoUp(device, 2)
     }
+    await Scripts.PlantTrees(device, 4)
+
     // xuong tang thap nhat
     await Scripts.GoDownLast(device)
     await Scripts.GoUp(device)
 
     // thu hoach cay
-    for (let j = 0; j < 5; j++) {
+    for (let j = 0; j < 4; j++) {
         await Scripts.HarvestTrees(device)
         await Scripts.GoUp(device, 2)
     }
+    await Scripts.HarvestTrees(device)
+    // xuong tang thap nhat
+    await Scripts.GoDownLast(device)
 }
 
 // export function
@@ -102,14 +107,11 @@ const ProduceItems = async (device, gameOptions = {}, index, auto, gameName) => 
     const isLast = index === 9
     switch (runAuto) {
         case auto[gameName][0].key:
-            await PlantEventTree(device)
-            break
-
-        case auto[gameName][1].key:
             await ProduceItems_1(device, hasEventTree, isLast)
             break
 
         default:
+            await PlantEventTree(device)
             break
     }
 }
@@ -119,7 +121,7 @@ const SellItems = async (device, gameOptions, auto, gameName) => {
     if (!sellItems) return
 
     switch (runAuto) {
-        case auto[gameName][1].key:
+        case auto[gameName][0].key:
             await SellItems_1(device)
             break
 

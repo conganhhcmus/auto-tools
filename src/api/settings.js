@@ -11,10 +11,14 @@ exports.getSettings = async function (req, res, next) {
     let listDevices = output.match(/(emulator[^\t]+)/g) ?? []
     let listDevicesWithName = await Promise.all(
         listDevices.map(async (device) => {
-            let name = await runShell(`adb -s ${device} emu avd name`)
+            const isMacOs = process.platform === "darwin";
+            let name = device;
+            if (isMacOs) {
+                name = (await runShell(`adb -s ${device} emu avd name`)).match(/([^\r\n|OK]+)/g)[0].replaceAll('_', ' ')
+            }
             return {
                 value: device,
-                label: !!name ? name.match(/([^\r\n|OK]+)/g)[0].replaceAll('_', ' ') : device,
+                label: name,
             }
         })
     )
