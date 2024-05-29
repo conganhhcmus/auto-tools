@@ -1,47 +1,38 @@
-const fs = require('fs')
-const path = require('path')
-const { runShell } = require('../utils/shell')
+const { getDeviceData, getGamesData, getAutoData } = require('../utils/data')
+const { ADBHelper } = require('../lib/adb')
 
-exports.getSettings = async function (req, res, next) {
-    let data = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/device.json'), 'utf8'))
-    let games = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/game.json'), 'utf8'))
+async function getSettings(req, res, next) {
+    const data = getDeviceData()
+    const games = getGamesData()
 
-    let runningDevices = data.map((x) => x.device)
-    let output = await runShell('adb devices')
-    let listDevices = output.match(/(emulator[^\t]+)/g) ?? []
-    let listDevicesWithName = await Promise.all(
-        listDevices.map(async (device) => {
-            const isMacOs = process.platform === "darwin";
-            let name = device;
-            if (isMacOs) {
-                name = (await runShell(`adb -s ${device} emu avd name`)).match(/([^\r\n|OK]+)/g)[0].replaceAll('_', ' ')
-            }
-            return {
-                value: device,
-                label: name,
-            }
-        })
-    )
+    const runningDevices = data.map((x) => x.device)
+    const deviceList = await ADBHelper.getDevices()
     let result = {
-        listDevices: listDevicesWithName.map((device) => ({
-            value: device.value,
-            label: device.label,
-            disabled: runningDevices.includes(device.value),
+        listDevices: deviceList.map((device) => ({
+            value: device.id,
+            label: device.name,
+            disabled: runningDevices.includes(device.id),
         })),
         listGameOption: [...games.listGameOption],
     }
     res.json(result)
 }
 
-exports.getGameOptions = function (req, res, next) {
-    let auto = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/auto.json'), 'utf8'))
+function getGameOptions(req, res, next) {
+    let auto = getAutoData()
     let game = req.query.game
     let result = auto.hasOwnProperty(game) ? auto[game] : []
     res.json(result)
 }
 
-exports.getListGameOptions = function (req, res, next) {
-    let games = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/game.json'), 'utf8'))
+function getListGameOptions(req, res, next) {
+    let games = getGamesData()
     let result = { ...games }
     res.json(result)
+}
+
+module.exports = {
+    getSettings,
+    getGameOptions,
+    getListGameOptions,
 }

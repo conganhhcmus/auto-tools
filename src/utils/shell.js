@@ -1,42 +1,35 @@
-const fs = require('fs')
-const util = require('util')
-const exec = util.promisify(require('child_process').exec)
-const spawn = require('child_process').spawn
-const path = require('path')
-const moment = require('moment')
+const { promisify } = require('util')
+const exec = promisify(require('child_process').exec)
+const { spawn } = require('child_process')
+const { logErrMsg } = require('./log')
 
-defaultErrorHandler = (err) => {
-    fs.appendFileSync(path.resolve(__dirname, '../logs/err.txt'), moment().format('LTS') + " : ")
-    fs.appendFileSync(path.resolve(__dirname, '../logs/err.txt'), err)
-}
-
-defaultExitHandler = (code) => {
-    // console.log('child process exited with code', code)
-}
-
-exports.runShell = async (command, errorHandler = null) => {
+async function runExec(command, errorHandler = null) {
     try {
         const { stdout, stderr, error } = await exec(command)
-        // stdout && fs.appendFileSync(path.resolve(__dirname, '../logs/out.txt'), stdout)
-        stderr && (errorHandler ? errorHandler() : defaultErrorHandler(stderr))
+        stderr && (errorHandler ? errorHandler() : logErrMsg(stderr))
         return stdout || ''
     } catch (e) {
-        errorHandler ? errorHandler() : defaultErrorHandler(e.message)
+        errorHandler ? errorHandler() : logErrMsg(e.message)
         return ''
     }
 }
 
-exports.runShellSpawn = (command, errorHandler = null, exitHandler = null) => {
+function runSpawn(command, errorHandler = null, exitHandler = null) {
     let commandArray = command.split(' ')
     const childProcess = spawn(commandArray.shift(), commandArray)
 
     childProcess.stderr.on('data', function (data) {
-        errorHandler ? errorHandler() : defaultErrorHandler(data)
+        errorHandler ? errorHandler() : logErrMsg(data)
     })
 
     childProcess.on('close', function (code) {
-        exitHandler ? exitHandler() : defaultExitHandler(code)
+        exitHandler && exitHandler()
     })
 
     return childProcess
+}
+
+module.exports = {
+    runExec,
+    runSpawn,
 }

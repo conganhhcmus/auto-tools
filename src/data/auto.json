@@ -1,10 +1,17 @@
 {
     "sky-garden": [
         {
-            "key": "kvtm-auto-1",
+            "key": "kvtm-auto-0",
             "name": "Tinh Dầu Dừa + Trà Hoa Hồng",
             "disabled": false,
             "order": 0,
+            "recommend": true
+        },
+        {
+            "key": "kvtm-auto-1",
+            "name": "Hạt Dưa Sấy + Nước Chanh",
+            "disabled": false,
+            "order": 1,
             "recommend": true
         },
         {

@@ -1,10 +1,10 @@
-const express = require('express')
-const router = express.Router()
+const { Router } = require('express')
+const router = Router()
 
-const settings = require('./api/settings')
-const device = require('./api/device')
-const auto = require('./api/auto')
-const logs = require('./api/logs')
+const { getSettings, getGameOptions, getListGameOptions } = require('./api/settings')
+const { getRunningDevice, viewCurrentScreenDevice } = require('./api/device')
+const { startAuto, stopAuto, stopAllAuto } = require('./api/auto')
+const { getLogs, clearLogs } = require('./api/logs')
 
 // default
 router.get('/', function (req, res) {
@@ -12,21 +12,21 @@ router.get('/', function (req, res) {
 })
 
 // settings api
-router.get('/settings', settings.getSettings)
-router.get('/gameOptions', settings.getGameOptions)
-router.get('/listGameOptions', settings.getListGameOptions)
+router.get('/settings', getSettings)
+router.get('/gameOptions', getGameOptions)
+router.get('/listGameOptions', getListGameOptions)
 
 // device api
-router.get('/runningDevice', device.getRunningDevice)
-router.get('/viewDevice', device.viewCurrentScreenDevice)
+router.get('/runningDevice', getRunningDevice)
+router.get('/viewDevice', viewCurrentScreenDevice)
 
 // auto api
-router.post('/start', auto.startAuto)
-router.post('/stop', auto.stopAuto)
-router.post('/stopAll', auto.stopAllAuto)
+router.post('/start', startAuto)
+router.post('/stop', stopAuto)
+router.post('/stopAll', stopAllAuto)
 
 // logs api
-router.get('/logs', logs.getLogs)
-router.delete('/logs', logs.clearLogs)
+router.get('/logs', getLogs)
+router.delete('/logs', clearLogs)
 
 module.exports = router

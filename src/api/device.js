@@ -1,16 +1,13 @@
-const fs = require('fs')
-const path = require('path')
-const { runShell } = require('../utils/shell')
+const { getDeviceData, readFileData } = require('../utils/data')
+const { ADBHelper } = require('../lib/adb')
+const { resolve } = require('path')
 
-exports.getRunningDevice = async function (req, res, next) {
-    var dataRaw = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/device.json'), 'utf8'))
-    let data = await Promise.all(
+async function getRunningDevice(req, res, next) {
+    const dataRaw = getDeviceData()
+    const deviceList = await ADBHelper.getDevices()
+    const data = await Promise.all(
         dataRaw.map(async (raw) => {
-            const isMacOs = process.platform === "darwin";
-            let name = raw.device;
-            if (isMacOs) {
-                name = (await runShell(`adb -s ${raw.device} emu avd name`)).match(/([^\r\n|OK]+)/g)[0].replaceAll('_', ' ')
-            }
+            const name = deviceList.find((x) => x.id === raw.device).name
             return {
                 ...raw,
                 deviceName: name,
@@ -20,11 +17,17 @@ exports.getRunningDevice = async function (req, res, next) {
     res.json(data)
 }
 
-exports.viewCurrentScreenDevice = async function (req, res, next) {
-    let deviceId = req.query.device
-    await runShell(`adb -s ${deviceId} exec-out screencap -p > src/assets/screen/${deviceId}.png`)
-    let data = fs.readFileSync(path.resolve(__dirname, `../assets/screen/${deviceId}.png`), 'binary')
+async function viewCurrentScreenDevice(req, res, next) {
+    const deviceId = req.query.device
+    const filePath = resolve(__dirname, `../assets/screen/${deviceId}.png`)
+    await ADBHelper.screenCap(deviceId, filePath)
+    const data = readFileData(filePath)
 
     res.contentType('image/jpeg')
     return res.end(Buffer.from(data, 'binary'))
+}
+
+module.exports = {
+    getRunningDevice,
+    viewCurrentScreenDevice,
 }
