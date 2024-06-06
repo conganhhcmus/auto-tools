@@ -7,7 +7,6 @@ const { resolve } = require('path')
 const { isMacOS } = require('../utils/platform')
 const { runExec } = require('../utils/shell')
 const fs = require('fs')
-const { logInfoMsg } = require('../utils/log')
 
 const client = Adb.createClient({ port: process.env.ADB_PORT || 5037, host: process.env.ADB_HOST || '127.0.0.1' })
 const monkeyPort = process.env.MONKEY_PORT || 1080
@@ -29,11 +28,7 @@ class ADBHelper {
 
         // create monkey instance
         const device = client.getDevice(deviceId)
-        let output = [deviceId]
-        output.push(await device.forward(`tcp:${monkeyPort}`, `tcp:${monkeyPort}`))
-        output.push((await device.shell(`nohup monkey --port ${monkeyPort} &`).then(Adb.util.readAll)).toString('utf-8'))
 
-        logInfoMsg(output.toString())
         const monkey = await device.openMonkey(monkeyPort)
         const vmSize = await ADBHelper.getVMSize(deviceId)
         return new MonkeyRunner(monkey, vmSize)

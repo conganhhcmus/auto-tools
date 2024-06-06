@@ -3,8 +3,48 @@ const { ADBHelper } = require('../../lib/adb')
 
 const { SellItemOptions } = require('./constant')
 
-//#region Cao tinh dau dua + tra hoa hong
-const produceItems_0 = async (deviceId, monkey, hasEventTree, isLast) => {
+//#region hat dua say + nuoc chanh
+const produceItems_1 = async (deviceId, monkey, hasEventTree, isLast) => {
+    // Plant tree
+    await core.goUp(monkey)
+    await core.nextTrees(deviceId, monkey, 'dua-hau')
+    await core.plantTrees(monkey, hasEventTree ? 4 : 0) // trong dua hau
+    await core.goUp(monkey, 2)
+    await core.plantTrees(monkey, hasEventTree ? 0 : 1) // trong chanh
+
+    await core.goDownLast(monkey)
+    await core.sleep(monkey, 6.5)
+
+    await core.goUp(monkey)
+    await core.harvestTrees(monkey)
+    await core.goUp(monkey, 2)
+    await core.harvestTrees(monkey)
+
+    await core.goDownLast(monkey)
+
+    // make item
+    await core.goUp(monkey)
+    await core.makeItemFloor1(monkey, 4, 4)
+    await core.makeItemFloor2(monkey, 3, 3)
+
+    await core.goDownLast(monkey)
+    if (!isLast) await core.sleep(monkey, 9)
+}
+
+const sellItems_1 = async (deviceId, monkey) => {
+    // Sell Goods
+    const slotA = [0, 1, 2, 3, 4, 5, 6]
+    const slotB = []
+    const slotC = []
+    await core.sellItems(deviceId, monkey, slotA, slotB, slotC, SellItemOptions.goods, [
+        { key: 'hat-dua-say', value: 4 },
+        { key: 'nuoc-chanh', value: 3 },
+    ])
+}
+//#endregion
+
+//#region tinh dau dua + tra hoa hong
+const produceItems_2 = async (deviceId, monkey, hasEventTree, isLast) => {
     // trong tuyet
     await core.goUp(monkey)
     await core.prevTrees(deviceId, monkey, 'tuyet')
@@ -55,7 +95,7 @@ const produceItems_0 = async (deviceId, monkey, hasEventTree, isLast) => {
     await core.goDownLast(monkey)
 }
 
-const sellItems_0 = async (deviceId, monkey) => {
+const sellItems_2 = async (deviceId, monkey) => {
     // Sell Goods
     const slotA = [0, 1, 2, 3, 4, 5, 6, 7]
     const slotB = []
@@ -65,6 +105,57 @@ const sellItems_0 = async (deviceId, monkey) => {
         { key: 'tra-hoa-hong', value: 3 },
     ])
 }
+
+//#endregion
+
+//#region tinh dau dua + nuoc chanh
+const produceItems_3 = async (deviceId, monkey, hasEventTree, isLast) => {
+    // Plant tree
+    await core.goUp(monkey)
+    await core.prevTrees(deviceId, monkey, 'tuyet')
+    await core.plantTrees(monkey, hasEventTree ? 3 : 4) // trong tuyet
+    await core.goUp(monkey, 2)
+    await core.nextTrees(deviceId, monkey, 'chanh')
+    await core.plantTrees(monkey, hasEventTree ? 0 : 1) // trong chanh
+    await core.goUp(monkey, 2)
+    await core.plantTrees(monkey, hasEventTree ? 1 : 2) // trong dua
+    await core.goUp(monkey, 2)
+    await core.plantTrees_Half(monkey, hasEventTree ? 1 : 2, 3) // trong dua
+
+    await core.goDownLast(monkey)
+    await core.sleep(monkey, 4)
+
+    await core.goUp(monkey)
+    await core.harvestTrees(monkey)
+    await core.goUp(monkey, 2)
+    await core.harvestTrees(monkey)
+    await core.goUp(monkey, 2)
+    await core.harvestTrees(monkey)
+    await core.goUp(monkey, 2)
+    await core.harvestTrees(monkey)
+
+    await core.goDownLast(monkey)
+
+    // make item
+    await core.goUp(monkey)
+    await core.makeItemFloor2(monkey, 3, 3)
+    await core.goUp(monkey, 4)
+    await core.makeItemFloor1(monkey, 3, 3)
+
+    await core.goDownLast(monkey)
+}
+
+const sellItems_3 = async (deviceId, monkey) => {
+    // Sell Goods
+    const slotA = [0, 1, 2, 4, 5, 6]
+    const slotB = []
+    const slotC = []
+    await core.sellItems(deviceId, monkey, slotA, slotB, slotC, SellItemOptions.goods, [
+        { key: 'tinh-dau-dua', value: 3 },
+        { key: 'nuoc-chanh', value: 3 },
+    ])
+}
+//#endregion
 
 const plantEventTree = async (monkey) => {
     await core.goUp(monkey)
@@ -90,50 +181,13 @@ const plantEventTree = async (monkey) => {
     await core.goDownLast(monkey)
 }
 
-//#endregion
-
-//#region Cao hat dua say + nuoc chanh
-const produceItems_1 = async (deviceId, monkey, hasEventTree, isLast) => {
-    // Plant tree
-    await core.goUp(monkey)
-    await core.nextTrees(deviceId, monkey, 'dua-hau')
-    await core.plantTrees(monkey, hasEventTree ? 4 : 0) // trong dua hau
-    await core.goUp(monkey, 2)
-    await core.plantTrees(monkey, hasEventTree ? 0 : 1) // trong chanh
-
-    await core.goDownLast(monkey)
-    await core.sleep(monkey, 6.5)
-
-    await core.goUp(monkey)
-    await core.harvestTrees(monkey)
-    await core.goUp(monkey, 2)
-    await core.harvestTrees(monkey)
-
-    await core.goDownLast(monkey)
-
-    // make item
-    await core.goUp(monkey)
-    await core.makeItemFloor1(monkey, 4, 4)
-    await core.makeItemFloor2(monkey, 3, 3)
-
-    await core.goDownLast(monkey)
-    if (!isLast) await core.sleep(monkey, 9)
-}
-
-const sellItems_1 = async (deviceId, monkey) => {
-    // Sell Goods
-    const slotA = [0, 1, 2, 3, 4, 5, 6]
-    const slotB = []
-    const slotC = []
-    await core.sellItems(deviceId, monkey, slotA, slotB, slotC, SellItemOptions.goods, [
-        { key: 'hat-dua-say', value: 4 },
-        { key: 'nuoc-chanh', value: 3 },
-    ])
-}
-//#endregion
 // export function
 
-const openGame = async (deviceId, gameOptions = {}, index) => {
+const openGame = async (isRunning, deviceId, gameOptions = {}, index) => {
+    if (isRunning && !isRunning(deviceId)) {
+        return
+    }
+
     const monkey = await ADBHelper.openMonkey(deviceId)
 
     const { openGame, openGameAfter } = gameOptions
@@ -142,7 +196,11 @@ const openGame = async (deviceId, gameOptions = {}, index) => {
     return monkey.close()
 }
 
-const openChests = async (deviceId, gameOptions = {}) => {
+const openChests = async (isRunning, deviceId, gameOptions = {}) => {
+    if (isRunning && !isRunning(deviceId)) {
+        return
+    }
+
     const { openChests } = gameOptions
     const monkey = await ADBHelper.openMonkey(deviceId)
 
@@ -150,18 +208,26 @@ const openChests = async (deviceId, gameOptions = {}) => {
     return monkey.close()
 }
 
-const produceItems = async (deviceId, gameOptions = {}, index, auto, gameName) => {
+const produceItems = async (isRunning, deviceId, gameOptions = {}, index, auto, gameName) => {
+    if (isRunning && !isRunning(deviceId)) {
+        return
+    }
+
     const { runAuto, hasEventTree } = gameOptions
     const isLast = index === 9
     const monkey = await ADBHelper.openMonkey(deviceId)
 
     switch (runAuto) {
         case auto[gameName][0].key:
-            await produceItems_0(deviceId, monkey, hasEventTree, isLast)
+            await produceItems_1(deviceId, monkey, hasEventTree, isLast)
             break
 
         case auto[gameName][1].key:
-            await produceItems_1(deviceId, monkey, hasEventTree, isLast)
+            await produceItems_2(deviceId, monkey, hasEventTree, isLast)
+            break
+
+        case auto[gameName][2].key:
+            await produceItems_3(deviceId, monkey, hasEventTree, isLast)
             break
 
         default:
@@ -171,18 +237,26 @@ const produceItems = async (deviceId, gameOptions = {}, index, auto, gameName) =
     return monkey.close()
 }
 
-const sellItems = async (deviceId, gameOptions, auto, gameName) => {
+const sellItems = async (isRunning, deviceId, gameOptions, auto, gameName) => {
+    if (isRunning && !isRunning(deviceId)) {
+        return
+    }
+
     const { runAuto, sellItems } = gameOptions
     if (!sellItems) return
 
     const monkey = await ADBHelper.openMonkey(deviceId)
     switch (runAuto) {
         case auto[gameName][0].key:
-            await sellItems_0(deviceId, monkey)
+            await sellItems_1(deviceId, monkey)
             break
 
         case auto[gameName][1].key:
-            await sellItems_1(deviceId, monkey)
+            await sellItems_2(deviceId, monkey)
+            break
+
+        case auto[gameName][2].key:
+            await sellItems_3(deviceId, monkey)
             break
 
         default:

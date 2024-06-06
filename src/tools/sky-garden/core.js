@@ -210,7 +210,7 @@ const goDownLast = async (monkey) => {
     await goUp(monkey)
     const monkeyRunner = monkey.multi()
 
-    monkeyRunner.tap(405, 430).sleep(0.75 * 1000)
+    monkeyRunner.tap(405, 430).sleep(500)
 
     return await monkeyRunner.execute()
 }
@@ -252,7 +252,7 @@ const openGame = async (deviceId, monkey) => {
         .press('KEYCODE_BACK')
         .sleep(1 * 1000)
         .tap(470, 325)
-        .sleep(1 * 1000)
+        .sleep(500)
 
     return await monkeyRunner.execute()
 }
@@ -264,33 +264,33 @@ const openChests = async (deviceId, monkey) => {
         const monkeyRunner = monkey.multi()
         monkeyRunner
             .tap(280, 100)
-            .sleep(500)
+            .sleep(200)
             .tap(280, 100)
-            .sleep(1 * 1000)
-            .tap(170, 355)
             .sleep(500)
             .tap(170, 355)
-            .sleep(1 * 1000)
-            .tap(400, 280)
+            .sleep(200)
+            .tap(170, 355)
             .sleep(500)
             .tap(400, 280)
-            .sleep(500)
+            .sleep(200)
+            .tap(400, 280)
+            .sleep(200)
+            .tap(400, 280)
+            .sleep(200)
+            .tap(400, 280)
+            .sleep(200)
+            .tap(400, 280)
+            .sleep(200)
+            .tap(400, 280)
+            .sleep(200)
+            .tap(400, 280)
+            .sleep(200)
+            .tap(400, 280)
+            .sleep(200)
+            .tap(400, 280)
+            .sleep(200)
             .tap(400, 280)
             .sleep(500)
-            .tap(400, 280)
-            .sleep(500)
-            .tap(400, 280)
-            .sleep(500)
-            .tap(400, 280)
-            .sleep(500)
-            .tap(400, 280)
-            .sleep(500)
-            .tap(400, 280)
-            .sleep(500)
-            .tap(400, 280)
-            .sleep(500)
-            .tap(400, 280)
-            .sleep(1 * 1000)
             //back to game
             .press('KEYCODE_BACK')
             .sleep(100)
@@ -309,7 +309,7 @@ const harvestTrees = async (monkey) => {
     const { x, y } = DefaultBasket
     const monkeyRunner = monkey.multi()
 
-    monkeyRunner.tap(300, 380).sleep(400)
+    monkeyRunner.tap(300, 380).sleep(300)
 
     monkeyRunner.touchDown(x, y).sleep(DelayTime)
 
@@ -344,7 +344,7 @@ const plantTrees = async (monkey, slot = 0, floor = 2) => {
     const monkeyRunner = monkey.multi()
 
     // open
-    monkeyRunner.tap(300, 380).sleep(400)
+    monkeyRunner.tap(300, 380).sleep(300)
 
     _plantBySlot(monkeyRunner, slot, floor)
 
@@ -354,7 +354,7 @@ const plantTrees = async (monkey, slot = 0, floor = 2) => {
 const plantTrees_Half = async (monkey, slot = 0, index, floor = 1) => {
     const monkeyRunner = monkey.multi()
     // open
-    monkeyRunner.tap(300, 380).sleep(400)
+    monkeyRunner.tap(300, 380).sleep(300)
 
     if (floor == 1) _plantHalfBySlot_1st(monkeyRunner, slot, index)
     else _plantHalfBySlot_2nd(monkeyRunner, slot, index)
@@ -366,7 +366,7 @@ const makeItemFloor1 = async (monkey, slot = 0, number = 1) => {
     const monkeyRunner = monkey.multi()
 
     // open
-    for (let i = 0; i < 15; i++) {
+    for (let i = 0; i < 10; i++) {
         monkeyRunner.tap(175, 410).sleep(200)
     }
 
@@ -385,7 +385,7 @@ const makeItemFloor2 = async (monkey, slot = 0, number = 1) => {
     const monkeyRunner = monkey.multi()
 
     // open
-    for (let i = 0; i < 15; i++) {
+    for (let i = 0; i < 10; i++) {
         monkeyRunner.tap(175, 200).sleep(200)
     }
 
@@ -403,7 +403,7 @@ const makeItemFloor2 = async (monkey, slot = 0, number = 1) => {
 const nextTrees = async (deviceId, monkey, itemId) => {
     let monkeyRunner = monkey.multi()
 
-    monkeyRunner.tap(300, 380).sleep(500)
+    monkeyRunner.tap(300, 380).sleep(300)
 
     await monkeyRunner.execute()
     let isFound = await ADBHelper.haveItemOnScreen(deviceId, _getItemId(itemId))
@@ -411,7 +411,7 @@ const nextTrees = async (deviceId, monkey, itemId) => {
     while (!isFound) {
         monkeyRunner = monkey.multi()
 
-        monkeyRunner.tap(325, 305).sleep(500)
+        monkeyRunner.tap(325, 305).sleep(300)
 
         await monkeyRunner.execute()
         isFound = await ADBHelper.haveItemOnScreen(deviceId, _getItemId(itemId))
@@ -427,7 +427,7 @@ const nextTrees = async (deviceId, monkey, itemId) => {
 const prevTrees = async (deviceId, monkey, itemId) => {
     let monkeyRunner = monkey.multi()
 
-    monkeyRunner.tap(300, 380).sleep(500)
+    monkeyRunner.tap(300, 380).sleep(300)
 
     await monkeyRunner.execute()
     let isFound = await ADBHelper.haveItemOnScreen(deviceId, _getItemId(itemId))
@@ -435,7 +435,7 @@ const prevTrees = async (deviceId, monkey, itemId) => {
     while (!isFound) {
         monkeyRunner = monkey.multi()
 
-        monkeyRunner.tap(80, 305).sleep(500)
+        monkeyRunner.tap(80, 305).sleep(300)
 
         await monkeyRunner.execute()
         isFound = await ADBHelper.haveItemOnScreen(deviceId, _getItemId(itemId))
@@ -493,7 +493,7 @@ const sellItems = async (deviceId, monkey, slotA, slotB, slotC, option, items) =
         monkeyRunner = monkey.multi()
 
         // close
-        monkeyRunner.press('KEYCODE_BACK').sleep(100).press('KEYCODE_BACK').sleep(100).press('KEYCODE_BACK').sleep(100).tap(470, 325).sleep(1000)
+        monkeyRunner.press('KEYCODE_BACK').sleep(100).press('KEYCODE_BACK').sleep(100).press('KEYCODE_BACK').sleep(100).tap(470, 325).sleep(500)
 
         return await monkeyRunner.execute()
     }
@@ -527,7 +527,7 @@ const sellItems = async (deviceId, monkey, slotA, slotB, slotC, option, items) =
         monkeyRunner = monkey.multi()
 
         // close
-        monkeyRunner.press('KEYCODE_BACK').sleep(100).press('KEYCODE_BACK').sleep(100).press('KEYCODE_BACK').sleep(100).tap(470, 325).sleep(1000)
+        monkeyRunner.press('KEYCODE_BACK').sleep(100).press('KEYCODE_BACK').sleep(100).press('KEYCODE_BACK').sleep(100).tap(470, 325).sleep(500)
 
         return await monkeyRunner.execute()
     }
@@ -560,7 +560,7 @@ const sellItems = async (deviceId, monkey, slotA, slotB, slotC, option, items) =
     monkeyRunner = monkey.multi()
 
     // close
-    monkeyRunner.press('KEYCODE_BACK').sleep(100).press('KEYCODE_BACK').sleep(100).press('KEYCODE_BACK').sleep(100).tap(470, 325).sleep(1000)
+    monkeyRunner.press('KEYCODE_BACK').sleep(100).press('KEYCODE_BACK').sleep(100).press('KEYCODE_BACK').sleep(100).tap(470, 325).sleep(500)
 
     return await monkeyRunner.execute()
 }

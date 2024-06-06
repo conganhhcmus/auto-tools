@@ -29,7 +29,7 @@ class MonkeyRunner {
 
     execute = () =>
         new Promise((resolve, reject) =>
-            this.client.done().execute((err, val) => {
+            this.client.sleep(5).execute((err, val) => {
                 if (err) {
                     logErrMsg(err.toString())
                     reject(err)

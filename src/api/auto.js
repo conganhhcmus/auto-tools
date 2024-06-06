@@ -21,11 +21,12 @@ const startAuto = async (req, res, next) => {
     writeDeviceData(data)
     const { selectedDevices, ...params } = payload
 
-    payload.selectedDevices.forEach((device) => {
+    for (const device of payload.selectedDevices) {
         params.deviceId = device
         runner.push(device, params)
         runner.run(device)
-    })
+    }
+
     res.json(data)
 }
 
