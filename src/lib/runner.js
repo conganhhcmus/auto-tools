@@ -41,6 +41,10 @@ class Runner {
         writeLogData(logData)
 
         for (let i = 0; i < frequency; i++) {
+            // check running
+            if (!this.isRunning(deviceId)) {
+                break
+            }
             // write log
             let logData = getLogData()
             const index = logData.findIndex((x) => x.device == deviceId)
@@ -49,10 +53,8 @@ class Runner {
 
             // run auto
             try {
-                params.index = i
-                params.isRunning = this.isRunning
                 const autoTool = this.getAutoTool(params.selectedGame)
-                autoTool && (await autoTool(params))
+                autoTool && (await autoTool({ ...params, index: i }))
             } catch (err) {
                 logErrMsg(err.toString())
                 break

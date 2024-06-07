@@ -183,11 +183,7 @@ const plantEventTree = async (monkey) => {
 
 // export function
 
-const openGame = async (isRunning, deviceId, gameOptions = {}, index) => {
-    if (isRunning && !isRunning(deviceId)) {
-        return
-    }
-
+const openGame = async (deviceId, gameOptions = {}, index) => {
     const monkey = await ADBHelper.openMonkey(deviceId)
 
     const { openGame, openGameAfter } = gameOptions
@@ -196,11 +192,7 @@ const openGame = async (isRunning, deviceId, gameOptions = {}, index) => {
     return monkey.close()
 }
 
-const openChests = async (isRunning, deviceId, gameOptions = {}) => {
-    if (isRunning && !isRunning(deviceId)) {
-        return
-    }
-
+const openChests = async (deviceId, gameOptions = {}) => {
     const { openChests } = gameOptions
     const monkey = await ADBHelper.openMonkey(deviceId)
 
@@ -208,11 +200,7 @@ const openChests = async (isRunning, deviceId, gameOptions = {}) => {
     return monkey.close()
 }
 
-const produceItems = async (isRunning, deviceId, gameOptions = {}, index, auto, gameName) => {
-    if (isRunning && !isRunning(deviceId)) {
-        return
-    }
-
+const produceItems = async (deviceId, gameOptions = {}, index, auto, gameName) => {
     const { runAuto, hasEventTree } = gameOptions
     const isLast = index === 9
     const monkey = await ADBHelper.openMonkey(deviceId)
@@ -237,11 +225,7 @@ const produceItems = async (isRunning, deviceId, gameOptions = {}, index, auto, 
     return monkey.close()
 }
 
-const sellItems = async (isRunning, deviceId, gameOptions, auto, gameName) => {
-    if (isRunning && !isRunning(deviceId)) {
-        return
-    }
-
+const sellItems = async (deviceId, gameOptions, auto, gameName) => {
     const { runAuto, sellItems } = gameOptions
     if (!sellItems) return
 

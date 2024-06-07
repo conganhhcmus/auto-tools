@@ -23,9 +23,6 @@ class ADBHelper {
     }
 
     static openMonkey = async (deviceId) => {
-        // kill all process monkey
-        await ADBHelper.killMonkey(deviceId)
-
         // create monkey instance
         const device = client.getDevice(deviceId)
 
