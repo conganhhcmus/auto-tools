@@ -23,6 +23,9 @@ class ADBHelper {
     }
 
     static openMonkey = async (deviceId) => {
+        // kill all process monkey
+        await ADBHelper.killMonkey(deviceId)
+
         // create monkey instance
         const device = client.getDevice(deviceId)
 
@@ -33,7 +36,7 @@ class ADBHelper {
 
     static killMonkey = async (deviceId) => {
         const device = client.getDevice(deviceId)
-        let maxRun = 10
+        let maxRun = 2
         while (maxRun > 0) {
             // kill all process monkey
             await device.shell('kill $(pgrep monkey)').then(Adb.util.readAll)

@@ -4,7 +4,8 @@ const autoFunc = require('./auto')
 async function Auto(argv) {
     const auto = getAutoData()
     const gameName = 'sky-garden'
-    const { gameOptions, deviceId, index } = argv
+    const data = JSON.parse(Buffer.from(argv[2], 'base64').toString('ascii'))
+    const { gameOptions, deviceId, index } = data
 
     await autoFunc.openGame(deviceId, gameOptions, index)
     for (let i = 0; i < 10; i++) {
@@ -14,4 +15,4 @@ async function Auto(argv) {
     await autoFunc.sellItems(deviceId, gameOptions, auto, gameName)
 }
 
-module.exports = Auto
+Auto(process.argv)

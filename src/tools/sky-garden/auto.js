@@ -189,7 +189,7 @@ const openGame = async (deviceId, gameOptions = {}, index) => {
     const { openGame, openGameAfter } = gameOptions
     const needOpen = openGame && index % openGameAfter == 0
     needOpen && (await core.openGame(deviceId, monkey))
-    return monkey.close()
+    return await monkey.close()
 }
 
 const openChests = async (deviceId, gameOptions = {}) => {
@@ -197,7 +197,7 @@ const openChests = async (deviceId, gameOptions = {}) => {
     const monkey = await ADBHelper.openMonkey(deviceId)
 
     openChests && (await core.openChests(deviceId, monkey))
-    return monkey.close()
+    return await monkey.close()
 }
 
 const produceItems = async (deviceId, gameOptions = {}, index, auto, gameName) => {
@@ -222,7 +222,7 @@ const produceItems = async (deviceId, gameOptions = {}, index, auto, gameName) =
             await plantEventTree(monkey)
             break
     }
-    return monkey.close()
+    return await monkey.close()
 }
 
 const sellItems = async (deviceId, gameOptions, auto, gameName) => {
@@ -246,7 +246,7 @@ const sellItems = async (deviceId, gameOptions, auto, gameName) => {
         default:
             break
     }
-    return monkey.close()
+    return await monkey.close()
 }
 
 module.exports = {

@@ -8,8 +8,8 @@ async function runExec(command, errorHandler = null) {
         const { stdout, stderr, error } = await exec(command)
         stderr && (errorHandler ? errorHandler() : logErrMsg(stderr))
         return stdout || ''
-    } catch (e) {
-        errorHandler ? errorHandler() : logErrMsg(e.message)
+    } catch (err) {
+        errorHandler ? errorHandler(err) : logErrMsg(err.message)
         return ''
     }
 }
@@ -19,11 +19,11 @@ function runSpawn(command, errorHandler = null, exitHandler = null) {
     const childProcess = spawn(commandArray.shift(), commandArray)
 
     childProcess.stderr.on('data', function (data) {
-        errorHandler ? errorHandler() : logErrMsg(data)
+        errorHandler ? errorHandler(data) : logErrMsg(data)
     })
 
     childProcess.on('close', function (code) {
-        exitHandler && exitHandler()
+        exitHandler && exitHandler(code)
     })
 
     return childProcess

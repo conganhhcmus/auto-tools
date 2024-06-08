@@ -1,5 +1,6 @@
 const defaultSize = [800, 450]
 const { logErrMsg } = require('../utils/log')
+const Promise = require('bluebird')
 
 class MonkeyRunner {
     constructor(monkey, vmSize) {
@@ -68,7 +69,20 @@ class MonkeyRunner {
         return this
     }
 
-    close = () => this.monkey.end()
+    close = () =>
+        new Promise((resolve, reject) => {
+            this.monkey.quit((err) => {
+                if (err) {
+                    logErrMsg(err.toString())
+                    reject(err)
+                }
+                this.monkey.end()
+                this.client = undefined
+                this.monkey = undefined
+                this.vmSize = undefined
+                resolve()
+            })
+        })
 }
 
 module.exports = {

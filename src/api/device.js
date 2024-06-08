@@ -1,6 +1,7 @@
 const { getDeviceData, readFileData } = require('../utils/data')
 const { ADBHelper } = require('../lib/adb')
 const { resolve } = require('path')
+const Promise = require('bluebird')
 
 async function getRunningDevice(req, res, next) {
     const dataRaw = getDeviceData()
