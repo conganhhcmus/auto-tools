@@ -210,7 +210,7 @@ const goDownLast = async (monkey) => {
     await goUp(monkey)
     const monkeyRunner = monkey.multi()
 
-    monkeyRunner.tap(405, 430).sleep(500)
+    monkeyRunner.tap(405, 430).sleep(750)
 
     return await monkeyRunner.execute()
 }
@@ -309,7 +309,7 @@ const harvestTrees = async (monkey) => {
     const { x, y } = DefaultBasket
     const monkeyRunner = monkey.multi()
 
-    monkeyRunner.tap(300, 380).sleep(300)
+    monkeyRunner.tap(300, 380).sleep(400)
 
     monkeyRunner.touchDown(x, y).sleep(DelayTime)
 
@@ -344,7 +344,7 @@ const plantTrees = async (monkey, slot = 0, floor = 2) => {
     const monkeyRunner = monkey.multi()
 
     // open
-    monkeyRunner.tap(300, 380).sleep(300)
+    monkeyRunner.tap(300, 380).sleep(400)
 
     _plantBySlot(monkeyRunner, slot, floor)
 
@@ -354,7 +354,7 @@ const plantTrees = async (monkey, slot = 0, floor = 2) => {
 const plantTrees_Half = async (monkey, slot = 0, index, floor = 1) => {
     const monkeyRunner = monkey.multi()
     // open
-    monkeyRunner.tap(300, 380).sleep(300)
+    monkeyRunner.tap(300, 380).sleep(400)
 
     if (floor == 1) _plantHalfBySlot_1st(monkeyRunner, slot, index)
     else _plantHalfBySlot_2nd(monkeyRunner, slot, index)
@@ -403,7 +403,7 @@ const makeItemFloor2 = async (monkey, slot = 0, number = 1) => {
 const nextTrees = async (deviceId, monkey, itemId) => {
     let monkeyRunner = monkey.multi()
 
-    monkeyRunner.tap(300, 380).sleep(300)
+    monkeyRunner.tap(300, 380).sleep(400)
 
     await monkeyRunner.execute()
     let isFound = await ADBHelper.haveItemOnScreen(deviceId, _getItemId(itemId))
@@ -419,7 +419,7 @@ const nextTrees = async (deviceId, monkey, itemId) => {
 
     monkeyRunner = monkey.multi()
 
-    monkeyRunner.press('KEYCODE_BACK').sleep(300)
+    monkeyRunner.press('KEYCODE_BACK').sleep(500)
 
     await monkeyRunner.execute()
 }
@@ -427,7 +427,7 @@ const nextTrees = async (deviceId, monkey, itemId) => {
 const prevTrees = async (deviceId, monkey, itemId) => {
     let monkeyRunner = monkey.multi()
 
-    monkeyRunner.tap(300, 380).sleep(300)
+    monkeyRunner.tap(300, 380).sleep(400)
 
     await monkeyRunner.execute()
     let isFound = await ADBHelper.haveItemOnScreen(deviceId, _getItemId(itemId))
@@ -443,7 +443,7 @@ const prevTrees = async (deviceId, monkey, itemId) => {
 
     monkeyRunner = monkey.multi()
 
-    monkeyRunner.press('KEYCODE_BACK').sleep(300)
+    monkeyRunner.press('KEYCODE_BACK').sleep(500)
 
     await monkeyRunner.execute()
 }

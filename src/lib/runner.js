@@ -1,52 +1,53 @@
-const { writeLogData, getLogData, writeDeviceData, getDeviceData, getGamesData } = require('../utils/data')
 const moment = require('moment')
 const { ADBHelper } = require('./adb')
 const { logErrMsg } = require('../utils/log')
 const { resolve } = require('path')
 const { runSpawn } = require('../utils/shell')
 const Promise = require('bluebird')
+const { writeLogData, getLogData, writeDeviceData, getDeviceData, getGamesData } = require('../utils/data')
 
 class Runner {
     constructor() {
         this.queue = []
     }
-    isRunning = (deviceId) => {
-        const logData = getLogData()
-        const index = logData.findIndex((x) => x.device == deviceId)
-        if (index < 0) return false
-        return logData[index].isRunning
-    }
 
     runAutoTool = (params) => {
-        const { selectedGame } = params
+        const { selectedGame, deviceId } = params
         const gameOptions = getGamesData()
         if (gameOptions.listGameOption.some((x) => x.key === selectedGame && !x.disabled)) {
             const filePath = resolve(__dirname, `../tools/${selectedGame}/index.js`)
             const data = new Buffer.from(JSON.stringify(params)).toString('base64')
-            return new Promise((resolve, reject, onCancel) => {
+            const runnerIndex = this.queue.findIndex((x) => x.id === deviceId)
+
+            return new Promise((resolve, reject) => {
                 const childProcess = runSpawn(
                     `node ${filePath} ${data}`,
                     (err) => reject(err),
-                    (code) => resolve(code)
+                    (code, signal) => {
+                        if (signal === 'SIGINT') {
+                            return reject(new Error('Kill process'))
+                        }
+                        if (code !== 0) {
+                            return reject(new Error(`Failed with code = ${code}`))
+                        }
+                        return resolve('done')
+                    }
                 )
 
-                onCancel(() => {
-                    childProcess.kill()
-                    reject(new Error('Kill process'))
-                })
+                this.queue[runnerIndex].childProcess = childProcess
             })
         }
         return Promise.reject(new Error('Not found auto file!'))
     }
 
     push = (deviceId, argv) => {
-        this.queue.push({ id: deviceId, params: argv, promise: null })
+        this.queue.push({ id: deviceId, params: argv, childProcess: null })
         return this
     }
 
     run = async (deviceId) => {
-        const runnerIndex = this.queue.findIndex((x) => x.id === deviceId)
-        const { frequency } = this.queue[runnerIndex].params.gameOptions
+        const params = this.queue.find((x) => x.id === deviceId).params
+        const { frequency } = params.gameOptions
 
         let logData = getLogData()
         let index = logData.findIndex((x) => x.device == deviceId)
@@ -66,8 +67,7 @@ class Runner {
 
             // run auto
             try {
-                this.queue[runnerIndex].promise = this.runAutoTool({ ...this.queue[runnerIndex].params, index: i })
-                await this.queue[runnerIndex].promise
+                await this.runAutoTool({ ...params, index: i })
             } catch (err) {
                 logErrMsg(err.toString())
                 break
@@ -81,15 +81,16 @@ class Runner {
 
         const deviceData = getDeviceData()
         writeDeviceData(deviceData.filter((x) => x.device != deviceId))
+        this.queue = this.queue.fill((x) => x.id !== deviceId)
 
         return this
     }
 
     kill = async (deviceId) => {
         const runner = this.queue.find((x) => x.id === deviceId)
-        runner.promise.cancel()
+        runner.childProcess.stdin.end()
+        runner.childProcess.kill('SIGINT')
 
-        this.queue = this.queue.fill((x) => x.id !== deviceId)
         await ADBHelper.killMonkey(deviceId)
         return this
     }

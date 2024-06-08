@@ -22,7 +22,7 @@ function getLiveScreen(ws, req) {
     })
 
     ws.on('close', () => {
-        streamProcess.stdin.pause()
+        streamProcess.stdin.end()
         streamProcess.kill()
     })
 }

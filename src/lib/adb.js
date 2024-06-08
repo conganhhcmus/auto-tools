@@ -5,7 +5,7 @@ const { MonkeyRunner } = require('./monkey')
 const { findCoordinates } = require('./image')
 const { resolve } = require('path')
 const { isMacOS } = require('../utils/platform')
-const { runExec } = require('../utils/shell')
+const { runExecAsync } = require('../utils/shell')
 const fs = require('fs')
 
 const client = Adb.createClient({ port: process.env.ADB_PORT || 5037, host: process.env.ADB_HOST || '127.0.0.1' })
@@ -87,7 +87,7 @@ class ADBHelper {
         const devices = await client.listDevices()
         return await Bluebird.map(devices, async (_) => {
             if (isMacOS) {
-                const output = await runExec(`adb -s ${_.id} emu avd name`)
+                const output = await runExecAsync(`adb -s ${_.id} emu avd name`)
                 return {
                     id: _.id,
                     name: output.match(/([^\r\n|OK]+)/g)[0].replaceAll('_', ' '),

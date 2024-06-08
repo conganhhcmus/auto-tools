@@ -1,17 +1,39 @@
-const { promisify } = require('util')
-const exec = promisify(require('child_process').exec)
-const { spawn } = require('child_process')
+const { spawn, exec } = require('child_process')
 const { logErrMsg } = require('./log')
+const Promise = require('bluebird')
 
-async function runExec(command, errorHandler = null) {
-    try {
-        const { stdout, stderr, error } = await exec(command)
-        stderr && (errorHandler ? errorHandler() : logErrMsg(stderr))
-        return stdout || ''
-    } catch (err) {
-        errorHandler ? errorHandler(err) : logErrMsg(err.message)
-        return ''
-    }
+function runExecAsync(command) {
+    return new Promise((resolve, reject) => {
+        runExec(
+            command,
+            (stdout) => resolve(stdout),
+            (err) => {
+                logErrMsg(err.message)
+                reject(err)
+            },
+            (code, signal) => {
+                if (code !== 0) {
+                    reject(new Error(`process die with code ${code}, signal ${signal}`))
+                }
+            }
+        )
+    })
+}
+
+function runExec(command, outputHandler = null, errorHandler = null, exitHandler = null) {
+    const childProcess = exec(command, (err, stdout, stderr) => {
+        if (err) {
+            errorHandler && errorHandler(err)
+        }
+        stderr && logErrMsg(stderr)
+        outputHandler && outputHandler(stdout)
+    })
+
+    childProcess.on('close', function (code, signal) {
+        exitHandler && exitHandler(code, signal)
+    })
+
+    return childProcess
 }
 
 function runSpawn(command, errorHandler = null, exitHandler = null) {
@@ -22,8 +44,8 @@ function runSpawn(command, errorHandler = null, exitHandler = null) {
         errorHandler ? errorHandler(data) : logErrMsg(data)
     })
 
-    childProcess.on('close', function (code) {
-        exitHandler && exitHandler(code)
+    childProcess.on('close', function (code, signal) {
+        exitHandler && exitHandler(code, signal)
     })
 
     return childProcess
@@ -32,4 +54,5 @@ function runSpawn(command, errorHandler = null, exitHandler = null) {
 module.exports = {
     runExec,
     runSpawn,
+    runExecAsync,
 }
