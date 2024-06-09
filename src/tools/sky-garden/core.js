@@ -210,7 +210,7 @@ const goDownLast = async (monkey) => {
     await goUp(monkey)
     const monkeyRunner = monkey.multi()
 
-    monkeyRunner.tap(405, 430).sleep(750)
+    monkeyRunner.tap(405, 440).sleep(DelayTime).tap(405, 440).sleep(750)
 
     return await monkeyRunner.execute()
 }
