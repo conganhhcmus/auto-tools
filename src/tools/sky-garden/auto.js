@@ -169,6 +169,7 @@ const plantEventTree = async (monkey) => {
 
     // xuong tang thap nhat
     await core.goDownLast(monkey)
+    await core.sleep(monkey, 1)
     await core.goUp(monkey)
 
     // thu hoach cay
