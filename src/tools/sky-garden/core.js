@@ -376,7 +376,7 @@ const makeItemFloor1 = async (monkey, slot = 0, number = 1) => {
     _makeGoodsBySlot(monkeyRunner, slot, number)
 
     // fix & close
-    monkeyRunner.tap(80, 313).sleep(500).tap(630, 320).sleep(500).press('KEYCODE_BACK').sleep(500)
+    monkeyRunner.tap(80, 313).sleep(500).tap(630, 320).sleep(500).press('KEYCODE_BACK').sleep(100).press('KEYCODE_BACK').sleep(100).press('KEYCODE_BACK').sleep(100).tap(470, 325).sleep(500)
 
     return await monkeyRunner.execute()
 }
@@ -395,7 +395,7 @@ const makeItemFloor2 = async (monkey, slot = 0, number = 1) => {
     _makeGoodsBySlot(monkeyRunner, slot, number)
 
     // fix & close
-    monkeyRunner.tap(80, 110).sleep(500).tap(630, 320).sleep(500).press('KEYCODE_BACK').sleep(500)
+    monkeyRunner.tap(80, 110).sleep(500).tap(630, 320).sleep(500).press('KEYCODE_BACK').sleep(100).press('KEYCODE_BACK').sleep(100).press('KEYCODE_BACK').sleep(100).tap(470, 325).sleep(500)
 
     return await monkeyRunner.execute()
 }
