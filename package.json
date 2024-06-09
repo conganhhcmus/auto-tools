@@ -1,8 +1,6 @@
 {
   "name": "auto-tools",
-  "version": "1.0.0",
   "description": "Auto Tools",
-  "main": "server.js",
   "scripts": {
     "prepare": "husky",
     "app": "node src/server.js",
@@ -34,8 +32,8 @@
     "opencv-wasm": "^4.3.0-10"
   },
   "devDependencies": {
-    "@babel/core": "^7.23.7",
-    "@babel/preset-env": "^7.23.7",
+    "@babel/core": "^7.24.6",
+    "@babel/preset-env": "^7.24.6",
     "@babel/preset-react": "^7.23.3",
     "@commitlint/cli": "^18.6.0",
     "@commitlint/config-conventional": "^18.6.0",

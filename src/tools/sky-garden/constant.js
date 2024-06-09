@@ -1,6 +1,8 @@
-const DefaultBasket = [210, 255]
+const DelayTime = 3 // 3 ms
 
-const DefaultProduct = [305, 185]
+const DefaultBasket = { x: 210, y: 255 }
+
+const DefaultProduct = { x: 305, y: 185 }
 
 const FirstRowSlotList = [
     { x: 300, y: 380 },
@@ -73,13 +75,14 @@ const SellItemOptions = {
 }
 
 module.exports = {
-    SellSlotList,
-    PlantSlotList,
-    MakeSlotList,
-    FirstRowSlotList,
-    SecondRowSlotList,
+    DelayTime,
     DefaultBasket,
     DefaultProduct,
+    FirstRowSlotList,
+    SecondRowSlotList,
+    SellSlotList,
     SellOptions,
+    PlantSlotList,
+    MakeSlotList,
     SellItemOptions,
 }
