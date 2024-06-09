@@ -13,7 +13,7 @@ const produceItems_1 = async (deviceId, monkey, hasEventTree, isLast) => {
     await core.plantTrees(monkey, hasEventTree ? 0 : 1) // trong chanh
 
     await core.goDownLast(monkey)
-    await core.sleep(monkey, 6.5)
+    await core.sleep(monkey, 7)
 
     await core.goUp(monkey)
     await core.harvestTrees(monkey)
