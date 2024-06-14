@@ -2,21 +2,21 @@ const { DelayTime, SellSlotList, PlantSlotList, MakeSlotList, FirstRowSlotList, 
 const { ADBHelper } = require('../../lib/adb')
 
 //#region private function
-const _move = (monkeyRunner, pointA, pointB, steps = 1) => {
+const _move = (monkeyRunner, pointA, pointB, steps = 1, sleepTime = DelayTime) => {
     const distance_x = Math.abs(pointA.x - pointB.x) / steps
     const distance_y = Math.abs(pointA.y - pointB.y) / steps
 
-    monkeyRunner.touchMove(pointA.x, pointA.y).sleep(DelayTime)
+    monkeyRunner.touchMove(pointA.x, pointA.y).sleep(sleepTime)
 
     for (let i = 0; i < steps; i++) {
         if (pointA.x <= pointB.x && pointA.y <= pointB.y) {
-            monkeyRunner.touchMove(Math.floor(pointA.x + i * distance_x), Math.floor(pointA.y + i * distance_y)).sleep(DelayTime)
+            monkeyRunner.touchMove(Math.floor(pointA.x + i * distance_x), Math.floor(pointA.y + i * distance_y)).sleep(sleepTime)
         } else if (pointA.x >= pointB.x && pointA.y <= pointB.y) {
-            monkeyRunner.touchMove(Math.floor(pointA.x - i * distance_x), Math.floor(pointA.y + i * distance_y)).sleep(DelayTime)
+            monkeyRunner.touchMove(Math.floor(pointA.x - i * distance_x), Math.floor(pointA.y + i * distance_y)).sleep(sleepTime)
         } else if (pointA.x <= pointB.x && pointA.y >= pointB.y) {
-            monkeyRunner.touchMove(Math.floor(pointA.x + i * distance_x), Math.floor(pointA.y - i * distance_y)).sleep(DelayTime)
+            monkeyRunner.touchMove(Math.floor(pointA.x + i * distance_x), Math.floor(pointA.y - i * distance_y)).sleep(sleepTime)
         } else {
-            monkeyRunner.touchMove(Math.floor(pointA.x - i * distance_x), Math.floor(pointA.y - i * distance_y)).sleep(DelayTime)
+            monkeyRunner.touchMove(Math.floor(pointA.x - i * distance_x), Math.floor(pointA.y - i * distance_y)).sleep(sleepTime)
         }
     }
 }
@@ -210,7 +210,7 @@ const goDownLast = async (monkey) => {
     await goUp(monkey)
     const monkeyRunner = monkey.multi()
 
-    monkeyRunner.tap(405, 430).sleep(750)
+    monkeyRunner.tap(405, 440).sleep(DelayTime).tap(405, 440).sleep(750)
 
     return await monkeyRunner.execute()
 }
@@ -366,7 +366,7 @@ const makeItemFloor1 = async (monkey, slot = 0, number = 1) => {
     const monkeyRunner = monkey.multi()
 
     // open
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 12; i++) {
         monkeyRunner.tap(175, 410).sleep(200)
     }
 
@@ -376,7 +376,7 @@ const makeItemFloor1 = async (monkey, slot = 0, number = 1) => {
     _makeGoodsBySlot(monkeyRunner, slot, number)
 
     // fix & close
-    monkeyRunner.tap(80, 313).sleep(500).tap(630, 320).sleep(500).press('KEYCODE_BACK').sleep(500)
+    monkeyRunner.tap(80, 313).sleep(500).tap(630, 320).sleep(500).press('KEYCODE_BACK').sleep(100).press('KEYCODE_BACK').sleep(100).press('KEYCODE_BACK').sleep(100).tap(470, 325).sleep(500)
 
     return await monkeyRunner.execute()
 }
@@ -385,7 +385,7 @@ const makeItemFloor2 = async (monkey, slot = 0, number = 1) => {
     const monkeyRunner = monkey.multi()
 
     // open
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 12; i++) {
         monkeyRunner.tap(175, 200).sleep(200)
     }
 
@@ -395,7 +395,7 @@ const makeItemFloor2 = async (monkey, slot = 0, number = 1) => {
     _makeGoodsBySlot(monkeyRunner, slot, number)
 
     // fix & close
-    monkeyRunner.tap(80, 110).sleep(500).tap(630, 320).sleep(500).press('KEYCODE_BACK').sleep(500)
+    monkeyRunner.tap(80, 110).sleep(500).tap(630, 320).sleep(500).press('KEYCODE_BACK').sleep(100).press('KEYCODE_BACK').sleep(100).press('KEYCODE_BACK').sleep(100).tap(470, 325).sleep(500)
 
     return await monkeyRunner.execute()
 }
@@ -500,9 +500,10 @@ const sellItems = async (deviceId, monkey, slotA, slotB, slotC, option, items) =
 
     monkeyRunner = monkey.multi()
 
-    monkeyRunner.touchDown(670, 270).sleep(DelayTime)
-    _move(monkeyRunner, { x: 670, y: 270 }, { x: 130, y: 270 }, 1000)
-    monkeyRunner.touchUp(130, 270).sleep(500)
+    monkeyRunner.touchDown(675, 270).sleep(DelayTime)
+    _move(monkeyRunner, { x: 675, y: 270 }, { x: 125, y: 270 }, 50, 50)
+
+    monkeyRunner.touchUp(125, 270).sleep(50).touchDown(125, 270).sleep(5).touchMove(127, 270).sleep(50).touchMove(130, 270).sleep(1000).touchUp(130, 270).sleep(500)
 
     await monkeyRunner.execute()
 
@@ -535,7 +536,7 @@ const sellItems = async (deviceId, monkey, slotA, slotB, slotC, option, items) =
     monkeyRunner = monkey.multi()
 
     monkeyRunner.touchDown(670, 270).sleep(DelayTime)
-    _move(monkeyRunner, { x: 670, y: 270 }, { x: 130, y: 270 }, 1000)
+    _move(monkeyRunner, { x: 670, y: 270 }, { x: 130, y: 270 }, 50, 50)
     monkeyRunner.touchUp(130, 270).sleep(500)
 
     await monkeyRunner.execute()
