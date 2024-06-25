@@ -4,9 +4,9 @@ const { logErrMsg } = require('../utils/log')
 const { resolve } = require('path')
 
 const exactRate = 0.9 // 90%
+const defaultSize = [800, 450]
 
 readAndResizeImage = async (filePath) => {
-    const defaultSize = [800, 450]
     const imageSource = await Jimp.read(filePath)
     if (imageSource.bitmap.width > imageSource.bitmap.height) {
         imageSource.resize(defaultSize[0], defaultSize[1])
@@ -54,7 +54,10 @@ async function findCoordinates(deviceId, itemId) {
         contours.delete()
         hierarchy.delete()
 
-        return result
+        return result.map((point) => ({
+            x: (point.x / defaultSize[0]) * 100.0,
+            y: (point.y / defaultSize[1]) * 100.0,
+        }))
     } catch (err) {
         logErrMsg(cvTranslateError(cv, err))
         return []

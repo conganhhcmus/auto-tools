@@ -1,133 +1,325 @@
-const { DelayTime, SellSlotList, PlantSlotList, MakeSlotList, FirstRowSlotList, SecondRowSlotList, DefaultBasket, DefaultProduct, SellOptions } = require('./constant')
-const { ADBHelper } = require('../../lib/adb')
+const { KeyCode } = require('../../lib/webdriverio')
+const { DelayTime, SellSlotList, PlantSlotList, MakeSlotList, FirstRowSlotList, SecondRowSlotList, DefaultBasket, DefaultProduct, SellOptions } = require('./const')
 
-//#region private function
-const _move = (monkeyRunner, pointA, pointB, steps = 1, sleepTime = DelayTime) => {
-    const distance_x = Math.abs(pointA.x - pointB.x) / steps
-    const distance_y = Math.abs(pointA.y - pointB.y) / steps
+const openGame = async (driver) => {
+    const appId = 'vn.kvtm.js'
+    await driver.closeApp(appId)
+    await driver.openApp(appId)
+    await driver.sleep(10)
+    await driver.tap(17.11, 63.75)
+    await driver.sleep(15)
+    await driver.press(KeyCode.BACK)
+    await driver.sleep(1)
+    await driver.press(KeyCode.BACK)
+    await driver.sleep(1)
+    await driver.press(KeyCode.BACK)
+    await driver.sleep(1)
+    await driver.press(KeyCode.BACK)
+    await driver.sleep(1)
+    await driver.press(KeyCode.BACK)
+    await driver.sleep(1)
+    await driver.tap(58, 72.22)
+    await driver.sleep(1)
+}
 
-    monkeyRunner.touchMove(pointA.x, pointA.y).sleep(sleepTime)
-
-    for (let i = 0; i < steps; i++) {
-        if (pointA.x <= pointB.x && pointA.y <= pointB.y) {
-            monkeyRunner.touchMove(Math.floor(pointA.x + i * distance_x), Math.floor(pointA.y + i * distance_y)).sleep(sleepTime)
-        } else if (pointA.x >= pointB.x && pointA.y <= pointB.y) {
-            monkeyRunner.touchMove(Math.floor(pointA.x - i * distance_x), Math.floor(pointA.y + i * distance_y)).sleep(sleepTime)
-        } else if (pointA.x <= pointB.x && pointA.y >= pointB.y) {
-            monkeyRunner.touchMove(Math.floor(pointA.x + i * distance_x), Math.floor(pointA.y - i * distance_y)).sleep(sleepTime)
-        } else {
-            monkeyRunner.touchMove(Math.floor(pointA.x - i * distance_x), Math.floor(pointA.y - i * distance_y)).sleep(sleepTime)
+const openChests = async (driver) => {
+    const itemId = 'ruong-bau'
+    let isFound = await driver.haveItemOnScreen(_getItemId(itemId))
+    if (isFound) {
+        await driver.tap(35.0, 22.22)
+        await driver.sleep(0.2)
+        await driver.tap(35.0, 22.22)
+        await driver.sleep(0.5)
+        await driver.tap(21.25, 78.89)
+        await driver.sleep(0.2)
+        await driver.tap(21.25, 78.89)
+        await driver.sleep(0.5)
+        for (let i = 0; i < 10; i++) {
+            await driver.tap(50.0, 62.22)
+            await driver.sleep(0.2)
         }
+        //back to game
+        await backToGame(driver)
     }
 }
 
-const _sell = (monkeyRunner) => {
-    monkeyRunner
-        .sleep(500)
-        // increase price
-        .tap(660, 270)
-        .sleep(DelayTime)
-        .tap(660, 270)
-        .sleep(DelayTime)
-        .tap(660, 270)
-        .sleep(DelayTime)
-        .tap(660, 270)
-        .sleep(DelayTime)
-        .tap(660, 270)
-        .sleep(DelayTime)
-        .tap(660, 270)
-        .sleep(DelayTime)
-        .tap(660, 270)
-        .sleep(DelayTime)
-        .tap(660, 270)
-        .sleep(DelayTime)
-        .tap(660, 270)
-        .sleep(DelayTime)
-        .tap(660, 270)
-        .sleep(500)
-        // stop increase price
-        .tap(590, 410)
-        .sleep(500)
-        .tap(400, 420)
-        .sleep(500)
-        .tap(500, 35)
-        .sleep(500)
+const backToGame = async (driver) => {
+    await driver.press(KeyCode.BACK)
+    await driver.sleep(0.1)
+    await driver.press(KeyCode.BACK)
+    await driver.sleep(0.1)
+    await driver.press(KeyCode.BACK)
+    await driver.sleep(0.1)
+    await driver.tap(58.75, 72.22)
+    await driver.sleep(0.5)
 }
 
-const _plantBySlot = (monkeyRunner, slot, floor = 2) => {
-    const { x, y } = PlantSlotList[slot]
+const goUp = async (driver, times = 1) => {
+    for (let i = 0; i < times; i++) {
+        await driver.action([
+            { duration: 0, x: 48, y: 10 },
+            { duration: 1, x: 48, y: 50 },
+        ])
+    }
+    await driver.sleep(0.5)
+}
 
-    monkeyRunner.touchDown(x, y).sleep(DelayTime)
+const goDown = async (driver, times = 1) => {
+    for (let i = 0; i < times; i++) {
+        await driver.action([
+            { duration: 0, x: 48, y: 50 },
+            { duration: 1, x: 48, y: 10 },
+        ])
+    }
+    await driver.sleep(0.5)
+}
 
-    _move(monkeyRunner, PlantSlotList[slot], FirstRowSlotList[0], 5)
+const goDownLast = async (driver) => {
+    await goUp(driver)
+    await driver.tap(50.63, 97.78)
+    await driver.sleep(DelayTime)
+    await driver.tap(50.63, 97.78)
+    await driver.sleep(0.75)
+}
+
+const harvestTrees = async (driver) => {
+    const { x, y } = DefaultBasket
+
+    await driver.tap(37.5, 84.44)
+    await driver.sleep(0.4)
+    const pointList = [{ duration: 0, x: x, y: y }]
+    let duration = 0
 
     // floor 1
-    for (let i = 0; i < FirstRowSlotList.length - 1; i++) {
-        _move(monkeyRunner, FirstRowSlotList[i], FirstRowSlotList[i + 1], 5)
+    for (let i = 0; i < FirstRowSlotList.length; i++) {
+        duration += (i + 1) % 2
+        pointList.push({
+            duration: duration,
+            x: FirstRowSlotList[i].x,
+            y: FirstRowSlotList[i].y,
+        })
     }
-
-    _move(monkeyRunner, FirstRowSlotList[FirstRowSlotList.length - 1], SecondRowSlotList[0], 5)
 
     // floor 2
-    if (floor === 2) {
-        for (let i = 0; i < SecondRowSlotList.length - 1; i++) {
-            _move(monkeyRunner, SecondRowSlotList[i], SecondRowSlotList[i + 1], 5)
-        }
-
-        monkeyRunner.touchUp(SecondRowSlotList[SecondRowSlotList.length - 1].x, SecondRowSlotList[SecondRowSlotList.length - 1].y).sleep(500)
-    } else {
-        monkeyRunner.touchUp(SecondRowSlotList[0].x, SecondRowSlotList[0].y).sleep(500)
+    for (let i = 0; i < SecondRowSlotList.length; i++) {
+        duration += i % 2
+        pointList.push({
+            duration: duration,
+            x: SecondRowSlotList[i].x,
+            y: SecondRowSlotList[i].y,
+        })
     }
+    await driver.action(pointList)
+    await driver.sleep(0.5)
 }
 
-const _plantHalfBySlot_1st = (monkeyRunner, slot, index = 6) => {
+const plantTrees = async (driver, slot = 0, floor = 2, pot = 5) => {
     const { x, y } = PlantSlotList[slot]
 
-    monkeyRunner.touchDown(x, y).sleep(DelayTime)
+    // open
+    await driver.tap(37.5, 84.44)
+    await driver.sleep(0.4)
 
-    _move(monkeyRunner, PlantSlotList[slot], FirstRowSlotList[0], 5)
-
+    const pointList = [{ duration: 0, x: x, y: y }]
+    let duration = 0
     // floor 1
-    for (let i = 0; i < index; i++) {
-        _move(monkeyRunner, FirstRowSlotList[i], FirstRowSlotList[i + 1], 5)
+    for (let i = 0; i < FirstRowSlotList.length && floor >= 1; i++) {
+        if (i > 2 * pot && floor == 1) break
+        duration += (i + 1) % 2
+        pointList.push({
+            duration: duration,
+            x: FirstRowSlotList[i].x,
+            y: FirstRowSlotList[i].y,
+        })
     }
-
-    monkeyRunner.touchUp(FirstRowSlotList[index].x, FirstRowSlotList[index].y).sleep(500)
-}
-
-const _plantHalfBySlot_2nd = (monkeyRunner, slot, index = 6) => {
-    const { x, y } = PlantSlotList[slot]
-
-    monkeyRunner.touchDown(x, y).sleep(DelayTime)
-
-    _move(monkeyRunner, PlantSlotList[slot], FirstRowSlotList[0], 5)
-
-    // floor 1
-    for (let i = 0; i < FirstRowSlotList.length - 1; i++) {
-        _move(monkeyRunner, FirstRowSlotList[i], FirstRowSlotList[i + 1], 5)
-    }
-
-    _move(monkeyRunner, FirstRowSlotList[FirstRowSlotList.length - 1], SecondRowSlotList[0], 5)
 
     // floor 2
-
-    for (let i = 0; i < index + 1; i++) {
-        _move(monkeyRunner, SecondRowSlotList[i], SecondRowSlotList[i + 1], 5)
+    for (let i = 0; i < SecondRowSlotList.length && floor >= 2; i++) {
+        duration += i % 2
+        pointList.push({
+            duration: duration,
+            x: SecondRowSlotList[i].x,
+            y: SecondRowSlotList[i].y,
+        })
+        if (i > 2 * pot && floor == 2) break
     }
 
-    monkeyRunner.touchUp(SecondRowSlotList[index + 1].x, SecondRowSlotList[index + 1].y).sleep(500)
+    await driver.action(pointList)
+    await driver.sleep(0.5)
 }
 
-const _makeGoodsBySlot = (monkey, slot = 0, number = 1) => {
+const makeItems = async (driver, floor = 1, slot = 0, number = 1) => {
+    // open
+    for (let i = 0; i < 15; i++) {
+        await driver.tap(21.875, floor == 1 ? 91.11 : 44.44)
+        await driver.sleep(0.2)
+    }
+
+    // make goods
     const { x, y } = MakeSlotList[slot]
-    const { x: produce_x, y: produce_y } = DefaultProduct
 
     for (let i = 0; i < number; i++) {
-        monkey.touchDown(x, y).sleep(DelayTime)
-        _move(monkey, MakeSlotList[slot], DefaultProduct, 5)
-        monkey.touchUp(produce_x, produce_y).sleep(500)
+        const pointList = [{ duration: 0, x: x, y: y }]
+        const duration = Math.round(DelayTime * 1000)
+        pointList.push({ duration: duration, x: DefaultProduct.x, y: DefaultProduct.y })
+        await driver.action(pointList)
+        await driver.sleep(0.1)
     }
+    // fix & close
+    await driver.tap(10.0, floor == 1 ? 69.56 : 24.44)
+    await driver.sleep(0.1)
+    await driver.tap(78.75, 71.11)
+    await driver.sleep(0.1)
+    await backToGame(driver)
 }
+
+const nextTrees = async (driver, itemId) => {
+    await driver.tap(37.5, 84.44)
+    await driver.sleep(0.4)
+
+    let isFound = await driver.haveItemOnScreen(_getItemId(itemId))
+
+    while (!isFound) {
+        await driver.tap(40.625, 67.78)
+        await driver.sleep(0.3)
+
+        isFound = await driver.haveItemOnScreen(_getItemId(itemId))
+    }
+
+    await driver.press(KeyCode.BACK)
+    await driver.sleep(0.5)
+}
+
+const prevTrees = async (driver, itemId) => {
+    await driver.tap(37.5, 84.44)
+    await driver.sleep(0.4)
+
+    let isFound = await driver.haveItemOnScreen(_getItemId(itemId))
+
+    while (!isFound) {
+        await driver.tap(10, 67.78)
+        await driver.sleep(0.3)
+
+        isFound = await driver.haveItemOnScreen(_getItemId(itemId))
+    }
+
+    await driver.press(KeyCode.BACK)
+    await driver.sleep(0.5)
+}
+
+const sellItems = async (driver, slotA, slotB, slotC, option, items) => {
+    // const slotA = [0, 1, 2, 3, 4, 5, 6, 7]
+    // const slotB = [0, 1, 2, 3, 4, 5, 6, 7]
+    // const slotC = [1, 2, 5, 6]
+
+    const { x: option_x, y: option_y } = SellOptions[option]
+
+    // open
+    await driver.tap(66.25, 71.11)
+    await driver.sleep(1)
+
+    // back front market
+    await driver.action([
+        { duration: 0, x: 16.25, y: 60.0 },
+        { duration: 0.2 * 1000, x: 78.75, y: 60.0 },
+    ])
+    await driver.sleep(0.5)
+
+    // back front market
+    await driver.action([
+        { duration: 0, x: 16.25, y: 60.0 },
+        { duration: 0.2 * 1000, x: 78.75, y: 60.0 },
+    ])
+    await driver.sleep(0.5)
+
+    for (const slot of slotA) {
+        const { x, y } = SellSlotList[slot]
+
+        await driver.tap(x, y)
+        await driver.sleep(0.5)
+        await driver.tap(x, y)
+        await driver.sleep(0.5)
+        await driver.tap(option_x, option_y)
+        await driver.sleep(0.5)
+
+        // choose item by image
+        await driver.tapItemOnScreen(_getItemId(items))
+
+        await _sell(driver)
+    }
+
+    if (slotB.length === 0 && slotC.length === 0) {
+        return await backToGame(driver)
+    }
+
+    await driver.action([
+        { duration: 0, x: 84.375, y: 60.0 },
+        { duration: 3 * 1000, x: 21.875, y: 60.0 },
+    ])
+    await driver.sleep(0.5)
+
+    for (const slot of slotB) {
+        const { x, y } = SellSlotList[slot]
+
+        await driver.tap(x, y)
+        await driver.sleep(0.5)
+        await driver.tap(x, y)
+        await driver.sleep(0.5)
+        await driver.tap(option_x, option_y)
+        await driver.sleep(0.5)
+
+        // choose item by image
+        await driver.tapItemOnScreen(_getItemId(items))
+
+        await _sell(driver)
+    }
+
+    if (slotC.length === 0) {
+        return await backToGame(driver)
+    }
+
+    await driver.action([
+        { duration: 0, x: 84.375, y: 60.0 },
+        { duration: 3 * 1000, x: 21.875, y: 60.0 },
+    ])
+    await driver.sleep(0.5)
+
+    for (const slot of slotC) {
+        const { x, y } = SellSlotList[slot]
+
+        await driver.tap(x, y)
+        await driver.sleep(0.5)
+        await driver.tap(x, y)
+        await driver.sleep(0.5)
+        await driver.tap(option_x, option_y)
+        await driver.sleep(0.5)
+
+        // choose item by image
+        await driver.tapItemOnScreen(_getItemId(items))
+
+        await _sell(driver)
+    }
+
+    // close
+    await backToGame(driver)
+}
+
+module.exports = {
+    openGame,
+    openChests,
+    goDown,
+    goUp,
+    goDownLast,
+    backToGame,
+    harvestTrees,
+    plantTrees,
+    makeItems,
+    nextTrees,
+    prevTrees,
+    sellItems,
+}
+
+// private method
 
 const _getItemId = (items) => {
     if (typeof items === 'string') {
@@ -146,440 +338,34 @@ const _getItemId = (items) => {
     return undefined
 }
 
-//#endregion
-
-const sleep = async (monkey, sec = 1) => {
-    const monkeyRunner = monkey.multi()
-    monkeyRunner.sleep(sec * 1000)
-    await monkeyRunner.execute()
-}
-
-const goDown = async (monkey, number = 1) => {
-    const monkeyRunner = monkey.multi()
-
-    for (let i = 0; i < number; i++) {
-        monkeyRunner
-            .touchDown(730, 300)
-            .sleep(DelayTime)
-            .touchMove(730, 300)
-            .sleep(DelayTime)
-            .touchMove(730, 280)
-            .sleep(DelayTime)
-            .touchMove(730, 260)
-            .sleep(DelayTime)
-            .touchMove(730, 240)
-            .sleep(DelayTime)
-            .touchMove(730, 220)
-            .sleep(DelayTime)
-            .touchMove(730, 200)
-            .sleep(DelayTime)
-            .touchUp(730, 200)
-            .sleep(i === number - 1 ? 500 : DelayTime)
-    }
-
-    return await monkeyRunner.execute()
-}
-
-const goUp = async (monkey, number = 1) => {
-    const monkeyRunner = monkey.multi()
-
-    for (let i = 0; i < number; i++) {
-        monkeyRunner
-            .touchDown(730, 200)
-            .sleep(DelayTime)
-            .touchMove(730, 200)
-            .sleep(DelayTime)
-            .touchMove(730, 220)
-            .sleep(DelayTime)
-            .touchMove(730, 240)
-            .sleep(DelayTime)
-            .touchMove(730, 260)
-            .sleep(DelayTime)
-            .touchMove(730, 280)
-            .sleep(DelayTime)
-            .touchMove(730, 300)
-            .sleep(DelayTime)
-            .touchUp(730, 300)
-            .sleep(i === number - 1 ? 500 : DelayTime)
-    }
-
-    return await monkeyRunner.execute()
-}
-
-const goDownLast = async (monkey) => {
-    await goUp(monkey)
-    const monkeyRunner = monkey.multi()
-
-    monkeyRunner.tap(405, 440).sleep(DelayTime).tap(405, 440).sleep(750)
-
-    return await monkeyRunner.execute()
-}
-
-const openGame = async (deviceId, monkey) => {
-    const packageName = 'vn.kvtm.js'
-    const item = 'game'
-
-    await ADBHelper.closeApp(deviceId, packageName)
-    await ADBHelper.openApp(deviceId, packageName)
-
-    let monkeyRunner = monkey.multi()
-
-    // wait 10s
-    monkeyRunner.sleep(10 * 1000)
-    await monkeyRunner.execute()
-
-    await ADBHelper.tapByImg(deviceId, _getItemId(item))
-
-    monkeyRunner = monkey.multi()
-    monkeyRunner
-        .sleep(15 * 1000)
-        .press('KEYCODE_BACK')
-        .sleep(1 * 1000)
-        .press('KEYCODE_BACK')
-        .sleep(1 * 1000)
-        .press('KEYCODE_BACK')
-        .sleep(1 * 1000)
-        .press('KEYCODE_BACK')
-        .sleep(1 * 1000)
-        .press('KEYCODE_BACK')
-        .sleep(1 * 1000)
-        .press('KEYCODE_BACK')
-        .sleep(1 * 1000)
-        .press('KEYCODE_BACK')
-        .sleep(1 * 1000)
-        .press('KEYCODE_BACK')
-        .sleep(1 * 1000)
-        .press('KEYCODE_BACK')
-        .sleep(1 * 1000)
-        .tap(470, 325)
-        .sleep(500)
-
-    return await monkeyRunner.execute()
-}
-
-const openChests = async (deviceId, monkey) => {
-    const itemId = 'ruong-bau'
-    let isFound = await ADBHelper.haveItemOnScreen(deviceId, _getItemId(itemId))
-    if (isFound) {
-        const monkeyRunner = monkey.multi()
-        monkeyRunner
-            .tap(280, 100)
-            .sleep(200)
-            .tap(280, 100)
-            .sleep(500)
-            .tap(170, 355)
-            .sleep(200)
-            .tap(170, 355)
-            .sleep(500)
-            .tap(400, 280)
-            .sleep(200)
-            .tap(400, 280)
-            .sleep(200)
-            .tap(400, 280)
-            .sleep(200)
-            .tap(400, 280)
-            .sleep(200)
-            .tap(400, 280)
-            .sleep(200)
-            .tap(400, 280)
-            .sleep(200)
-            .tap(400, 280)
-            .sleep(200)
-            .tap(400, 280)
-            .sleep(200)
-            .tap(400, 280)
-            .sleep(200)
-            .tap(400, 280)
-            .sleep(500)
-            //back to game
-            .press('KEYCODE_BACK')
-            .sleep(100)
-            .press('KEYCODE_BACK')
-            .sleep(100)
-            .press('KEYCODE_BACK')
-            .sleep(100)
-            .tap(470, 325)
-            .sleep(500)
-
-        return await monkeyRunner.execute()
-    }
-}
-
-const harvestTrees = async (monkey) => {
-    const { x, y } = DefaultBasket
-    const monkeyRunner = monkey.multi()
-
-    monkeyRunner.tap(300, 380).sleep(400)
-
-    monkeyRunner.touchDown(x, y).sleep(DelayTime)
-
-    _move(monkeyRunner, DefaultBasket, FirstRowSlotList[0], 5)
-
-    // floor 1
-    for (let i = 0; i < FirstRowSlotList.length - 1; i++) {
-        _move(monkeyRunner, FirstRowSlotList[i], FirstRowSlotList[i + 1], 5)
-    }
-
-    _move(monkeyRunner, FirstRowSlotList[FirstRowSlotList.length - 1], SecondRowSlotList[0], 5)
-
-    // floor 2
-    for (let i = 0; i < SecondRowSlotList.length - 1; i++) {
-        _move(monkeyRunner, SecondRowSlotList[i], SecondRowSlotList[i + 1], 5)
-    }
-
-    monkeyRunner.touchUp(SecondRowSlotList[SecondRowSlotList.length - 1].x, SecondRowSlotList[SecondRowSlotList.length - 1].y).sleep(500)
-
-    return await monkeyRunner.execute()
-}
-
-const backToGame = async (monkey) => {
-    const monkeyRunner = monkey.multi()
-
-    monkeyRunner.press('KEYCODE_BACK').sleep(100).press('KEYCODE_BACK').sleep(100).press('KEYCODE_BACK').sleep(100).tap(470, 325).sleep(500)
-
-    return await monkeyRunner.execute()
-}
-
-const plantTrees = async (monkey, slot = 0, floor = 2) => {
-    const monkeyRunner = monkey.multi()
-
-    // open
-    monkeyRunner.tap(300, 380).sleep(400)
-
-    _plantBySlot(monkeyRunner, slot, floor)
-
-    return await monkeyRunner.execute()
-}
-
-const plantTrees_Half = async (monkey, slot = 0, index, floor = 1) => {
-    const monkeyRunner = monkey.multi()
-    // open
-    monkeyRunner.tap(300, 380).sleep(400)
-
-    if (floor == 1) _plantHalfBySlot_1st(monkeyRunner, slot, index)
-    else _plantHalfBySlot_2nd(monkeyRunner, slot, index)
-
-    return await monkeyRunner.execute()
-}
-
-const makeItemFloor1 = async (monkey, slot = 0, number = 1) => {
-    const monkeyRunner = monkey.multi()
-
-    // open
-    for (let i = 0; i < 12; i++) {
-        monkeyRunner.tap(175, 410).sleep(200)
-    }
-
-    monkeyRunner.sleep(500)
-
-    // make goods
-    _makeGoodsBySlot(monkeyRunner, slot, number)
-
-    // fix & close
-    monkeyRunner.tap(80, 313).sleep(500).tap(630, 320).sleep(500).press('KEYCODE_BACK').sleep(100).press('KEYCODE_BACK').sleep(100).press('KEYCODE_BACK').sleep(100).tap(470, 325).sleep(500)
-
-    return await monkeyRunner.execute()
-}
-
-const makeItemFloor2 = async (monkey, slot = 0, number = 1) => {
-    const monkeyRunner = monkey.multi()
-
-    // open
-    for (let i = 0; i < 12; i++) {
-        monkeyRunner.tap(175, 200).sleep(200)
-    }
-
-    monkeyRunner.sleep(500)
-
-    // make goods
-    _makeGoodsBySlot(monkeyRunner, slot, number)
-
-    // fix & close
-    monkeyRunner.tap(80, 110).sleep(500).tap(630, 320).sleep(500).press('KEYCODE_BACK').sleep(100).press('KEYCODE_BACK').sleep(100).press('KEYCODE_BACK').sleep(100).tap(470, 325).sleep(500)
-
-    return await monkeyRunner.execute()
-}
-
-const nextTrees = async (deviceId, monkey, itemId) => {
-    let monkeyRunner = monkey.multi()
-
-    monkeyRunner.tap(300, 380).sleep(400)
-
-    await monkeyRunner.execute()
-    let isFound = await ADBHelper.haveItemOnScreen(deviceId, _getItemId(itemId))
-
-    while (!isFound) {
-        monkeyRunner = monkey.multi()
-
-        monkeyRunner.tap(325, 305).sleep(300)
-
-        await monkeyRunner.execute()
-        isFound = await ADBHelper.haveItemOnScreen(deviceId, _getItemId(itemId))
-    }
-
-    monkeyRunner = monkey.multi()
-
-    monkeyRunner.press('KEYCODE_BACK').sleep(500)
-
-    await monkeyRunner.execute()
-}
-
-const prevTrees = async (deviceId, monkey, itemId) => {
-    let monkeyRunner = monkey.multi()
-
-    monkeyRunner.tap(300, 380).sleep(400)
-
-    await monkeyRunner.execute()
-    let isFound = await ADBHelper.haveItemOnScreen(deviceId, _getItemId(itemId))
-
-    while (!isFound) {
-        monkeyRunner = monkey.multi()
-
-        monkeyRunner.tap(80, 305).sleep(300)
-
-        await monkeyRunner.execute()
-        isFound = await ADBHelper.haveItemOnScreen(deviceId, _getItemId(itemId))
-    }
-
-    monkeyRunner = monkey.multi()
-
-    monkeyRunner.press('KEYCODE_BACK').sleep(500)
-
-    await monkeyRunner.execute()
-}
-
-const sellItems = async (deviceId, monkey, slotA, slotB, slotC, option, items) => {
-    // const slotA = [0, 1, 2, 3, 4, 5, 6, 7]
-    // const slotB = [0, 1, 2, 3, 4, 5, 6, 7]
-    // const slotC = [1, 2, 5, 6]
-
-    const { x: option_x, y: option_y } = SellOptions[option]
-
-    let monkeyRunner = monkey.multi()
-
-    // open
-    monkeyRunner.tap(530, 320).sleep(1 * 1000)
-
-    // back front market
-    monkeyRunner.touchDown(130, 270).sleep(DelayTime)
-    _move(monkeyRunner, { x: 130, y: 270 }, { x: 630, y: 270 }, 50)
-    monkeyRunner.touchUp(630, 270).sleep(500)
-
-    // back front market
-    monkeyRunner.touchDown(130, 270).sleep(DelayTime)
-    _move(monkeyRunner, { x: 130, y: 270 }, { x: 630, y: 270 }, 50)
-    monkeyRunner.touchUp(630, 270).sleep(500)
-
-    await monkeyRunner.execute()
-
-    for (const slot of slotA) {
-        const { x, y } = SellSlotList[slot]
-        monkeyRunner = monkey.multi()
-
-        monkeyRunner.tap(x, y).sleep(500).tap(x, y).sleep(500).tap(option_x, option_y).sleep(500)
-
-        await monkeyRunner.execute()
-
-        // choose item by image
-        await ADBHelper.tapByImg(deviceId, _getItemId(items))
-
-        monkeyRunner = monkey.multi()
-        _sell(monkeyRunner)
-
-        await monkeyRunner.execute()
-    }
-
-    if (slotB.length === 0 && slotC.length === 0) {
-        monkeyRunner = monkey.multi()
-
-        // close
-        monkeyRunner.press('KEYCODE_BACK').sleep(100).press('KEYCODE_BACK').sleep(100).press('KEYCODE_BACK').sleep(100).tap(470, 325).sleep(500)
-
-        return await monkeyRunner.execute()
-    }
-
-    monkeyRunner = monkey.multi()
-
-    monkeyRunner.touchDown(675, 270).sleep(DelayTime)
-    _move(monkeyRunner, { x: 675, y: 270 }, { x: 125, y: 270 }, 50, 50)
-
-    monkeyRunner.touchUp(125, 270).sleep(50).touchDown(125, 270).sleep(5).touchMove(127, 270).sleep(50).touchMove(130, 270).sleep(1000).touchUp(130, 270).sleep(500)
-
-    await monkeyRunner.execute()
-
-    for (const slot of slotB) {
-        const { x, y } = SellSlotList[slot]
-
-        monkeyRunner = monkey.multi()
-
-        monkeyRunner.tap(x, y).sleep(500).tap(x, y).sleep(500).tap(option_x, option_y).sleep(500)
-
-        await monkeyRunner.execute()
-
-        await ADBHelper.tapByImg(deviceId, _getItemId(items))
-
-        monkeyRunner = monkey.multi()
-        _sell(monkeyRunner)
-
-        await monkeyRunner.execute()
-    }
-
-    if (slotC.length === 0) {
-        monkeyRunner = monkey.multi()
-
-        // close
-        monkeyRunner.press('KEYCODE_BACK').sleep(100).press('KEYCODE_BACK').sleep(100).press('KEYCODE_BACK').sleep(100).tap(470, 325).sleep(500)
-
-        return await monkeyRunner.execute()
-    }
-
-    monkeyRunner = monkey.multi()
-
-    monkeyRunner.touchDown(670, 270).sleep(DelayTime)
-    _move(monkeyRunner, { x: 670, y: 270 }, { x: 130, y: 270 }, 50, 50)
-    monkeyRunner.touchUp(130, 270).sleep(500)
-
-    await monkeyRunner.execute()
-
-    for (const slot of slotC) {
-        monkeyRunner = monkey.multi()
-
-        const { x, y } = SellSlotList[slot]
-
-        monkeyRunner.tap(x, y).sleep(500).tap(x, y).sleep(500).tap(option_x, option_y).sleep(500)
-
-        await monkeyRunner.execute()
-
-        await ADBHelper.tapByImg(deviceId, _getItemId(items))
-
-        monkeyRunner = monkey.multi()
-        _sell(monkeyRunner)
-
-        await monkeyRunner.execute()
-    }
-
-    monkeyRunner = monkey.multi()
-
-    // close
-    monkeyRunner.press('KEYCODE_BACK').sleep(100).press('KEYCODE_BACK').sleep(100).press('KEYCODE_BACK').sleep(100).tap(470, 325).sleep(500)
-
-    return await monkeyRunner.execute()
-}
-
-module.exports = {
-    sleep,
-    goUp,
-    goDown,
-    goDownLast,
-    openGame,
-    openChests,
-    harvestTrees,
-    backToGame,
-    plantTrees,
-    plantTrees_Half,
-    makeItemFloor1,
-    makeItemFloor2,
-    nextTrees,
-    prevTrees,
-    sellItems,
+const _sell = async (driver) => {
+    await driver.sleep(0.5)
+    // increase price
+    await driver.tap(82.5, 60.0)
+    await driver.sleep(DelayTime)
+    await driver.tap(82.5, 60.0)
+    await driver.sleep(DelayTime)
+    await driver.tap(82.5, 60.0)
+    await driver.sleep(DelayTime)
+    await driver.tap(82.5, 60.0)
+    await driver.sleep(DelayTime)
+    await driver.tap(82.5, 60.0)
+    await driver.sleep(DelayTime)
+    await driver.tap(82.5, 60.0)
+    await driver.sleep(DelayTime)
+    await driver.tap(82.5, 60.0)
+    await driver.sleep(DelayTime)
+    await driver.tap(82.5, 60.0)
+    await driver.sleep(DelayTime)
+    await driver.tap(82.5, 60.0)
+    await driver.sleep(DelayTime)
+    await driver.tap(82.5, 60.0)
+    await driver.sleep(0.5)
+    // stop increase price
+    await driver.tap(73.75, 91.11)
+    await driver.sleep(0.5)
+    await driver.tap(50.0, 93.33)
+    await driver.sleep(0.5)
+    await driver.tap(62.5, 7.78)
+    await driver.sleep(0.5)
 }

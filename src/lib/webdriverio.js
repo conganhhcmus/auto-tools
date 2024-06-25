@@ -1,0 +1,124 @@
+const fs = require('fs')
+const { remote } = require('webdriverio')
+const { resolve } = require('path')
+const { findCoordinates } = require('./image')
+
+class Driver {
+    constructor(driver, deviceId) {
+        this.driver = driver
+        this.deviceId = deviceId
+    }
+
+    getX = (x, width) => {
+        return Math.round((width * x) / 100.0)
+    }
+
+    getY = (y, height) => {
+        return Math.round((height * y) / 100.0)
+    }
+
+    getDeviceId = () => {
+        return this.deviceId
+    }
+
+    getDriver = () => {
+        return this.driver
+    }
+
+    tap = async (x, y) => {
+        const { width, height } = await this.driver.getWindowSize()
+        const pointX = this.getX(x, width)
+        const pointY = this.getY(y, height)
+        await this.driver.executeScript('mobile: clickGesture', [{ x: pointX, y: pointY }])
+    }
+
+    press = async (key) => {
+        await this.driver.executeScript('mobile: pressKey', [{ keycode: key }])
+    }
+
+    finish = async () => {
+        await this.driver.deleteSession()
+    }
+
+    openApp = async (id) => {
+        await this.driver.executeScript('mobile:activateApp', [{ appId: id }])
+    }
+
+    closeApp = async (id) => {
+        await this.driver.executeScript('mobile:terminateApp', [{ appId: id }])
+    }
+
+    sleep = async (s) => {
+        await this.driver.pause(s * 1000)
+    }
+
+    screenshot = async (path) => {
+        const screenshots = await this.driver.executeScript('mobile:screenshots', [])
+        const keys = Object.keys(screenshots)
+        const data = screenshots[keys[0]].payload
+
+        fs.writeFileSync(path, data, 'base64')
+    }
+
+    action = async (points) => {
+        const { width, height } = await this.driver.getWindowSize()
+        let action = this.driver
+            .action('pointer')
+            .move({ duration: points[0].duration, x: this.getX(points[0].x, width), y: this.getY(points[0].y, height) })
+            .down({ button: 0 })
+            .pause(100)
+
+        for (let i = 1; i < points.length; i++) {
+            const { duration, x, y } = points[i]
+            action = action.move({ duration: duration, x: this.getX(x, width), y: this.getY(y, height) })
+        }
+
+        await action.up({ button: 0 }).perform()
+    }
+
+    haveItemOnScreen = async (itemId) => {
+        if (itemId === null || itemId === undefined) return false
+        let count = 5
+        while (count > 0) {
+            count--
+            await this.screenshot(resolve(__dirname, `../assets/device/${this.deviceId}.png`))
+            const points = await findCoordinates(this.deviceId, itemId)
+            if (points.length > 0) return true
+        }
+        return false
+    }
+
+    tapItemOnScreen = async (itemId) => {
+        if (itemId === null || itemId === undefined) return
+        let count = 5
+        while (count > 0) {
+            count--
+            await this.screenshot(resolve(__dirname, `../assets/device/${this.deviceId}.png`))
+            const points = await findCoordinates(this.deviceId, itemId)
+            if (points.length <= 0) continue
+            return await this.tap(points[0].x, points[0].y)
+        }
+    }
+}
+
+const connectAppium = async (capabilities) => {
+    const wdOpts = {
+        hostname: process.env.APPIUM_HOST || '0.0.0.0',
+        port: parseInt(process.env.APPIUM_PORT, 10) || 4723,
+        path: '/wd/hub',
+        logLevel: 'error',
+        capabilities: capabilities,
+    }
+    const driver = await remote(wdOpts)
+    return new Driver(driver, capabilities['appium:udid'])
+}
+
+const KeyCode = {
+    HOME: 3,
+    BACK: 4,
+}
+
+module.exports = {
+    KeyCode,
+    connectAppium,
+}
