@@ -91,7 +91,6 @@ class Runner {
         runner.childProcess.stdin.end()
         runner.childProcess.kill('SIGINT')
 
-        await ADBHelper.killMonkey(deviceId)
         return this
     }
 
