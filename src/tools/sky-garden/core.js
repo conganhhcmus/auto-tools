@@ -8,16 +8,10 @@ const openGame = async (driver) => {
     await driver.sleep(10)
     await driver.tap(17.11, 63.75)
     await driver.sleep(15)
-    await driver.press(KeyCode.BACK)
-    await driver.sleep(1)
-    await driver.press(KeyCode.BACK)
-    await driver.sleep(1)
-    await driver.press(KeyCode.BACK)
-    await driver.sleep(1)
-    await driver.press(KeyCode.BACK)
-    await driver.sleep(1)
-    await driver.press(KeyCode.BACK)
-    await driver.sleep(1)
+    for (let i = 0; i < 10; i++) {
+        await driver.press(KeyCode.BACK)
+        await driver.sleep(1)
+    }
     await driver.tap(58, 72.22)
     await driver.sleep(1)
 }

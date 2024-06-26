@@ -187,7 +187,7 @@ const produceItems_3 = async (driver, hasEventTree, isLast) => {
     await core.plantTrees(driver, hasEventTree ? 1 : 2, 1, 2) // trong dua
 
     await core.goDownLast(driver)
-    await core.sleep(driver, 4)
+    await driver.sleep(4)
 
     await core.goUp(driver)
     await core.harvestTrees(driver)
@@ -233,7 +233,7 @@ const plantEventTree = async (driver) => {
 
     // xuong tang thap nhat
     await core.goDownLast(driver)
-    await core.sleep(driver, 1)
+    await driver.sleep(1)
     await core.goUp(driver)
 
     // thu hoach cay
