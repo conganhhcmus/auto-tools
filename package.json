@@ -3,7 +3,7 @@
   "description": "Auto Tools",
   "scripts": {
     "prepare": "husky",
-    "appium": "appium --base-path /wd/hub",
+    "appium": "appium --log-level error --base-path /wd/hub",
     "app": "node src/server.js",
     "build": "webpack --mode=development --watch",
     "release": "webpack --mode=production",

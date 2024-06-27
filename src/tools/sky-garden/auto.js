@@ -97,10 +97,7 @@ const produceItems_1 = async (driver, hasEventTree, isLast) => {
 
 const sellItems_1 = async (driver) => {
     // Sell Goods
-    const slotA = [0, 1, 2, 3, 4, 5, 6]
-    const slotB = []
-    const slotC = []
-    await core.sellItems(driver, slotA, slotB, slotC, SellItemOptions.goods, [
+    await core.sellItems(driver, SellItemOptions.goods, [
         { key: 'hat-dua-say', value: 4 },
         { key: 'nuoc-chanh', value: 3 },
     ])
@@ -161,10 +158,7 @@ const produceItems_2 = async (driver, hasEventTree, isLast) => {
 
 const sellItems_2 = async (driver) => {
     // Sell Goods
-    const slotA = [0, 1, 2, 3, 4, 5, 6, 7]
-    const slotB = []
-    const slotC = [1]
-    await core.sellItems(driver, slotA, slotB, slotC, SellItemOptions.goods, [
+    await core.sellItems(driver, SellItemOptions.goods, [
         { key: 'tinh-dau-dua', value: 6 },
         { key: 'tra-hoa-hong', value: 3 },
     ])
@@ -187,7 +181,7 @@ const produceItems_3 = async (driver, hasEventTree, isLast) => {
     await core.plantTrees(driver, hasEventTree ? 1 : 2, 1, 2) // trong dua
 
     await core.goDownLast(driver)
-    await driver.sleep(4)
+    await driver.sleep(5) // cho thu hoach
 
     await core.goUp(driver)
     await core.harvestTrees(driver)
@@ -211,10 +205,7 @@ const produceItems_3 = async (driver, hasEventTree, isLast) => {
 
 const sellItems_3 = async (driver) => {
     // Sell Goods
-    const slotA = [0, 1, 2, 4, 5, 6]
-    const slotB = []
-    const slotC = []
-    await core.sellItems(driver, slotA, slotB, slotC, SellItemOptions.goods, [
+    await core.sellItems(driver, SellItemOptions.goods, [
         { key: 'tinh-dau-dua', value: 3 },
         { key: 'nuoc-chanh', value: 3 },
     ])

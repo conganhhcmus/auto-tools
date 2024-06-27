@@ -66,19 +66,6 @@ const SellItemOptions = {
     events: 4,
 }
 
-const SellSlotList = [
-    // [0, 1, 2, 3]
-    // [4, 5, 6, 7]
-    { x: 25.0, y: 36.67 },
-    { x: 41.25, y: 36.67 },
-    { x: 57.5, y: 36.67 },
-    { x: 73.75, y: 36.67 },
-    { x: 25.0, y: 75.56 },
-    { x: 41.25, y: 75.56 },
-    { x: 57.5, y: 75.56 },
-    { x: 73.75, y: 75.56 },
-]
-
 const SellOptions = [
     { x: 53.75, y: 22.22 }, // Trees
     { x: 53.75, y: 37.78 }, // Goods
@@ -93,7 +80,6 @@ module.exports = {
     DefaultProduct,
     FirstRowSlotList,
     SecondRowSlotList,
-    SellSlotList,
     SellOptions,
     PlantSlotList,
     MakeSlotList,
