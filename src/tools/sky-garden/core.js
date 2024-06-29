@@ -3,10 +3,23 @@ const { DelayTime, PlantSlotList, MakeSlotList, FirstRowSlotList, SecondRowSlotL
 
 const openGame = async (driver) => {
     const appId = 'vn.kvtm.js'
+    const gameId = 'game'
+    const shopGemId = 'shop-gem'
+    await driver.press(KeyCode.HOME)
     await driver.closeApp(appId)
     await driver.openApp(appId)
-    await driver.sleep(10)
-    await driver.tap(17.11, 63.75)
+    await driver.sleep(3)
+    let count = 0
+    while (!(await driver.haveItemOnScreen(_getItemId(gameId)))) {
+        if (count > 10) {
+            return await openGame(driver)
+        } else {
+            await driver.sleep(1)
+            count++
+        }
+    }
+    await driver.tapItemOnScreen(_getItemId(gameId))
+    // await driver.tap(17.11, 63.75)
     await driver.sleep(15)
     for (let i = 0; i < 10; i++) {
         await driver.press(KeyCode.BACK)
@@ -14,6 +27,9 @@ const openGame = async (driver) => {
     }
     await driver.tap(58, 72.22)
     await driver.sleep(1)
+    if (!(await driver.haveItemOnScreen(_getItemId(shopGemId)))) {
+        return await openGame(driver)
+    }
 }
 
 const openChests = async (driver) => {
@@ -158,7 +174,7 @@ const makeItems = async (driver, floor = 1, slot = 0, number = 1) => {
     for (let i = 0; i < number; i++) {
         await driver.action([
             { duration: 0, x: x, y: y },
-            { duration: 100, x: DefaultProduct.x, y: DefaultProduct.y }
+            { duration: 100, x: DefaultProduct.x, y: DefaultProduct.y },
         ])
         await driver.sleep(0.3)
     }
@@ -226,8 +242,8 @@ const sellItems = async (driver, option, items) => {
     await driver.sleep(0.5)
 
     // buy all items
-    const emptySlotId = "o-trong"
-    const soldSlotId = "o-da-ban"
+    const emptySlotId = 'o-trong'
+    const soldSlotId = 'o-da-ban'
     let itemId = _getItemId(items)
     let count = 0
     while (itemId) {

@@ -168,46 +168,48 @@ const sellItems_2 = async (driver) => {
 
 //#region tinh dau dua + nuoc chanh
 const produceItems_3 = async (driver, hasEventTree, isLast) => {
-    // Plant tree
-    await core.goUp(driver)
-    await core.prevTrees(driver, 'tuyet')
-    await core.plantTrees(driver, hasEventTree ? 3 : 4) // trong tuyet
-    await core.goUp(driver, 2)
-    await core.nextTrees(driver, 'chanh')
-    await core.plantTrees(driver, hasEventTree ? 0 : 1) // trong chanh
-    await core.goUp(driver, 2)
-    await core.plantTrees(driver, hasEventTree ? 1 : 2) // trong dua
-    await core.goUp(driver, 2)
-    await core.plantTrees(driver, hasEventTree ? 1 : 2, 1, 2) // trong dua
+    for (let i = 0; i < 2; i++) {
+        // Plant tree
+        await core.goUp(driver)
+        await core.prevTrees(driver, 'tuyet')
+        await core.plantTrees(driver, hasEventTree ? 3 : 4) // trong tuyet
+        await core.goUp(driver, 2)
+        await core.nextTrees(driver, 'chanh')
+        await core.plantTrees(driver, hasEventTree ? 0 : 1) // trong chanh
+        await core.goUp(driver, 2)
+        await core.plantTrees(driver, hasEventTree ? 1 : 2) // trong dua
+        await core.goUp(driver, 2)
+        await core.plantTrees(driver, hasEventTree ? 1 : 2, 1, 2) // trong dua
 
-    await core.goDownLast(driver)
-    await driver.sleep(5) // cho thu hoach
+        await core.goDownLast(driver)
+        await driver.sleep(5) // cho thu hoach
 
-    await core.goUp(driver)
-    await core.harvestTrees(driver)
-    await core.goUp(driver, 2)
-    await core.harvestTrees(driver)
-    await core.goUp(driver, 2)
-    await core.harvestTrees(driver)
-    await core.goUp(driver, 2)
-    await core.harvestTrees(driver)
+        await core.goUp(driver)
+        await core.harvestTrees(driver)
+        await core.goUp(driver, 2)
+        await core.harvestTrees(driver)
+        await core.goUp(driver, 2)
+        await core.harvestTrees(driver)
+        await core.goUp(driver, 2)
+        await core.harvestTrees(driver)
 
-    await core.goDownLast(driver)
+        await core.goDownLast(driver)
 
-    // make item
-    await core.goUp(driver)
-    await core.makeItems(driver, 2, 3, 3)
-    await core.goUp(driver, 4)
-    await core.makeItems(driver, 1, 3, 3)
+        // make item
+        await core.goUp(driver)
+        await core.makeItems(driver, 2, 3, 3)
+        await core.goUp(driver, 4)
+        await core.makeItems(driver, 1, 3, 3)
 
-    await core.goDownLast(driver)
+        await core.goDownLast(driver)
+    }
 }
 
 const sellItems_3 = async (driver) => {
     // Sell Goods
     await core.sellItems(driver, SellItemOptions.goods, [
-        { key: 'tinh-dau-dua', value: 3 },
-        { key: 'nuoc-chanh', value: 3 },
+        { key: 'tinh-dau-dua', value: 6 },
+        { key: 'nuoc-chanh', value: 6 },
     ])
 }
 //#endregion
