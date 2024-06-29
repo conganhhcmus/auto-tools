@@ -9,11 +9,16 @@ async function Auto(argv) {
     const { gameOptions, deviceId, index } = data
     const capabilities = {
         platformName: 'Android',
-        'appium:udid': deviceId,
-        'appium:appPackage': 'vn.kvtm.js',
-        'appium:appActivity': 'gsn.game.zingplaynew.AppActivity',
-        'appium:automationName': 'UiAutomator2',
-        'appium:noReset': true,
+        "appium:options": {
+            udid: deviceId,
+            automationName: "UiAutomator2",
+            // appPackage: 'vn.kvtm.js',
+            // appActivity: 'gsn.game.zingplaynew.AppActivity',
+            newCommandTimeout: 300,
+            noReset: true,
+            printPageSourceOnFindFailure: true,
+            suppressKillServer: true,
+        },
     }
 
     const driver = await connectAppium(capabilities)
@@ -24,7 +29,11 @@ async function Auto(argv) {
         }
         await autoFunc.openChests(driver, gameOptions)
         await autoFunc.sellItems(driver, gameOptions, auto, gameName)
-    } finally {
+    }
+    catch (err) {
+        throw err
+    }
+    finally {
         await driver.finish()
     }
 }

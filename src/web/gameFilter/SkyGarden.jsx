@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Checkbox, Col, Row, Select, Button, InputNumber, Flex } from 'antd'
-import styles from './SkyGarden.module.css'
+import * as styles from './SkyGarden.module.css'
 import axios from 'axios'
 
 const SkyGarden = (props) => {

@@ -3,7 +3,7 @@ import { Spin } from 'antd'
 import { Buffer } from 'buffer'
 import axios from 'axios'
 
-import styles from './ImageScreen.module.css'
+import * as styles from './ImageScreen.module.css'
 
 const ImageScreen = (props) => {
     const { loading, setLoading, deviceId } = props

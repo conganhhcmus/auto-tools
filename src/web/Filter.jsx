@@ -2,7 +2,7 @@ const moment = require('moment')
 import React, { useEffect, useState } from 'react'
 import { Col, Row, Select, Flex, notification } from 'antd'
 import GameOptionsFilter from './gameFilter'
-import styles from './Filter.module.css'
+import * as styles from './Filter.module.css'
 import axios from 'axios'
 
 const Filter = (props) => {

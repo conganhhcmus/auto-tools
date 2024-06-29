@@ -8,7 +8,7 @@ const openGame = async (driver) => {
     await driver.press(KeyCode.HOME)
     await driver.closeApp(appId)
     await driver.openApp(appId)
-    await driver.sleep(3)
+    await driver.sleep(5)
     let count = 0
     while (!(await driver.haveItemOnScreen(_getItemId(gameId)))) {
         if (count > 10) {
@@ -19,7 +19,6 @@ const openGame = async (driver) => {
         }
     }
     await driver.tapItemOnScreen(_getItemId(gameId))
-    // await driver.tap(17.11, 63.75)
     await driver.sleep(15)
     for (let i = 0; i < 10; i++) {
         await driver.press(KeyCode.BACK)
@@ -67,8 +66,8 @@ const backToGame = async (driver) => {
 const goUp = async (driver, times = 1) => {
     for (let i = 0; i < times; i++) {
         await driver.action([
-            { duration: 0, x: 91.25, y: 44.44 },
-            { duration: 50, x: 91.25, y: 66.67 },
+            { duration: 0, x: 91.25, y: 63.33 },
+            { duration: DelayTime * 1000, x: 91.25, y: 83.33 },
         ])
         await driver.sleep(DelayTime)
     }
@@ -78,8 +77,8 @@ const goUp = async (driver, times = 1) => {
 const goDown = async (driver, times = 1) => {
     for (let i = 0; i < times; i++) {
         await driver.action([
-            { duration: 0, x: 91.25, y: 66.67 },
-            { duration: 50, x: 91.25, y: 44.44 },
+            { duration: 0, x: 91.25, y: 83.33 },
+            { duration: DelayTime * 1000, x: 91.25, y: 63.33 },
         ])
         await driver.sleep(DelayTime)
     }
@@ -96,7 +95,7 @@ const goDownLast = async (driver) => {
     await driver.tap(50.63, 97.78)
     await driver.sleep(DelayTime)
     await driver.tap(50.63, 97.78)
-    await driver.sleep(0.75)
+    await driver.sleep(1)
 }
 
 const harvestTrees = async (driver) => {

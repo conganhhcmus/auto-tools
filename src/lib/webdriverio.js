@@ -45,7 +45,7 @@ class Driver {
     }
 
     closeApp = async (id) => {
-        await this.driver.executeScript('mobile:terminateApp', [{ appId: id }])
+        await this.driver.executeScript('mobile:terminateApp', [{ appId: id, options: { timeout: 5000 } }])
     }
 
     sleep = async (s) => {
@@ -131,7 +131,7 @@ const connectAppium = async (capabilities) => {
         capabilities: capabilities,
     }
     const driver = await remote(wdOpts)
-    return new Driver(driver, capabilities['appium:udid'])
+    return new Driver(driver, capabilities['appium:options'].udid)
 }
 
 const KeyCode = {

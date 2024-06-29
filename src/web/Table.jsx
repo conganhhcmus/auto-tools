@@ -4,7 +4,7 @@ import { Divider, Table, Button, Flex, Row, Col, Popover, Spin } from 'antd'
 import LiveScreen from './LiveScreen'
 import ImageScreen from './ImageScreen'
 import axios from 'axios'
-import styles from './Table.module.css'
+import * as styles from './Table.module.css'
 
 const RunningTable = (props) => {
     const [runningDevice, setRunningDevice] = useState([])
