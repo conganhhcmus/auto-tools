@@ -1,11 +1,10 @@
-const { runSpawn } = require('./utils/shell')
+const { ADBHelper } = require('./lib/adb')
 
 function getLiveScreen(ws, req) {
     const deviceId = req.params.id
-
-    const streamProcess = runSpawn(`adb -s ${deviceId} exec-out screenrecord --output-format=h264 -`)
     let chunk = Buffer.from([])
-    streamProcess.stdout.on('data', (data) => {
+
+    const streamProcess = ADBHelper.screenRecord(deviceId, (data) => {
         if (isBeginChunk(data)) {
             if (chunk.length > 0) {
                 if (ws.readyState == 2 || ws.readyState == 3) {

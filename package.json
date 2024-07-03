@@ -22,7 +22,6 @@
     }
   },
   "dependencies": {
-    "@devicefarmer/adbkit": "^3.2.6",
     "appium": "^2.11.1",
     "bluebird": "^3.7.2",
     "buffer": "^6.0.3",

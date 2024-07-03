@@ -1,35 +1,40 @@
-const { Adb } = require('@devicefarmer/adbkit')
 const Bluebird = require('bluebird')
+const { runExecAsync, runSpawn } = require('../utils/shell')
 
-const { isMacOS } = require('../utils/platform')
-const { runExecAsync } = require('../utils/shell')
-const fs = require('fs')
-
-const client = Adb.createClient({ port: process.env.ADB_PORT || 5037, host: process.env.ADB_HOST || '127.0.0.1' })
+const getDeviceNameById = async (deviceId) => {
+    switch (process.platform) {
+        case 'darwin':
+            const output = await runExecAsync(`adb -s ${deviceId} emu avd name`)
+            return output.match(/([^\r\n|OK]+)/g)[0].replaceAll('_', ' ')
+        default:
+            return deviceId
+    }
+}
 
 class ADBHelper {
     static getDevices = async () => {
-        const devices = await client.listDevices()
-        return await Bluebird.map(devices, async (_) => {
-            if (isMacOS) {
-                const output = await runExecAsync(`adb -s ${_.id} emu avd name`)
-                return {
-                    id: _.id,
-                    name: output.match(/([^\r\n|OK]+)/g)[0].replaceAll('_', ' '),
-                }
-            }
-            return {
-                id: _.id,
-                name: _.id,
-            }
-        })
+        const ignoreText = ['device', 'offline']
+        const output = await runExecAsync(`adb devices`)
+        const deviceIds = output
+            .substring(output.indexOf('\n') + 1)
+            .match(/[\S]+/g)
+            .filter((text) => !ignoreText.includes(text))
+
+        return await Bluebird.map(deviceIds, async (id) => ({
+            id: id,
+            name: await getDeviceNameById(id),
+        }))
     }
 
-    static screenCap = async (deviceId, path) => {
-        const device = client.getDevice(deviceId)
-        const data = await device.screencap().then(Adb.util.readAll)
+    static screenCap = async (deviceId, path) => await runExecAsync(`adb -s ${deviceId} exec-out screencap -p > ${path}`)
 
-        fs.writeFileSync(path, Buffer.from(data), 'binary')
+    static screenRecord = (deviceId, outputHandler = null) => {
+        const streamProcess = runSpawn(`adb -s ${deviceId} exec-out screenrecord --output-format=h264 -`)
+        streamProcess.stdout.on('data', (data) => {
+            outputHandler && outputHandler(data)
+        })
+
+        return streamProcess
     }
 }
 
