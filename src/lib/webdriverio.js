@@ -3,6 +3,15 @@ const { remote } = require('webdriverio')
 const { resolve } = require('path')
 const { findCoordinates } = require('./image')
 
+const MIN = -1;
+const MAX = 1;
+
+const getRandomInt = (min, max) => {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 class Driver {
     constructor(driver, deviceId) {
         this.driver = driver
@@ -10,11 +19,11 @@ class Driver {
     }
 
     getX = (x, width) => {
-        return Math.round((width * x) / 100.0)
+        return Math.round((width * x) / 100.0) + getRandomInt(MIN, MAX) // Use a random integer to prevent robot detection during long-term use.
     }
 
     getY = (y, height) => {
-        return Math.round((height * y) / 100.0)
+        return Math.round((height * y) / 100.0) + getRandomInt(MIN, MAX) // Use a random integer to prevent robot detection during long-term use.
     }
 
     getDeviceId = () => {
@@ -71,7 +80,7 @@ class Driver {
             .action('pointer')
             .move({ duration: Math.round(points[0].duration), x: this.getX(points[0].x, width), y: this.getY(points[0].y, height) })
             .down({ button: 0 })
-            .pause(100)
+            .pause(10)
 
         for (let i = 1; i < points.length; i++) {
             const { duration, x, y } = points[i]
@@ -126,7 +135,7 @@ const connectAppium = async (capabilities) => {
     const wdOpts = {
         hostname: process.env.APPIUM_HOST || '0.0.0.0',
         port: parseInt(process.env.APPIUM_PORT, 10) || 4723,
-        path: '/wd/hub',
+        // path: '/wd/hub',
         logLevel: 'error',
         capabilities: capabilities,
     }

@@ -3,7 +3,7 @@
   "description": "Auto Tools",
   "scripts": {
     "prepare": "husky",
-    "appium": "appium -pa /wd/hub --log-timestamp --local-timezone --log-no-colors --log-level error:warn --log ./log/appium.txt",
+    "appium": "appium --log-timestamp --local-timezone --log-no-colors --log-level error:warn --log ./log/appium.txt",
     "app": "node src/server.js",
     "build": "webpack --mode=development --watch",
     "release": "webpack --mode=production",

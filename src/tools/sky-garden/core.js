@@ -89,7 +89,7 @@ const goDownLast = async (driver) => {
     // go up
     await goUp(driver)
 
-    // click go down last
+    // click go down last 3 times
     await driver.tap(50.63, 97.78)
     await driver.sleep(DelayTime)
     await driver.tap(50.63, 97.78)
@@ -162,7 +162,7 @@ const plantTrees = async (driver, slot = 0, floor = 2, pot = 5) => {
 
 const makeItems = async (driver, floor = 1, slot = 0, number = 1) => {
     // open
-    for (let i = 0; i < 15; i++) {
+    for (let i = 0; i < 20; i++) {
         await driver.tap(21.875, floor == 1 ? 91.11 : 44.44)
         await driver.sleep(0.2)
     }
@@ -175,7 +175,7 @@ const makeItems = async (driver, floor = 1, slot = 0, number = 1) => {
             { duration: 0, x: x, y: y },
             { duration: 100, x: DefaultProduct.x, y: DefaultProduct.y },
         ])
-        await driver.sleep(0.3)
+        await driver.sleep(0.4)
     }
     // fix & close
     await driver.tap(10.0, floor == 1 ? 69.56 : 24.44)
@@ -276,6 +276,14 @@ const sellItems = async (driver, option, items) => {
         }
 
         if (count > 2) {
+            // click ads
+            await driver.tap(25.63, 36.67) // click first slot
+            await driver.sleep(0.5)
+            await driver.tap(50.0, 93.33)
+            await driver.sleep(0.5)
+            await driver.tap(62.5, 7.78)
+            await driver.sleep(0.5)
+
             await backToGame(driver)
             // setup item
             _rollbackItem(items, itemId)
