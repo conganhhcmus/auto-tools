@@ -64,12 +64,10 @@ class Driver {
     screenshot = async (path) => {
         const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
         while (true) {
-            const screenshots = await this.driver.executeScript('mobile:screenshots', [])
-            const keys = Object.keys(screenshots)
-            const data = screenshots[keys[0]].payload
+            const screenshot = await this.driver.takeScreenshot();
 
-            if (base64regex.test(data)) {
-                return fs.writeFileSync(path, data, 'base64')
+            if (base64regex.test(screenshot)) {
+                return fs.writeFileSync(path, screenshot, 'base64')
             }
         }
     }
