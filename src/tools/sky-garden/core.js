@@ -69,7 +69,7 @@ const goUp = async (driver, times = 1) => {
             { duration: 0, x: 91.25, y: 63.33 },
             { duration: DelayTime * 1000, x: 91.25, y: 83.33 },
         ])
-        await driver.sleep(DelayTime)
+        await driver.sleep(0.1)
     }
     await driver.sleep(0.5)
 }
@@ -80,7 +80,7 @@ const goDown = async (driver, times = 1) => {
             { duration: 0, x: 91.25, y: 83.33 },
             { duration: DelayTime * 1000, x: 91.25, y: 63.33 },
         ])
-        await driver.sleep(DelayTime)
+        await driver.sleep(0.1)
     }
     await driver.sleep(0.5)
 }
@@ -102,7 +102,7 @@ const harvestTrees = async (driver) => {
     const { x, y } = DefaultBasket
 
     await driver.tap(37.5, 84.44)
-    await driver.sleep(0.4)
+    await driver.sleep(0.5)
     const pointList = [{ duration: 0, x: x, y: y }]
     const duration = DelayTime * 1000
 
@@ -132,7 +132,7 @@ const plantTrees = async (driver, slot = 0, floor = 2, pot = 5) => {
 
     // open
     await driver.tap(37.5, 84.44)
-    await driver.sleep(0.4)
+    await driver.sleep(0.5)
 
     const pointList = [{ duration: 0, x: x, y: y }]
     const duration = DelayTime * 1000
@@ -162,8 +162,9 @@ const plantTrees = async (driver, slot = 0, floor = 2, pot = 5) => {
 
 const makeItems = async (driver, floor = 1, slot = 0, number = 1) => {
     // open
+    const position = { x: 21.875, y: floor == 1 ? 81.11 : 32.22 }
     for (let i = 0; i < 20; i++) {
-        await driver.tap(21.875, floor == 1 ? 91.11 : 44.44)
+        await driver.tap(position.x, position.y)
         await driver.sleep(0.2)
     }
 
@@ -187,13 +188,13 @@ const makeItems = async (driver, floor = 1, slot = 0, number = 1) => {
 
 const nextTrees = async (driver, itemId) => {
     await driver.tap(37.5, 84.44)
-    await driver.sleep(0.4)
+    await driver.sleep(0.5)
 
     let isFound = await driver.haveItemOnScreen(_getItemId(itemId))
 
     while (!isFound) {
         await driver.tap(40.625, 67.78)
-        await driver.sleep(0.3)
+        await driver.sleep(0.5)
 
         isFound = await driver.haveItemOnScreen(_getItemId(itemId))
     }
@@ -204,13 +205,13 @@ const nextTrees = async (driver, itemId) => {
 
 const prevTrees = async (driver, itemId) => {
     await driver.tap(37.5, 84.44)
-    await driver.sleep(0.4)
+    await driver.sleep(0.5)
 
     let isFound = await driver.haveItemOnScreen(_getItemId(itemId))
 
     while (!isFound) {
         await driver.tap(10, 67.78)
-        await driver.sleep(0.3)
+        await driver.sleep(0.5)
 
         isFound = await driver.haveItemOnScreen(_getItemId(itemId))
     }

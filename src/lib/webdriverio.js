@@ -3,8 +3,8 @@ const { remote } = require('webdriverio')
 const { resolve } = require('path')
 const { findCoordinates } = require('./image')
 
-const MIN = -1;
-const MAX = 1;
+const MIN = -2;
+const MAX = 2;
 
 const getRandomInt = (min, max) => {
     min = Math.ceil(min);
