@@ -69,7 +69,7 @@ const goUp = async (driver, times = 1) => {
             { duration: 0, x: 91.25, y: 63.33 },
             { duration: DelayTime * 1000, x: 91.25, y: 83.33 },
         ])
-        await driver.sleep(0.1)
+        await driver.sleep(DelayTime)
     }
     await driver.sleep(0.5)
 }
@@ -80,7 +80,7 @@ const goDown = async (driver, times = 1) => {
             { duration: 0, x: 91.25, y: 83.33 },
             { duration: DelayTime * 1000, x: 91.25, y: 63.33 },
         ])
-        await driver.sleep(0.1)
+        await driver.sleep(DelayTime)
     }
     await driver.sleep(0.5)
 }
@@ -89,20 +89,23 @@ const goDownLast = async (driver) => {
     // go up
     await goUp(driver)
 
-    // click go down last 3 times
-    await driver.tap(50.63, 97.78)
-    await driver.sleep(DelayTime)
-    await driver.tap(50.63, 97.78)
-    await driver.sleep(DelayTime)
+    // click go down last
     await driver.tap(50.63, 97.78)
     await driver.sleep(1)
 }
 
 const harvestTrees = async (driver) => {
+    const itemId = 'thu-hoach'
     const { x, y } = DefaultBasket
 
-    await driver.tap(37.5, 84.44)
-    await driver.sleep(0.5)
+    let count = 0
+    do {
+        if (count > 10) throw new Error('Screen is not found "thu-hoach" item')
+        await driver.tap(37.5, 84.44)
+        await driver.sleep(0.5)
+        count++
+    } while (!(await driver.haveItemOnScreen(_getItemId(itemId))))
+
     const pointList = [{ duration: 0, x: x, y: y }]
     const duration = DelayTime * 1000
 
@@ -129,10 +132,16 @@ const harvestTrees = async (driver) => {
 
 const plantTrees = async (driver, slot = 0, floor = 2, pot = 5) => {
     const { x, y } = PlantSlotList[slot]
+    const itemId = 'next-option'
+    let count = 0
 
     // open
-    await driver.tap(37.5, 84.44)
-    await driver.sleep(0.5)
+    do {
+        if (count > 10) throw new Error('Screen is not found "next-option" item')
+        await driver.tap(37.5, 84.44)
+        await driver.sleep(0.5)
+        count++
+    } while (!(await driver.haveItemOnScreen(_getItemId(itemId))))
 
     const pointList = [{ duration: 0, x: x, y: y }]
     const duration = DelayTime * 1000
@@ -162,11 +171,18 @@ const plantTrees = async (driver, slot = 0, floor = 2, pot = 5) => {
 
 const makeItems = async (driver, floor = 1, slot = 0, number = 1) => {
     // open
+    const itemId = 'o-trong-san-xuat'
     const position = { x: 21.875, y: floor == 1 ? 81.11 : 32.22 }
-    for (let i = 0; i < 20; i++) {
+
+    for (let i = 0; i < 10; i++) {
         await driver.tap(position.x, position.y)
         await driver.sleep(0.2)
     }
+    // chan chan mo duoc o san xuat
+    do {
+        await driver.tap(position.x, position.y)
+        await driver.sleep(0.1)
+    } while (!(await driver.haveItemOnScreen(_getItemId(itemId))))
 
     // make goods
     const { x, y } = MakeSlotList[slot]
@@ -242,7 +258,7 @@ const sellItems = async (driver, option, items) => {
     await driver.sleep(0.5)
 
     // buy all items
-    const emptySlotId = 'o-trong'
+    const emptySlotId = 'o-trong-ban'
     const soldSlotId = 'o-da-ban'
     let itemId = _getItemId(items)
     let count = 0

@@ -3,8 +3,8 @@ const { remote } = require('webdriverio')
 const { resolve } = require('path')
 const { findCoordinates } = require('./image')
 
-const MIN = -2;
-const MAX = 2;
+const MIN = -1;
+const MAX = 1;
 
 const getRandomInt = (min, max) => {
     min = Math.ceil(min);
@@ -63,13 +63,11 @@ class Driver {
 
     screenshot = async (path) => {
         const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
-        while (true) {
-            const screenshot = await this.driver.takeScreenshot();
-
-            if (base64regex.test(screenshot)) {
-                return fs.writeFileSync(path, screenshot, 'base64')
-            }
+        const screenshot = await this.driver.takeScreenshot();
+        if (base64regex.test(screenshot)) {
+            return fs.writeFileSync(path, screenshot, 'base64')
         }
+        return await screenshot(path)
     }
 
     action = async (points) => {
