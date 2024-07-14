@@ -15,6 +15,13 @@
             "recommend": false
         },
         {
+            "key": "kvtm-auto-3",
+            "name": "Tinh Dầu Chanh + Nước Chanh",
+            "disabled": false,
+            "order": 1,
+            "recommend": true
+        },
+        {
             "key": "kvtm-event-tree",
             "name": "Trồng Cây Sự Kiện",
             "disabled": false,

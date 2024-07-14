@@ -24,6 +24,10 @@ const produceItems = async (driver, gameOptions = {}, index, auto, gameName) => 
             await produceItems_2(driver, hasEventTree, isLast)
             break
 
+        case auto[gameName][2].key:
+            await produceItems_3(driver, hasEventTree, isLast)
+            break
+
         default:
             await plantEventTree(driver)
             break
@@ -41,6 +45,10 @@ const sellItems = async (driver, gameOptions, auto, gameName) => {
 
         case auto[gameName][1].key:
             await sellItems_2(driver)
+            break
+
+        case auto[gameName][2].key:
+            await sellItems_3(driver)
             break
 
         default:
@@ -161,6 +169,56 @@ const sellItems_2 = async (driver) => {
     // Sell Goods
     await core.sellItems(driver, SellItemOptions.goods, [
         { key: 'tinh-dau-dua', value: 6 },
+        { key: 'nuoc-chanh', value: 6 },
+    ])
+}
+
+//#region tinh dau dua + nuoc chanh
+const produceItems_3 = async (driver, hasEventTree, isLast) => {
+    await core.goUp(driver)
+    await core.nextTrees(driver, 'chanh')
+    await core.plantTrees(driver, hasEventTree ? 0 : 1) // trong chanh
+    await core.goUp(driver, 2)
+    await core.plantTrees(driver, hasEventTree ? 0 : 1) // trong chanh
+    await core.goUp(driver, 2)
+    await core.plantTrees(driver, hasEventTree ? 0 : 1) // trong chanh
+    await core.goUp(driver, 2)
+    await core.plantTrees(driver, hasEventTree ? 0 : 1) // trong chanh
+    await core.goUp(driver, 2)
+    await core.plantTrees(driver, hasEventTree ? 0 : 1, 1) // trong chanh
+    await core.goDownLast(driver)
+
+    // thu hoach 1
+    await core.goUp(driver)
+    await core.harvestTrees(driver)
+    await core.prevTrees(driver, 'tuyet')
+    await core.plantTrees(driver, hasEventTree ? 3 : 4) // trong tuyet
+    await core.goUp(driver, 2)
+    await core.harvestTrees(driver)
+    await core.plantTrees(driver, hasEventTree ? 3 : 4) // trong tuyet
+    await core.goUp(driver, 2)
+    await core.harvestTrees(driver)
+    await core.goUp(driver, 2)
+    await core.harvestTrees(driver)
+    await core.goUp(driver, 2)
+    await core.harvestTrees(driver)
+    await core.goDownLast(driver)
+
+    // thu hoach 2
+    await core.goUp(driver)
+    await core.makeItems(driver, 2, 3, 6) // sx nuoc chanh
+    await core.harvestTrees(driver)
+    await core.goUp(driver, 2)
+    await core.harvestTrees(driver)
+    await core.goUp(driver, 2)
+    await core.makeItems(driver, 1, 4, 6) // sx tinh dau chanh
+    await core.goDownLast(driver)
+}
+
+const sellItems_3 = async (driver) => {
+    // Sell Goods
+    await core.sellItems(driver, SellItemOptions.goods, [
+        { key: 'tinh-dau-chanh', value: 6 },
         { key: 'nuoc-chanh', value: 6 },
     ])
 }
