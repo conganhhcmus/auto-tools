@@ -9,6 +9,9 @@ const openGame = async (driver) => {
     await driver.closeApp(appId)
     await driver.openApp(appId)
     await driver.sleep(5)
+    // reset current window size
+    await driver.setCurrentWindowSize()
+
     let count = 0
     while (!(await driver.haveItemOnScreen(_getItemId(gameId)))) {
         if (count > 10) {
@@ -20,6 +23,10 @@ const openGame = async (driver) => {
     }
     await driver.tapItemOnScreen(_getItemId(gameId))
     await driver.sleep(15)
+
+    // reset current window size
+    await driver.setCurrentWindowSize()
+
     for (let i = 0; i < 10; i++) {
         await driver.press(KeyCode.BACK)
         await driver.sleep(1)
@@ -66,10 +73,10 @@ const backToGame = async (driver) => {
 const goUp = async (driver, times = 1) => {
     for (let i = 0; i < times; i++) {
         await driver.action([
-            { duration: 0, x: 91.25, y: 63.33 },
-            { duration: DelayTime * 1000, x: 91.25, y: 83.33 },
+            { duration: 0, x: 8.75, y: 53.33 },
+            { duration: DelayTime * 1000, x: 8.75, y: 83.33 },
         ])
-        await driver.sleep(DelayTime)
+        await driver.sleep(10 * DelayTime)
     }
     await driver.sleep(0.5)
 }
@@ -77,10 +84,10 @@ const goUp = async (driver, times = 1) => {
 const goDown = async (driver, times = 1) => {
     for (let i = 0; i < times; i++) {
         await driver.action([
-            { duration: 0, x: 91.25, y: 83.33 },
-            { duration: DelayTime * 1000, x: 91.25, y: 63.33 },
+            { duration: 0, x: 8.75, y: 83.33 },
+            { duration: DelayTime * 1000, x: 8.75, y: 53.33 },
         ])
-        await driver.sleep(DelayTime)
+        await driver.sleep(10 * DelayTime)
     }
     await driver.sleep(0.5)
 }
@@ -89,9 +96,11 @@ const goDownLast = async (driver) => {
     // go up
     await goUp(driver)
 
-    // click go down last
+    // click go down last 2 times
     await driver.tap(50.63, 97.78)
-    await driver.sleep(1)
+    await driver.sleep(DelayTime)
+    await driver.tap(50.63, 97.78)
+    await driver.sleep(0.75)
 }
 
 const harvestTrees = async (driver) => {
@@ -356,25 +365,10 @@ const _rollbackItem = (items, key) => {
 const _sell = async (driver) => {
     await driver.sleep(0.5)
     // increase price
-    await driver.tap(82.5, 60.0)
-    await driver.sleep(DelayTime)
-    await driver.tap(82.5, 60.0)
-    await driver.sleep(DelayTime)
-    await driver.tap(82.5, 60.0)
-    await driver.sleep(DelayTime)
-    await driver.tap(82.5, 60.0)
-    await driver.sleep(DelayTime)
-    await driver.tap(82.5, 60.0)
-    await driver.sleep(DelayTime)
-    await driver.tap(82.5, 60.0)
-    await driver.sleep(DelayTime)
-    await driver.tap(82.5, 60.0)
-    await driver.sleep(DelayTime)
-    await driver.tap(82.5, 60.0)
-    await driver.sleep(DelayTime)
-    await driver.tap(82.5, 60.0)
-    await driver.sleep(DelayTime)
-    await driver.tap(82.5, 60.0)
+    for (let i = 0; i < 10; i++) {
+        await driver.tap(82.5, 60.0)
+        await driver.sleep(DelayTime)
+    }
     await driver.sleep(0.5)
     // stop increase price
     await driver.tap(73.75, 91.11)

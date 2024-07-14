@@ -3,7 +3,7 @@ const core = require('./core')
 const openGame = async (driver, gameOptions = {}, index) => {
     const { openGame, openGameAfter } = gameOptions
     const needOpen = openGame && index % openGameAfter == 0
-    needOpen && (await core.openGame(driver))
+    needOpen ? (await core.openGame(driver)) : (await driver.setCurrentWindowSize())
 }
 
 const openChests = async (driver, gameOptions = {}) => {

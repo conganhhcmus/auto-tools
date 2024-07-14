@@ -16,28 +16,27 @@ class Driver {
     constructor(driver, deviceId) {
         this.driver = driver
         this.deviceId = deviceId
+        this.width = 0
+        this.height = 0
     }
 
-    getX = (x, width) => {
-        return Math.round((width * x) / 100.0) + getRandomInt(MIN, MAX) // Use a random integer to prevent robot detection during long-term use.
+    setCurrentWindowSize = async () => {
+        const { width, height } = await this.driver.getWindowSize()
+        this.width = width
+        this.height = height
     }
 
-    getY = (y, height) => {
-        return Math.round((height * y) / 100.0) + getRandomInt(MIN, MAX) // Use a random integer to prevent robot detection during long-term use.
+    getX = (x) => {
+        return Math.round((this.width * x) / 100.0) + getRandomInt(MIN, MAX) // Use a random integer to prevent robot detection during long-term use.
     }
 
-    getDeviceId = () => {
-        return this.deviceId
-    }
-
-    getDriver = () => {
-        return this.driver
+    getY = (y) => {
+        return Math.round((this.height * y) / 100.0) + getRandomInt(MIN, MAX) // Use a random integer to prevent robot detection during long-term use.
     }
 
     tap = async (x, y) => {
-        const { width, height } = await this.driver.getWindowSize()
-        const pointX = this.getX(x, width)
-        const pointY = this.getY(y, height)
+        const pointX = this.getX(x)
+        const pointY = this.getY(y)
         await this.driver.executeScript('mobile: clickGesture', [{ x: pointX, y: pointY }])
     }
 
@@ -71,16 +70,15 @@ class Driver {
     }
 
     action = async (points) => {
-        const { width, height } = await this.driver.getWindowSize()
         let action = this.driver
             .action('pointer')
-            .move({ duration: Math.round(points[0].duration), x: this.getX(points[0].x, width), y: this.getY(points[0].y, height) })
+            .move({ duration: Math.round(points[0].duration), x: this.getX(points[0].x), y: this.getY(points[0].y) })
             .down({ button: 0 })
-            .pause(10)
+            .pause(1)
 
         for (let i = 1; i < points.length; i++) {
             const { duration, x, y } = points[i]
-            action = action.move({ duration: Math.round(duration), x: this.getX(x, width), y: this.getY(y, height) })
+            action = action.move({ duration: Math.round(duration), x: this.getX(x), y: this.getY(y) })
         }
 
         await action.up({ button: 0 }).perform()
@@ -136,7 +134,9 @@ const connectAppium = async (capabilities) => {
         capabilities: capabilities,
     }
     const driver = await remote(wdOpts)
-    return new Driver(driver, capabilities['appium:options'].udid)
+    const deviceId = capabilities['appium:options'].udid
+
+    return new Driver(driver, deviceId)
 }
 
 const KeyCode = {
