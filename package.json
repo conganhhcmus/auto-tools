@@ -43,7 +43,7 @@
     "@commitlint/config-conventional": "^19.2.2",
     "@commitlint/cz-commitlint": "^19.2.0",
     "antd": "^5.18.3",
-    "appium-uiautomator2-driver": "^3.7.0",
+    "appium-uiautomator2-driver": "^3.7.4",
     "axios": "^1.7.2",
     "babel-loader": "^9.1.3",
     "commitizen": "^4.3.0",

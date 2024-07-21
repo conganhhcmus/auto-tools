@@ -3,7 +3,7 @@ const core = require('./core')
 const openGame = async (driver, gameOptions = {}, index) => {
     const { openGame, openGameAfter } = gameOptions
     const needOpen = openGame && index % openGameAfter == 0
-    needOpen ? (await core.openGame(driver)) : (await driver.setCurrentWindowSize())
+    needOpen ? await core.openGame(driver) : await driver.setCurrentWindowSize()
 }
 
 const openChests = async (driver, gameOptions = {}) => {
@@ -28,6 +28,10 @@ const produceItems = async (driver, gameOptions = {}, index, auto, gameName) => 
             await produceItems_3(driver, hasEventTree, isLast)
             break
 
+        case auto[gameName][3].key:
+            await produceItems_4(driver, hasEventTree, isLast)
+            break
+
         default:
             await plantEventTree(driver)
             break
@@ -49,6 +53,10 @@ const sellItems = async (driver, gameOptions, auto, gameName) => {
 
         case auto[gameName][2].key:
             await sellItems_3(driver)
+            break
+
+        case auto[gameName][3].key:
+            await sellItems_4(driver)
             break
 
         default:
@@ -223,6 +231,45 @@ const sellItems_3 = async (driver) => {
     ])
 }
 //#endregion
+
+//#region vai tim
+const produceItems_4 = async (driver, hasEventTree, isLast) => {
+    await core.goUp(driver)
+    await core.nextTrees(driver, 'oai-huong')
+    await core.plantTrees(driver, hasEventTree ? 2 : 3) // trong oai huong
+    await core.goUp(driver, 2)
+    await core.plantTrees(driver, hasEventTree ? 2 : 3) // trong oai huong
+    await core.goDownLast(driver)
+    await driver.sleep(6)
+
+    // thu hoach 1
+    await core.goUp(driver)
+    await core.harvestTrees(driver)
+    await core.prevTrees(driver, 'bong')
+    await core.plantTrees(driver, 0) // trong bong
+    await core.goUp(driver, 2)
+    await core.harvestTrees(driver)
+    await core.plantTrees(driver, 0) // trong bong
+    await core.goDownLast(driver)
+
+    // thu hoach 2
+    await core.goUp(driver)
+    await core.makeItems(driver, 1, 2, 8) // sx oai huong say
+    await core.harvestTrees(driver)
+    await core.goUp(driver, 2)
+    await core.harvestTrees(driver)
+    await core.makeItems(driver, 1, 2, 8) // sx vai tim
+    await core.goDownLast(driver)
+
+    if (!isLast) {
+        await driver.sleep(30)
+    }
+}
+
+const sellItems_4 = async (driver) => {
+    // Sell Goods
+    await core.sellItems(driver, SellItemOptions.goods, [{ key: 'vai-tim', value: 8 }])
+}
 
 const plantEventTree = async (driver) => {
     await core.goUp(driver)

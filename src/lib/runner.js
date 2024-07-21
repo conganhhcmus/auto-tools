@@ -42,6 +42,9 @@ class Runner {
                 // noReset: true,
                 printPageSourceOnFindFailure: true,
                 suppressKillServer: true,
+                skipDeviceInitialization: true,
+                skipServerInstallation: true,
+                ignoreUnimportantViews: true,
             },
         }
 
