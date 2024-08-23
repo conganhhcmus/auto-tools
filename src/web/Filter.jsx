@@ -61,7 +61,7 @@ const Filter = (props) => {
         <>
             {contextHolder}
             <Row gutter={[40, 0]}>
-                <Col xs={24} sm={24} xl={8} xxl={8}>
+                <Col xs={24} sm={24} xl={10} xxl={10}>
                     <h3>Settings</h3>
                     <Row justify={'left'} gutter={[40, 20]}>
                         <Col className="gutter-row" xs={24} sm={24} xl={24} xxl={24}>

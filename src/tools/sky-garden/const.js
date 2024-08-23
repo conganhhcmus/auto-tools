@@ -74,6 +74,42 @@ const SellOptions = [
     { x: 53.75, y: 84.44 }, // Events
 ]
 
+const ItemKeys = {
+    nextOption: 'next-option',
+    emptyProductionSlot: 'o-trong-san-xuat',
+    emptySellSlot: 'o-trong-ban',
+    soldSlot: 'o-da-ban',
+    harvestBasket: 'thu-hoach',
+    chest: 'ruong-bau',
+    game: 'game',
+    gameId: 'vn.kvtm.js',
+    shopGem: 'shop-gem',
+    goDownLast: 'xuong-day'
+}
+
+const TreeKeys = {
+    hong: 'hong',
+    chanh: 'chanh',
+    tuyet: 'tuyet',
+    bong: 'bong',
+    oaiHuong: 'oai-huong',
+    dua: 'dua',
+    duaHau: 'dua-hau',
+}
+
+const ProductKeys = {
+    hatDuaSay: 'hat-dua-say',
+    vaiTim: 'vai-tim',
+    vaiDo: 'vai-do',
+    vaiVang: 'vai-vang',
+    nuocChanh: 'nuoc-chanh',
+    nuocTuyet: 'nuoc-tuyet',
+    tinhDauChanh: 'tinh-dau-chanh',
+    tinhDauDua: 'tinh-dau-dua',
+    tinhDauHoaHong: 'tinh-dau-hoa-hong',
+    traHoaHong: 'tra-hoa-hong',
+}
+
 module.exports = {
     DelayTime,
     DefaultBasket,
@@ -84,4 +120,7 @@ module.exports = {
     PlantSlotList,
     MakeSlotList,
     SellItemOptions,
+    ItemKeys,
+    ProductKeys,
+    TreeKeys,
 }

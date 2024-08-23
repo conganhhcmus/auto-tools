@@ -9,20 +9,13 @@
         },
         {
             "key": "kvtm-auto-2",
-            "name": "Tinh Dầu Dừa + Nước Chanh",
-            "disabled": false,
-            "order": 3,
-            "recommend": false
-        },
-        {
-            "key": "kvtm-auto-3",
             "name": "Tinh Dầu Chanh + Nước Chanh",
             "disabled": false,
             "order": 1,
             "recommend": true
         },
         {
-            "key": "kvtm-auto-4",
+            "key": "kvtm-auto-3",
             "name": "Vải Tím",
             "disabled": false,
             "order": 4,

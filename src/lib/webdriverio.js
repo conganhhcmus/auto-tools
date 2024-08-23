@@ -3,13 +3,13 @@ const { remote } = require('webdriverio')
 const { resolve } = require('path')
 const { findCoordinates } = require('./image')
 
-const MIN = -1;
-const MAX = 1;
+const MIN = -1
+const MAX = 1
 
 const getRandomInt = (min, max) => {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+    min = Math.ceil(min)
+    max = Math.floor(max)
+    return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
 class Driver {
@@ -61,8 +61,8 @@ class Driver {
     }
 
     screenshot = async (path) => {
-        const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
-        const screenshot = await this.driver.takeScreenshot();
+        const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/
+        const screenshot = await this.driver.takeScreenshot()
         if (base64regex.test(screenshot)) {
             return fs.writeFileSync(path, screenshot, 'base64')
         }
@@ -70,66 +70,92 @@ class Driver {
     }
 
     action = async (points) => {
-        let action = this.driver
-            .action('pointer')
+        const action = this.driver
+            .action('pointer', { parameters: { pointerType: 'touch' } })
             .move({ duration: Math.round(points[0].duration), x: this.getX(points[0].x), y: this.getY(points[0].y) })
-            .down({ button: 0 })
-            .pause(1)
+            .down()
+            .pause(100)
 
         for (let i = 1; i < points.length; i++) {
             const { duration, x, y } = points[i]
-            action = action.move({ duration: Math.round(duration), x: this.getX(x), y: this.getY(y) })
+            action.move({ duration: Math.round(duration), x: this.getX(x), y: this.getY(y) })
+            i === points.length - 1 && action.up()
         }
 
-        await action.up({ button: 0 }).perform()
+        return await action.perform()
     }
 
     haveItemOnScreen = async (itemId) => {
-        if (itemId === null || itemId === undefined) return false
+        if (!itemId) return false
         let count = 5
         while (count > 0) {
             count--
             await this.screenshot(resolve(__dirname, `../assets/device/${this.deviceId}.png`))
             const points = await findCoordinates(this.deviceId, itemId)
+
             if (points.length > 0) return true
+            await this.sleep(0.2)
         }
         return false
     }
 
-    tapItemOnScreen = async (itemId) => {
-        if (itemId === null || itemId === undefined) return
+    getCoordinateItemOnScreen = async (itemId) => {
+        if (!itemId) return null
+
         let count = 5
         while (count > 0) {
             count--
             await this.screenshot(resolve(__dirname, `../assets/device/${this.deviceId}.png`))
             const points = await findCoordinates(this.deviceId, itemId)
-            if (points.length <= 0) continue
-            return await this.tap(points[points.length - 1].x, points[points.length - 1].y)
+
+            if (points.length > 0) {
+                return { x: points[points.length - 1].x, y: points[points.length - 1].y }
+            }
+            await this.sleep(0.2)
+        }
+
+        return null
+    }
+
+    tapItemOnScreen = async (itemId) => {
+        if (!itemId) return
+        let count = 5
+        while (count > 0) {
+            count--
+            await this.screenshot(resolve(__dirname, `../assets/device/${this.deviceId}.png`))
+            const points = await findCoordinates(this.deviceId, itemId)
+
+            if (points.length > 0) {
+                return await this.tap(points[points.length - 1].x, points[points.length - 1].y)
+            }
+            await this.sleep(0.2)
         }
     }
 
     doubleTapItemOnScreen = async (itemId) => {
-        if (itemId === null || itemId === undefined) return
+        if (!itemId) return
         let count = 5
         while (count > 0) {
             count--
             await this.screenshot(resolve(__dirname, `../assets/device/${this.deviceId}.png`))
             const points = await findCoordinates(this.deviceId, itemId)
-            if (points.length <= 0) continue
-            await this.tap(points[points.length - 1].x, points[points.length - 1].y)
-            await this.sleep(0.5)
-            await this.tap(points[points.length - 1].x, points[points.length - 1].y)
-            return
+
+            if (points.length > 0) {
+                await this.tap(points[points.length - 1].x, points[points.length - 1].y)
+                await this.sleep(0.5)
+                await this.tap(points[points.length - 1].x, points[points.length - 1].y)
+                return
+            }
+            await this.sleep(0.2)
         }
     }
-
 }
 
 const connectAppium = async (capabilities) => {
     const wdOpts = {
         hostname: process.env.APPIUM_HOST || '0.0.0.0',
         port: parseInt(process.env.APPIUM_PORT, 10) || 4723,
-        // path: '/wd/hub',
+        path: '/wd/hub',
         logLevel: 'error',
         capabilities: capabilities,
     }

@@ -1,19 +1,16 @@
 const { KeyCode } = require('../../lib/webdriverio')
-const { DelayTime, PlantSlotList, MakeSlotList, FirstRowSlotList, SecondRowSlotList, DefaultBasket, DefaultProduct, SellOptions } = require('./const')
+const { DelayTime, MakeSlotList, FirstRowSlotList, SecondRowSlotList, DefaultBasket, DefaultProduct, SellOptions, ItemKeys, PlantSlotList } = require('./const')
 
 const openGame = async (driver) => {
-    const appId = 'vn.kvtm.js'
-    const gameId = 'game'
-    const shopGemId = 'shop-gem'
     await driver.press(KeyCode.HOME)
-    await driver.closeApp(appId)
-    await driver.openApp(appId)
+    await driver.closeApp(ItemKeys.gameId)
+    await driver.openApp(ItemKeys.gameId)
     await driver.sleep(5)
     // reset current window size
     await driver.setCurrentWindowSize()
 
     let count = 0
-    while (!(await driver.haveItemOnScreen(_getItemId(gameId)))) {
+    while (!(await driver.haveItemOnScreen(ItemKeys.game))) {
         if (count > 10) {
             return await openGame(driver)
         } else {
@@ -21,7 +18,7 @@ const openGame = async (driver) => {
             count++
         }
     }
-    await driver.tapItemOnScreen(_getItemId(gameId))
+    await driver.tapItemOnScreen(ItemKeys.game)
     await driver.sleep(15)
 
     // reset current window size
@@ -33,14 +30,13 @@ const openGame = async (driver) => {
     }
     await driver.tap(58, 72.22)
     await driver.sleep(1)
-    if (!(await driver.haveItemOnScreen(_getItemId(shopGemId)))) {
+    if (!(await driver.haveItemOnScreen(ItemKeys.shopGem))) {
         return await openGame(driver)
     }
 }
 
 const openChests = async (driver) => {
-    const itemId = 'ruong-bau'
-    let isFound = await driver.haveItemOnScreen(_getItemId(itemId))
+    let isFound = await driver.haveItemOnScreen(ItemKeys.chest)
     if (isFound) {
         await driver.tap(35.0, 22.22)
         await driver.sleep(0.2)
@@ -93,28 +89,32 @@ const goDown = async (driver, times = 1) => {
 }
 
 const goDownLast = async (driver) => {
+    let count = 0
+    let goDownLastFound = null
     // go up
-    await goUp(driver)
+    while (!goDownLastFound) {
+        count++
+        count % 3 == 0 ? await goDown(driver) : await goUp(driver) // 2 up - 1 down
+        goDownLastFound = await driver.getCoordinateItemOnScreen(ItemKeys.goDownLast)
+    }
 
-    // click go down last 2 times
-    await driver.tap(50.63, 97.78)
-    await driver.sleep(DelayTime)
-    await driver.tap(50.63, 97.78)
+    // click go down last
+    await driver.tap(goDownLastFound.x, goDownLastFound.y)
     await driver.sleep(0.75)
 }
 
 const harvestTrees = async (driver) => {
-    const itemId = 'thu-hoach'
-    const { x, y } = DefaultBasket
-
     let count = 0
+    let found = false
     do {
-        if (count > 10) throw new Error('Screen is not found "thu-hoach" item')
+        if (count > 10) throw new Error(`Screen is not found ${ItemKeys.harvestBasket} item`)
         await driver.tap(37.5, 84.44)
         await driver.sleep(0.5)
+        found = await driver.haveItemOnScreen(ItemKeys.harvestBasket)
         count++
-    } while (!(await driver.haveItemOnScreen(_getItemId(itemId))))
+    } while (!found)
 
+    const { x, y } = DefaultBasket
     const pointList = [{ duration: 0, x: x, y: y }]
     const duration = DelayTime * 1000
 
@@ -139,20 +139,8 @@ const harvestTrees = async (driver) => {
     await driver.sleep(0.5)
 }
 
-const plantTrees = async (driver, slot = 0, floor = 2, pot = 5) => {
-    const { x, y } = PlantSlotList[slot]
-    const itemId = 'next-option'
-    let count = 0
-
-    // open
-    do {
-        if (count > 10) throw new Error('Screen is not found "next-option" item')
-        await driver.tap(37.5, 84.44)
-        await driver.sleep(0.5)
-        count++
-    } while (!(await driver.haveItemOnScreen(_getItemId(itemId))))
-
-    const pointList = [{ duration: 0, x: x, y: y }]
+const plantTrees = async (driver, slotTree, floor = 2, pot = 5) => {
+    const pointList = [{ duration: 0, x: slotTree.x, y: slotTree.y }]
     const duration = DelayTime * 1000
     // floor 1
     for (let i = 0; i < FirstRowSlotList.length && floor >= 1; i++) {
@@ -174,13 +162,14 @@ const plantTrees = async (driver, slot = 0, floor = 2, pot = 5) => {
         if (i > 2 * pot && floor == 2) break
     }
 
+    await driver.tap(37.5, 84.44)
+    await driver.sleep(0.5)
     await driver.action(pointList)
     await driver.sleep(0.5)
 }
 
 const makeItems = async (driver, floor = 1, slot = 0, number = 1) => {
     // open
-    const itemId = 'o-trong-san-xuat'
     const position = { x: 21.875, y: floor == 1 ? 81.11 : 32.22 }
 
     for (let i = 0; i < 10; i++) {
@@ -191,7 +180,7 @@ const makeItems = async (driver, floor = 1, slot = 0, number = 1) => {
     do {
         await driver.tap(position.x, position.y)
         await driver.sleep(0.1)
-    } while (!(await driver.haveItemOnScreen(_getItemId(itemId))))
+    } while (!(await driver.haveItemOnScreen(ItemKeys.emptyProductionSlot)))
 
     // make goods
     const { x, y } = MakeSlotList[slot]
@@ -209,40 +198,6 @@ const makeItems = async (driver, floor = 1, slot = 0, number = 1) => {
     await driver.tap(78.75, 71.11)
     await driver.sleep(0.1)
     await backToGame(driver)
-}
-
-const nextTrees = async (driver, itemId) => {
-    await driver.tap(37.5, 84.44)
-    await driver.sleep(0.5)
-
-    let isFound = await driver.haveItemOnScreen(_getItemId(itemId))
-
-    while (!isFound) {
-        await driver.tap(40.625, 67.78)
-        await driver.sleep(0.5)
-
-        isFound = await driver.haveItemOnScreen(_getItemId(itemId))
-    }
-
-    await driver.press(KeyCode.BACK)
-    await driver.sleep(0.5)
-}
-
-const prevTrees = async (driver, itemId) => {
-    await driver.tap(37.5, 84.44)
-    await driver.sleep(0.5)
-
-    let isFound = await driver.haveItemOnScreen(_getItemId(itemId))
-
-    while (!isFound) {
-        await driver.tap(10, 67.78)
-        await driver.sleep(0.5)
-
-        isFound = await driver.haveItemOnScreen(_getItemId(itemId))
-    }
-
-    await driver.press(KeyCode.BACK)
-    await driver.sleep(0.5)
 }
 
 const sellItems = async (driver, option, items) => {
@@ -267,13 +222,11 @@ const sellItems = async (driver, option, items) => {
     await driver.sleep(0.5)
 
     // buy all items
-    const emptySlotId = 'o-trong-ban'
-    const soldSlotId = 'o-da-ban'
     let itemId = _getItemId(items)
     let count = 0
     while (itemId) {
-        if (await driver.haveItemOnScreen(_getItemId(soldSlotId))) {
-            await driver.doubleTapItemOnScreen(_getItemId(soldSlotId))
+        if (await driver.haveItemOnScreen(ItemKeys.soldSlot)) {
+            await driver.doubleTapItemOnScreen(ItemKeys.soldSlot)
             await driver.sleep(0.5)
             await driver.tap(option_x, option_y)
             await driver.sleep(0.5)
@@ -282,8 +235,8 @@ const sellItems = async (driver, option, items) => {
             await driver.tapItemOnScreen(itemId)
             await _sell(driver)
             itemId = _getItemId(items)
-        } else if (await driver.haveItemOnScreen(_getItemId(emptySlotId))) {
-            await driver.tapItemOnScreen(_getItemId(emptySlotId))
+        } else if (await driver.haveItemOnScreen(ItemKeys.emptySellSlot)) {
+            await driver.tapItemOnScreen(ItemKeys.emptySellSlot)
             await driver.sleep(0.5)
             await driver.tap(option_x, option_y)
             await driver.sleep(0.5)
@@ -319,6 +272,27 @@ const sellItems = async (driver, option, items) => {
     await backToGame(driver)
 }
 
+const findTreeOnScreen = async (driver, treeKey, isFindNext = true) => {
+    await driver.tap(37.5, 84.44)
+    await driver.sleep(0.5)
+
+    let slotItem = await driver.getCoordinateItemOnScreen(treeKey)
+    let retryCount = 0
+
+    while (!slotItem) {
+        if (retryCount > 10) throw new Error(`Screen is not found ${treeKey} item`)
+
+        isFindNext ? await driver.tap(40.625, 67.78) : await driver.tap(10, 67.78)
+        await driver.sleep(0.5)
+
+        slotItem = await driver.getCoordinateItemOnScreen(treeKey)
+        retryCount++
+    }
+    await driver.press(KeyCode.BACK)
+    await driver.sleep(0.5)
+    return _getSlotNearest(slotItem)
+}
+
 module.exports = {
     openGame,
     openChests,
@@ -329,28 +303,23 @@ module.exports = {
     harvestTrees,
     plantTrees,
     makeItems,
-    nextTrees,
-    prevTrees,
     sellItems,
+    findTreeOnScreen,
 }
 
 // private method
 
 const _getItemId = (items) => {
-    if (typeof items === 'string') {
-        return items
-    }
-
     if (typeof items === 'object') {
         const foundIndex = items.findIndex((element) => element.value > 0)
         if (foundIndex >= 0) {
             items[foundIndex].value--
             return items[foundIndex].key
         }
-        return undefined
+        return null
     }
 
-    return undefined
+    return null
 }
 
 const _rollbackItem = (items, key) => {
@@ -377,4 +346,19 @@ const _sell = async (driver) => {
     await driver.sleep(0.5)
     await driver.tap(62.5, 7.78)
     await driver.sleep(0.5)
+}
+
+const _getSlotNearest = (slotFound) => {
+    let min = Number.MAX_VALUE
+    let choice = 0
+    for (let i = 0; i < PlantSlotList.length; i++) {
+        let slot = PlantSlotList[i]
+        let value = Math.abs(slot.x - slotFound.x) * Math.abs(slot.x - slotFound.x) + Math.abs(slot.y - slotFound.y) * Math.abs(slot.y - slotFound.y)
+
+        if (value < min) {
+            min = value
+            choice = i
+        }
+    }
+    return PlantSlotList[choice]
 }

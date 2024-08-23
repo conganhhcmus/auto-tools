@@ -39,12 +39,13 @@ class Runner {
             'appium:options': {
                 udid: deviceId,
                 automationName: 'UiAutomator2',
-                // noReset: true,
-                printPageSourceOnFindFailure: true,
+                noReset: true,
+                disableWindowAnimation: true,
+                //skipDeviceInitialization: true,
+                //skipServerInstallation: true,
                 suppressKillServer: true,
-                skipDeviceInitialization: true,
-                skipServerInstallation: true,
-                ignoreUnimportantViews: true,
+                clearDeviceLogsOnStart: true,
+                skipLogcatCapture: true,
             },
         }
 
