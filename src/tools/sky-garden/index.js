@@ -8,7 +8,7 @@ async function Auto(data, driver) {
     try {
         await autoFunc.openGame(driver, gameOptions, index)
         for (let i = 0; i < 10; i++) {
-            await autoFunc.produceItems(driver, gameOptions, i, auto, gameName)
+            await autoFunc.produceItems(driver, gameOptions, i, auto, gameName, index)
         }
         await autoFunc.openChests(driver, gameOptions)
         await autoFunc.sellItems(driver, gameOptions, auto, gameName)

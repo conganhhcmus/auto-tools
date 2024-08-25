@@ -1,5 +1,5 @@
 const { KeyCode } = require('../../lib/webdriverio')
-const { DelayTime, MakeSlotList, FirstRowSlotList, SecondRowSlotList, DefaultBasket, DefaultProduct, SellOptions, ItemKeys, PlantSlotList } = require('./const')
+const { DelayTime, MakeSlotList, FirstRowSlotList, SecondRowSlotList, DefaultBasket, DefaultProduct, SellOptions, ItemKeys, PlantSlotList, SellItemOptions, SellSlotList } = require('./const')
 
 const openGame = async (driver) => {
     await driver.press(KeyCode.HOME)
@@ -293,6 +293,64 @@ const findTreeOnScreen = async (driver, treeKey, isFindNext = true) => {
     return _getSlotNearest(slotItem)
 }
 
+const sellEventItems = async (driver, itemKey, isAds) => {
+    const { x: option_x, y: option_y } = SellOptions[SellItemOptions.events] // event item
+    // open
+    await driver.tap(66.25, 71.11)
+    await driver.sleep(1)
+
+    for (let i = 0; i < SellSlotList.length; i++) {
+        const slot = SellSlotList[i]
+        // double tap on slot
+        await driver.tap(slot.x, slot.y)
+        await driver.sleep(0.1)
+        await driver.tap(slot.x, slot.y)
+        await driver.sleep(0.5)
+        // switch to event item
+        await driver.tap(option_x, option_y)
+        await driver.sleep(0.5)
+
+        const eventItemSlot = await driver.getCoordinateItemOnScreen(itemKey)
+        if (!eventItemSlot) throw new Error(`Screen is not found ${itemKey} item`)
+
+        await driver.tap(eventItemSlot.x, eventItemSlot.y)
+        await _sell(driver, isAds)
+    }
+}
+
+const buy8SlotItem = async (driver) => {
+    // open
+    await driver.tap(66.25, 71.11)
+    await driver.sleep(1)
+
+    for (let i = 0; i < SellSlotList.length; i++) {
+        const slot = SellSlotList[i]
+        // double tap on slot for buy
+        await driver.tap(slot.x, slot.y)
+        await driver.sleep(0.1)
+        await driver.tap(slot.x, slot.y)
+        await driver.sleep(0.5)
+    }
+
+    for (let i = 0; i < SellSlotList.length; i++) {
+        const slot = SellSlotList[i]
+        // double tap on slot for buy
+        await driver.tap(slot.x, slot.y)
+        await driver.sleep(0.1)
+        await driver.tap(slot.x, slot.y)
+        await driver.sleep(0.1)
+    }
+
+    await backToGame(driver)
+}
+
+const goFriendHouse = async (driver) => {
+    await driver.tapItemOnScreen(ItemKeys.friendHouse)
+    await driver.sleep(0.5)
+    await driver.tap(22.5, 61.11)
+    await driver.sleep(2)
+}
+
 module.exports = {
     openGame,
     openChests,
@@ -305,6 +363,9 @@ module.exports = {
     makeItems,
     sellItems,
     findTreeOnScreen,
+    sellEventItems,
+    buy8SlotItem,
+    goFriendHouse
 }
 
 // private method
@@ -331,7 +392,7 @@ const _rollbackItem = (items, key) => {
     }
 }
 
-const _sell = async (driver) => {
+const _sell = async (driver, isAds = true) => {
     await driver.sleep(0.5)
     // increase price
     for (let i = 0; i < 10; i++) {
@@ -340,12 +401,24 @@ const _sell = async (driver) => {
     }
     await driver.sleep(0.5)
     // stop increase price
-    await driver.tap(73.75, 91.11)
-    await driver.sleep(0.5)
-    await driver.tap(50.0, 93.33)
-    await driver.sleep(0.5)
-    await driver.tap(62.5, 7.78)
-    await driver.sleep(0.5)
+    if (!isAds) {
+        // disable ads
+        await driver.tap(73.75, 78.88)
+        await driver.sleep(0.5)
+        // click sell
+        await driver.tap(73.75, 91.11)
+        await driver.sleep(0.5)
+        await driver.tap(62.5, 7.78)
+        await driver.sleep(0.5)
+    } else {
+        // click sell
+        await driver.tap(73.75, 91.11)
+        await driver.sleep(0.5)
+        await driver.tap(50.0, 93.33)
+        await driver.sleep(0.5)
+        await driver.tap(62.5, 7.78)
+        await driver.sleep(0.5)
+    }
 }
 
 const _getSlotNearest = (slotFound) => {

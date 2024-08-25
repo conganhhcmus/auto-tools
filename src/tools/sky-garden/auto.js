@@ -11,9 +11,10 @@ const openChests = async (driver, gameOptions = {}) => {
     openChests && (await core.openChests(driver))
 }
 
-const produceItems = async (driver, gameOptions = {}, index, auto, gameName) => {
+const produceItems = async (driver, gameOptions = {}, index, auto, gameName, frequencyIndex) => {
     const { runAuto } = gameOptions
     const isLast = index === 9
+    const isFirstRun = frequencyIndex === 0 && index === 0
 
     switch (runAuto) {
         case auto[gameName][0].key:
@@ -28,8 +29,15 @@ const produceItems = async (driver, gameOptions = {}, index, auto, gameName) => 
             await produceItems_3(driver, isLast)
             break
 
-        default:
+        case auto[gameName][3].key:
             await plantEventTree(driver)
+            break
+
+        case auto[gameName][4].key:
+            await buyEventItem8Slot(driver, isFirstRun)
+            break
+
+        default:
             break
     }
 }
@@ -51,6 +59,38 @@ const sellItems = async (driver, gameOptions, auto, gameName) => {
             await sellItems_3(driver)
             break
 
+        case auto[gameName][5].key:
+            await sellEventItem(driver, EventKeys.ga, false)
+            break
+
+        case auto[gameName][6].key:
+            await sellEventItem(driver, EventKeys.bo, false)
+            break
+
+        case auto[gameName][7].key:
+            await sellEventItem(driver, EventKeys.heo, false)
+            break
+
+        case auto[gameName][8].key:
+            await sellEventItem(driver, EventKeys.cuu, false)
+            break
+
+        case auto[gameName][9].key:
+            await sellEventItem(driver, EventKeys.ga)
+            break
+
+        case auto[gameName][10].key:
+            await sellEventItem(driver, EventKeys.bo)
+            break
+
+        case auto[gameName][11].key:
+            await sellEventItem(driver, EventKeys.heo)
+            break
+
+        case auto[gameName][12].key:
+            await sellEventItem(driver, EventKeys.cuu)
+            break
+
         default:
             break
     }
@@ -65,7 +105,7 @@ module.exports = {
 
 // define auto function
 
-const { SellItemOptions, ProductKeys, TreeKeys } = require('./const')
+const { SellItemOptions, ProductKeys, TreeKeys, EventKeys } = require('./const')
 
 //#region tinh dau dua + tra hoa hong
 const produceItems_1 = async (driver, isLast) => {
@@ -237,4 +277,13 @@ const plantEventTree = async (driver) => {
     await core.harvestTrees(driver)
     // xuong tang thap nhat
     await core.goDownLast(driver)
+}
+
+const sellEventItem = async (driver, itemKey, isAds = true) => {
+    await core.sellEventItems(driver, itemKey, isAds)
+}
+
+const buyEventItem8Slot = async (driver, isFirst) => {
+    isFirst && await core.goFriendHouse(driver)
+    await core.buy8SlotItem(driver)
 }
