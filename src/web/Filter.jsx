@@ -20,17 +20,19 @@ const Filter = (props) => {
         })
     }
 
-    const refreshSettings = () => {
-        axios.get('/api/settings').then(function (response) {
-            setDevicesOption(response.data.listDevices)
-            setListGameOption(response.data.listGameOption)
-            setSelectedDevices(response.data.listDevices.filter((x) => !x.disabled).map((x) => x.value))
-            setSelectedGame(response.data.listGameOption[0].key)
-        })
+    const getSettings = () => {
+        axios
+            .get('/api/settings')
+            .then(function (response) {
+                setDevicesOption(response.data.listDevices)
+                setListGameOption(response.data.listGameOption)
+                setSelectedDevices(response.data.listDevices.filter((x) => !x.disabled).map((x) => x.value))
+                setSelectedGame(response.data.listGameOption[0].key)
+            })
     }
 
     useEffect(() => {
-        refreshSettings()
+        getSettings()
     }, [props.refreshTime])
 
     const onSelectedDevice = (value) => {
@@ -51,10 +53,11 @@ const Filter = (props) => {
             gameOptions,
         }
 
-        axios.post('/api/start', payload).then((response) => {
-            refreshSettings()
-            props.setRefreshTime(moment().format('LTS'))
-        })
+        axios
+            .post('/api/start', payload)
+            .then((response) => {
+                props.setRefreshTime(moment().format('LTS'))
+            })
     }
 
     return (

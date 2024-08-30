@@ -1,4 +1,5 @@
 const core = require('./core')
+const { PlantSlotList } = require('./const')
 
 const openGame = async (driver, gameOptions = {}, index) => {
     const { openGame } = gameOptions
@@ -255,14 +256,15 @@ const sellItems_3 = async (driver) => {
 }
 
 const plantEventTree = async (driver) => {
+    const slotTree = PlantSlotList[4]
     await core.goUp(driver)
 
     // trong cay
     for (let j = 0; j < 4; j++) {
-        await core.plantTrees(driver, 4)
+        await core.plantTrees(driver, slotTree, 4)
         await core.goUp(driver, 2)
     }
-    await core.plantTrees(driver, 4)
+    await core.plantTrees(driver, slotTree, 4)
 
     // xuong tang thap nhat
     await core.goDownLast(driver)
@@ -284,6 +286,6 @@ const sellEventItem = async (driver, itemKey, isAds = true) => {
 }
 
 const buyEventItem8Slot = async (driver, isFirst) => {
-    isFirst && await core.goFriendHouse(driver)
+    isFirst && (await core.goFriendHouse(driver))
     await core.buy8SlotItem(driver)
 }
