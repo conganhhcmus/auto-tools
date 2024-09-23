@@ -4,7 +4,7 @@ import { Divider, Table, Button, Flex, Row, Col, Popover, Spin } from 'antd'
 import LiveScreen from './LiveScreen'
 import ImageScreen from './ImageScreen'
 import axios from 'axios'
-import styles from './Table.module.css'
+import * as styles from './Table.module.css'
 
 const RunningTable = (props) => {
     const [runningDevice, setRunningDevice] = useState([])
@@ -14,37 +14,36 @@ const RunningTable = (props) => {
     const [webSocket, setWebSocket] = useState(null)
     const [liveRefreshTime, setLiveRefreshTime] = useState(moment().format('LTS'))
 
-    const refreshData = () => {
-        axios.get('/api/runningDevice').then((response) => {
-            if (JSON.stringify(runningDevice) !== JSON.stringify(response.data)) {
+    const getRunningData = () => {
+        axios
+            .get('/api/runningDevice')
+            .then((response) => {
                 setRunningDevice(response.data)
-                props.setRefreshTime(moment().format('LTS'))
-            }
-        })
+            })
     }
     useEffect(() => {
-        const intervalId = setInterval(() => refreshData(), 60 * 1000)
-        refreshData()
-        return () => clearInterval(intervalId)
+        getRunningData()
     }, [props.refreshTime])
 
     const stopDevice = (device) => {
         let payload = { device }
-        axios.post('/api/stop', payload).then((response) => {
-            refreshData()
-            setSelectedDevices([])
-            props.setRefreshTime(moment().format('LTS'))
-        })
+        axios
+            .post('/api/stop', payload)
+            .then((response) => {
+                setSelectedDevices([])
+                props.setRefreshTime(moment().format('LTS'))
+            })
     }
 
     const stopAllDevices = () => {
         let payload = { listDevices: selectedDevices }
 
-        axios.post('/api/stopAll', payload).then((response) => {
-            refreshData()
-            setSelectedDevices([])
-            props.setRefreshTime(moment().format('LTS'))
-        })
+        axios
+            .post('/api/stopAll', payload)
+            .then((response) => {
+                setSelectedDevices([])
+                props.setRefreshTime(moment().format('LTS'))
+            })
     }
 
     const gameOptionContent = (gameOptions) => {

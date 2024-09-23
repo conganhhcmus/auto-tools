@@ -2,21 +2,21 @@
     "sky-garden": [
         {
             "key": "kvtm-auto-1",
-            "name": "Hạt Dưa Sấy + Nước Chanh",
-            "disabled": false,
-            "order": 1,
-            "recommend": true
-        },
-        {
-            "key": "kvtm-auto-2",
             "name": "Tinh Dầu Dừa + Trà Hoa Hồng",
             "disabled": false,
             "order": 2,
             "recommend": true
         },
         {
+            "key": "kvtm-auto-2",
+            "name": "Tinh Dầu Chanh + Nước Chanh",
+            "disabled": false,
+            "order": 1,
+            "recommend": true
+        },
+        {
             "key": "kvtm-auto-3",
-            "name": "Tinh Dầu Dừa + Nước Chanh",
+            "name": "Vải Tím",
             "disabled": false,
             "order": 3,
             "recommend": false
@@ -25,7 +25,70 @@
             "key": "kvtm-event-tree",
             "name": "Trồng Cây Sự Kiện",
             "disabled": false,
-            "order": 99,
+            "order": 4,
+            "recommend": false
+        },
+        {
+            "key": "kvtm-event-buy",
+            "name": "Mua VPSK - Nhà Bạn",
+            "disabled": false,
+            "order": 5,
+            "recommend": false
+        },
+        {
+            "key": "kvtm-event-ga",
+            "name": "Chuyển VPSK - Gà",
+            "disabled": false,
+            "order": 6,
+            "recommend": false
+        },
+        {
+            "key": "kvtm-event-bo",
+            "name": "Chuyển VPSK - Bò",
+            "disabled": false,
+            "order": 7,
+            "recommend": false
+        },
+        {
+            "key": "kvtm-event-heo",
+            "name": "Chuyển VPSK - Heo",
+            "disabled": false,
+            "order": 8,
+            "recommend": false
+        },
+        {
+            "key": "kvtm-event-cuu",
+            "name": "Chuyển VPSK - Cừu",
+            "disabled": false,
+            "order": 9,
+            "recommend": false
+        },
+        {
+            "key": "kvtm-event-ga-sell",
+            "name": "Xả VPSK - Gà",
+            "disabled": false,
+            "order": 10,
+            "recommend": false
+        },
+        {
+            "key": "kvtm-event-bo-sell",
+            "name": "Xả VPSK - Bò",
+            "disabled": false,
+            "order": 11,
+            "recommend": false
+        },
+        {
+            "key": "kvtm-event-heo-sell",
+            "name": "Xả VPSK - Heo",
+            "disabled": false,
+            "order": 12,
+            "recommend": false
+        },
+        {
+            "key": "kvtm-event-cuu-sell",
+            "name": "Xả VPSK - Cừu",
+            "disabled": false,
+            "order": 13,
             "recommend": false
         }
     ]

@@ -1,9 +1,6 @@
 const moment = require('moment')
-const { ADBHelper } = require('./adb')
 const { logErrMsg } = require('../utils/log')
-const { resolve } = require('path')
-const { runSpawn } = require('../utils/shell')
-const Promise = require('bluebird')
+const { connectAppium } = require('./webdriverio')
 const { writeLogData, getLogData, writeDeviceData, getDeviceData, getGamesData } = require('../utils/data')
 
 class Runner {
@@ -11,37 +8,16 @@ class Runner {
         this.queue = []
     }
 
-    runAutoTool = (params) => {
-        const { selectedGame, deviceId } = params
+    getAutoTool = (gameKey) => {
         const gameOptions = getGamesData()
-        if (gameOptions.listGameOption.some((x) => x.key === selectedGame && !x.disabled)) {
-            const filePath = resolve(__dirname, `../tools/${selectedGame}/index.js`)
-            const data = new Buffer.from(JSON.stringify(params)).toString('base64')
-            const runnerIndex = this.queue.findIndex((x) => x.id === deviceId)
-
-            return new Promise((resolve, reject) => {
-                const childProcess = runSpawn(
-                    `node ${filePath} ${data}`,
-                    (err) => reject(err),
-                    (code, signal) => {
-                        if (signal === 'SIGINT') {
-                            return reject(new Error('Kill process'))
-                        }
-                        if (code !== 0) {
-                            return reject(new Error(`Failed with code = ${code}`))
-                        }
-                        return resolve('done')
-                    }
-                )
-
-                this.queue[runnerIndex].childProcess = childProcess
-            })
+        if (gameOptions.listGameOption.some((x) => x.key === gameKey && !x.disabled)) {
+            return require(`../tools/${gameKey}/index`)
         }
-        return Promise.reject(new Error('Not found auto file!'))
+        return null
     }
 
     push = (deviceId, argv) => {
-        this.queue.push({ id: deviceId, params: argv, childProcess: null })
+        this.queue.push({ id: deviceId, params: argv, driver: null })
         return this
     }
 
@@ -58,6 +34,25 @@ class Runner {
         }
         writeLogData(logData)
 
+        const capabilities = {
+            platformName: 'Android',
+            'appium:options': {
+                udid: deviceId,
+                automationName: 'UiAutomator2',
+                noReset: true,
+                disableWindowAnimation: true,
+                //skipDeviceInitialization: true,
+                //skipServerInstallation: true,
+                suppressKillServer: true,
+                clearDeviceLogsOnStart: true,
+                skipLogcatCapture: true,
+            },
+        }
+
+        const driver = await connectAppium(capabilities)
+        const runnerIndex = this.queue.findIndex((x) => x.id === deviceId)
+        this.queue[runnerIndex].driver = driver
+
         for (let i = 0; i < frequency; i++) {
             // write log
             let logData = getLogData()
@@ -67,7 +62,8 @@ class Runner {
 
             // run auto
             try {
-                await this.runAutoTool({ ...params, index: i })
+                const autoTool = this.getAutoTool(params.selectedGame)
+                autoTool && (await autoTool({ ...params, index: i }, driver))
             } catch (err) {
                 logErrMsg(err.toString())
                 break
@@ -81,15 +77,14 @@ class Runner {
 
         const deviceData = getDeviceData()
         writeDeviceData(deviceData.filter((x) => x.device != deviceId))
-        this.queue = this.queue.fill((x) => x.id !== deviceId)
+        this.queue = this.queue.filter((x) => x.id !== deviceId)
 
         return this
     }
 
     kill = async (deviceId) => {
         const runner = this.queue.find((x) => x.id === deviceId)
-        runner.childProcess.stdin.end()
-        runner.childProcess.kill('SIGINT')
+        await runner.driver.finish()
 
         return this
     }

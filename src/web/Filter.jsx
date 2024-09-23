@@ -2,7 +2,7 @@ const moment = require('moment')
 import React, { useEffect, useState } from 'react'
 import { Col, Row, Select, Flex, notification } from 'antd'
 import GameOptionsFilter from './gameFilter'
-import styles from './Filter.module.css'
+import * as styles from './Filter.module.css'
 import axios from 'axios'
 
 const Filter = (props) => {
@@ -20,17 +20,19 @@ const Filter = (props) => {
         })
     }
 
-    const refreshSettings = () => {
-        axios.get('/api/settings').then(function (response) {
-            setDevicesOption(response.data.listDevices)
-            setListGameOption(response.data.listGameOption)
-            setSelectedDevices(response.data.listDevices.filter((x) => !x.disabled).map((x) => x.value))
-            setSelectedGame(response.data.listGameOption[0].key)
-        })
+    const getSettings = () => {
+        axios
+            .get('/api/settings')
+            .then(function (response) {
+                setDevicesOption(response.data.listDevices)
+                setListGameOption(response.data.listGameOption)
+                setSelectedDevices(response.data.listDevices.filter((x) => !x.disabled).map((x) => x.value))
+                setSelectedGame(response.data.listGameOption[0].key)
+            })
     }
 
     useEffect(() => {
-        refreshSettings()
+        getSettings()
     }, [props.refreshTime])
 
     const onSelectedDevice = (value) => {
@@ -51,17 +53,18 @@ const Filter = (props) => {
             gameOptions,
         }
 
-        axios.post('/api/start', payload).then((response) => {
-            refreshSettings()
-            props.setRefreshTime(moment().format('LTS'))
-        })
+        axios
+            .post('/api/start', payload)
+            .then((response) => {
+                props.setRefreshTime(moment().format('LTS'))
+            })
     }
 
     return (
         <>
             {contextHolder}
             <Row gutter={[40, 0]}>
-                <Col xs={24} sm={24} xl={8} xxl={8}>
+                <Col xs={24} sm={24} xl={10} xxl={10}>
                     <h3>Settings</h3>
                     <Row justify={'left'} gutter={[40, 20]}>
                         <Col className="gutter-row" xs={24} sm={24} xl={24} xxl={24}>

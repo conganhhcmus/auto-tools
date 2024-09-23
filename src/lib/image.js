@@ -8,20 +8,22 @@ const defaultSize = [800, 450]
 
 readAndResizeImage = async (filePath) => {
     const imageSource = await Jimp.read(filePath)
+    let isRotated = false
     if (imageSource.bitmap.width > imageSource.bitmap.height) {
         imageSource.resize(defaultSize[0], defaultSize[1])
     } else {
         imageSource.resize(defaultSize[1], defaultSize[0])
+        isRotated = true
     }
 
-    return imageSource
+    return [imageSource, isRotated]
 }
 
 async function findCoordinates(deviceId, itemId) {
     try {
         const screenCapPath = resolve(__dirname, `../assets/device/${deviceId}.png`)
         const itemFilePath = resolve(__dirname, `../assets/items/${itemId}.png`)
-        const imageSource = await readAndResizeImage(screenCapPath)
+        const [imageSource, isRotated] = await readAndResizeImage(screenCapPath)
         const imageTemplate = await Jimp.read(itemFilePath)
         let src = cv.matFromImageData(imageSource.bitmap)
         let templ = cv.matFromImageData(imageTemplate.bitmap)
@@ -55,8 +57,8 @@ async function findCoordinates(deviceId, itemId) {
         hierarchy.delete()
 
         return result.map((point) => ({
-            x: (point.x / defaultSize[0]) * 100.0,
-            y: (point.y / defaultSize[1]) * 100.0,
+            x: (point.x / defaultSize[isRotated ? 1 : 0]) * 100.0,
+            y: (point.y / defaultSize[isRotated ? 0 : 1]) * 100.0,
         }))
     } catch (err) {
         logErrMsg(cvTranslateError(cv, err))

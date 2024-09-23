@@ -66,6 +66,14 @@ const SellItemOptions = {
     events: 4,
 }
 
+const SellOptions = [
+    { x: 53.75, y: 22.22 }, // Trees
+    { x: 53.75, y: 37.78 }, // Goods
+    { x: 53.75, y: 53.33 }, // Others
+    { x: 53.75, y: 68.88 }, // Mineral
+    { x: 53.75, y: 84.44 }, // Events
+]
+
 const SellSlotList = [
     // [0, 1, 2, 3]
     // [4, 5, 6, 7]
@@ -79,13 +87,49 @@ const SellSlotList = [
     { x: 73.75, y: 75.56 },
 ]
 
-const SellOptions = [
-    { x: 53.75, y: 22.22 }, // Trees
-    { x: 53.75, y: 37.78 }, // Goods
-    { x: 53.75, y: 53.33 }, // Others
-    { x: 53.75, y: 68.88 }, // Mineral
-    { x: 53.75, y: 84.44 }, // Events
-]
+const ItemKeys = {
+    nextOption: 'next-option',
+    emptyProductionSlot: 'o-trong-san-xuat',
+    emptySellSlot: 'o-trong-ban',
+    soldSlot: 'o-da-ban',
+    harvestBasket: 'thu-hoach',
+    chest: 'ruong-bau',
+    game: 'game',
+    gameId: 'vn.kvtm.js',
+    shopGem: 'shop-gem',
+    goDownLast: 'xuong-day',
+    friendHouse: 'friend-house',
+}
+
+const TreeKeys = {
+    hong: 'hong',
+    chanh: 'chanh',
+    tuyet: 'tuyet',
+    bong: 'bong',
+    oaiHuong: 'oai-huong',
+    dua: 'dua',
+    duaHau: 'dua-hau',
+}
+
+const ProductKeys = {
+    hatDuaSay: 'hat-dua-say',
+    vaiTim: 'vai-tim',
+    vaiDo: 'vai-do',
+    vaiVang: 'vai-vang',
+    nuocChanh: 'nuoc-chanh',
+    nuocTuyet: 'nuoc-tuyet',
+    tinhDauChanh: 'tinh-dau-chanh',
+    tinhDauDua: 'tinh-dau-dua',
+    tinhDauHoaHong: 'tinh-dau-hoa-hong',
+    traHoaHong: 'tra-hoa-hong',
+}
+
+const EventKeys = {
+    bo: 'event-bo',
+    ga: 'event-ga',
+    cuu: 'event-cuu',
+    heo: 'event-heo',
+}
 
 module.exports = {
     DelayTime,
@@ -93,9 +137,13 @@ module.exports = {
     DefaultProduct,
     FirstRowSlotList,
     SecondRowSlotList,
-    SellSlotList,
     SellOptions,
     PlantSlotList,
     MakeSlotList,
     SellItemOptions,
+    SellSlotList,
+    ItemKeys,
+    ProductKeys,
+    TreeKeys,
+    EventKeys,
 }

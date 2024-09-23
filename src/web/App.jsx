@@ -2,7 +2,7 @@ const moment = require('moment')
 import React, { useState } from 'react'
 import { Layout } from 'antd'
 const { Header, Content, Footer } = Layout
-import styles from './App.module.css'
+import * as styles from './App.module.css'
 
 import Filter from './Filter'
 import Table from './Table'
