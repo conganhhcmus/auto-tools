@@ -1,14 +1,18 @@
-const fs = require('fs')
-const path = require('path')
+const { getLogData, clearLogData } = require('../utils/data')
 
-exports.getLogs = (req, res, next) => {
+function getLogs(req, res, next) {
     let device = req.query.device
-    let logs = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/logs.json'), 'utf8'))
+    let logs = getLogData()
     let result = logs.find((log) => log.device === device)
     res.json(result)
 }
 
-exports.clearLogs = (req, res, next) => {
-    fs.writeFileSync(path.resolve(__dirname, '../data/logs.json'), '')
+function clearLogs(req, res, next) {
+    clearLogData()
     res.end()
+}
+
+module.exports = {
+    getLogs,
+    clearLogs,
 }

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import JMuxer from 'jmuxer'
-import styles from './LiveScreen.module.css'
+import * as styles from './LiveScreen.module.css'
 
 const LiveScreen = (props) => {
     useEffect(() => {

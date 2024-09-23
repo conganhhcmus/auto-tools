@@ -1,74 +1,95 @@
 {
     "sky-garden": [
         {
-            "key": "PlantEventTree",
-            "name": "Trồng Cây Sự Kiện",
-            "disabled": false,
-            "order": 0,
-            "recommend": false
-        },
-        {
-            "key": "ProductItem-1",
-            "name": "SX Vải Đỏ",
-            "disabled": false,
-            "order": 1,
-            "recommend": false
-        },
-        {
-            "key": "ProductItem-2",
-            "name": "SX Vải Tím",
-            "disabled": false,
-            "order": 1,
-            "recommend": false
-        },
-        {
-            "key": "ProductItem-3",
-            "name": "SX Vải Đỏ + Nước Tuyết",
+            "key": "kvtm-auto-1",
+            "name": "Tinh Dầu Dừa + Trà Hoa Hồng",
             "disabled": false,
             "order": 2,
-            "recommend": false
+            "recommend": true
         },
         {
-            "key": "ProductItem-4",
-            "name": "SX Vải Tím + Nước Tuyết",
+            "key": "kvtm-auto-2",
+            "name": "Tinh Dầu Chanh + Nước Chanh",
             "disabled": false,
-            "order": 2,
-            "recommend": false
+            "order": 1,
+            "recommend": true
         },
         {
-            "key": "ProductItem-5",
-            "name": "SX Vải Đỏ + TD HH + Trà HH",
-            "disabled": false,
-            "order": 4,
-            "recommend": false
-        },
-        {
-            "key": "ProductItem-6",
-            "name": "SX Vải Vàng + Trà Hoa Hồng",
+            "key": "kvtm-auto-3",
+            "name": "Vải Tím",
             "disabled": false,
             "order": 3,
-            "recommend": true
+            "recommend": false
         },
         {
-            "key": "ProductItem-7",
-            "name": "SX Vải Vàng + TD HH + Trà HH",
+            "key": "kvtm-event-tree",
+            "name": "Trồng Cây Sự Kiện",
             "disabled": false,
             "order": 4,
             "recommend": false
         },
         {
-            "key": "ProductItem-8",
-            "name": "SX Vải Vàng + TD Táo + Trà HH",
-            "disabled": false,
-            "order": 4,
-            "recommend": false
-        },
-        {
-            "key": "ProductItem-9",
-            "name": "SX Hạt Dưa Sấy + Nước Chanh",
+            "key": "kvtm-event-buy",
+            "name": "Mua VPSK - Nhà Bạn",
             "disabled": false,
             "order": 5,
-            "recommend": true
+            "recommend": false
+        },
+        {
+            "key": "kvtm-event-ga",
+            "name": "Chuyển VPSK - Gà",
+            "disabled": false,
+            "order": 6,
+            "recommend": false
+        },
+        {
+            "key": "kvtm-event-bo",
+            "name": "Chuyển VPSK - Bò",
+            "disabled": false,
+            "order": 7,
+            "recommend": false
+        },
+        {
+            "key": "kvtm-event-heo",
+            "name": "Chuyển VPSK - Heo",
+            "disabled": false,
+            "order": 8,
+            "recommend": false
+        },
+        {
+            "key": "kvtm-event-cuu",
+            "name": "Chuyển VPSK - Cừu",
+            "disabled": false,
+            "order": 9,
+            "recommend": false
+        },
+        {
+            "key": "kvtm-event-ga-sell",
+            "name": "Xả VPSK - Gà",
+            "disabled": false,
+            "order": 10,
+            "recommend": false
+        },
+        {
+            "key": "kvtm-event-bo-sell",
+            "name": "Xả VPSK - Bò",
+            "disabled": false,
+            "order": 11,
+            "recommend": false
+        },
+        {
+            "key": "kvtm-event-heo-sell",
+            "name": "Xả VPSK - Heo",
+            "disabled": false,
+            "order": 12,
+            "recommend": false
+        },
+        {
+            "key": "kvtm-event-cuu-sell",
+            "name": "Xả VPSK - Cừu",
+            "disabled": false,
+            "order": 13,
+            "recommend": false
         }
     ]
 }

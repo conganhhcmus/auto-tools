@@ -1,40 +1,58 @@
-const fs = require('fs')
-const util = require('util')
-const exec = util.promisify(require('child_process').exec)
-const spawn = require('child_process').spawn
-const path = require('path')
+const { spawn, exec } = require('child_process')
+const { logErrMsg } = require('./log')
+const Promise = require('bluebird')
 
-defaultErrorHandler = (err) => {
-    fs.appendFileSync(path.resolve(__dirname, '../logs/err.txt'), err)
+function runExecAsync(command) {
+    return new Promise((resolve, reject) => {
+        runExec(
+            command,
+            (stdout) => resolve(stdout),
+            (err) => {
+                logErrMsg(err.message)
+                reject(err)
+            },
+            (code, signal) => {
+                if (code !== 0) {
+                    reject(new Error(`process die with code ${code}, signal ${signal}`))
+                }
+            }
+        )
+    })
 }
 
-defaultExitHandler = (code) => {
-    // console.log('child process exited with code', code)
+function runExec(command, outputHandler = null, errorHandler = null, exitHandler = null) {
+    const childProcess = exec(command, (err, stdout, stderr) => {
+        if (err) {
+            errorHandler && errorHandler(err)
+        }
+        stderr && logErrMsg(stderr)
+        outputHandler && outputHandler(stdout)
+    })
+
+    childProcess.on('close', function (code, signal) {
+        exitHandler && exitHandler(code, signal)
+    })
+
+    return childProcess
 }
 
-exports.runShell = async (command, errorHandler = null) => {
-    try {
-        const { stdout, stderr, error } = await exec(command)
-        // stdout && fs.appendFileSync(path.resolve(__dirname, '../logs/out.txt'), stdout)
-        stderr && (errorHandler ? errorHandler() : defaultErrorHandler(stderr))
-        return stdout || ''
-    } catch (e) {
-        errorHandler ? errorHandler() : defaultErrorHandler(e.message)
-        return ''
-    }
-}
-
-exports.runShellSpawn = (command, errorHandler = null, exitHandler = null) => {
+function runSpawn(command, errorHandler = null, exitHandler = null) {
     let commandArray = command.split(' ')
     const childProcess = spawn(commandArray.shift(), commandArray)
 
     childProcess.stderr.on('data', function (data) {
-        errorHandler ? errorHandler() : defaultErrorHandler(data)
+        errorHandler ? errorHandler(data) : logErrMsg(data)
     })
 
-    childProcess.on('close', function (code) {
-        exitHandler ? exitHandler() : defaultExitHandler(code)
+    childProcess.on('close', function (code, signal) {
+        exitHandler && exitHandler(code, signal)
     })
 
     return childProcess
+}
+
+module.exports = {
+    runExec,
+    runSpawn,
+    runExecAsync,
 }
