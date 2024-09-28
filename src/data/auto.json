@@ -90,6 +90,13 @@
             "disabled": false,
             "order": 13,
             "recommend": false
+        },
+        {
+            "key": "kvtm-achievement-1",
+            "name": "TT - Gặp Nhau Mỗi Ngày",
+            "disabled": false,
+            "order": 14,
+            "recommend": false
         }
     ]
 }

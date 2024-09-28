@@ -87,6 +87,14 @@ const SellSlotList = [
     { x: 73.75, y: 75.56 },
 ]
 
+const FriendHouseList = [
+    { x: 7.5, y: 61.11 },
+    { x: 22.5, y: 61.11 },
+    { x: 37.5, y: 61.11 },
+    { x: 52.5, y: 61.11 },
+    { x: 67.5, y: 61.11 },
+]
+
 const ItemKeys = {
     nextOption: 'next-option',
     emptyProductionSlot: 'o-trong-san-xuat',
@@ -99,6 +107,7 @@ const ItemKeys = {
     shopGem: 'shop-gem',
     goDownLast: 'xuong-day',
     friendHouse: 'friend-house',
+    myHouse: 'my-house',
 }
 
 const TreeKeys = {
@@ -131,6 +140,10 @@ const EventKeys = {
     heo: 'event-heo',
 }
 
+const AchievementKeys = {
+    GapNhauMoiNgay: 'gap-nhau-moi-ngay'
+}
+
 module.exports = {
     DelayTime,
     DefaultBasket,
@@ -146,4 +159,6 @@ module.exports = {
     ProductKeys,
     TreeKeys,
     EventKeys,
+    AchievementKeys,
+    FriendHouseList,
 }

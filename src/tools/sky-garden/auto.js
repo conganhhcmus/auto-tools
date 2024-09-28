@@ -1,5 +1,5 @@
 const core = require('./core')
-const { PlantSlotList } = require('./const')
+const { PlantSlotList, AchievementKeys, FriendHouseList } = require('./const')
 
 const openGame = async (driver, gameOptions = {}, index) => {
     const { openGame } = gameOptions
@@ -36,6 +36,10 @@ const produceItems = async (driver, gameOptions = {}, index, auto, gameName, fre
 
         case auto[gameName][4].key:
             await buyEventItem8Slot(driver, isFirstRun)
+            break
+
+        case auto[gameName][13].key:
+            await getAchievement(driver, AchievementKeys.GapNhauMoiNgay)
             break
 
         default:
@@ -288,4 +292,16 @@ const sellEventItem = async (driver, itemKey, isAds = true) => {
 const buyEventItem8Slot = async (driver, isFirst) => {
     isFirst && (await core.goFriendHouse(driver))
     await core.buy8SlotItem(driver)
+}
+
+const getAchievement = async (driver, key) => {
+    switch (key) {
+        case AchievementKeys.GapNhauMoiNgay:
+            for (let i = 0; i < FriendHouseList.length; i++) {
+                await core.goFriendHouse(driver, i)
+            }
+            break
+        default:
+            break
+    }
 }

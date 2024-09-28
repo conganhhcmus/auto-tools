@@ -2,9 +2,12 @@ const fs = require('fs')
 const { remote } = require('webdriverio')
 const { resolve } = require('path')
 const { findCoordinates } = require('./image')
+const { logErrMsg } = require('../utils/log')
 
 const MIN = -1
 const MAX = 1
+const Base64Regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/
+const SupportRecordVideo = false;
 
 const getRandomInt = (min, max) => {
     min = Math.ceil(min)
@@ -18,6 +21,25 @@ class Driver {
         this.deviceId = deviceId
         this.width = 0
         this.height = 0
+    }
+
+    startRecordingScreen = async () => {
+        if (!SupportRecordVideo) {
+            return
+        }
+        await this.driver.startRecordingScreen({ timeLimit: 30 * 60 });
+    }
+
+    stopRecordingScreen = async (key) => {
+        if (!SupportRecordVideo) {
+            return
+        }
+        let path = resolve(__dirname, `../assets/screen/${this.deviceId}_${key}.mp4`)
+        try {
+            await this.driver.saveRecordingScreen(path);
+        } catch (err) {
+            logErrMsg(`Error saving recording to ${this.deviceId}_${key}: ${err.toString()}`);
+        }
     }
 
     setCurrentWindowSize = async () => {
@@ -61,9 +83,8 @@ class Driver {
     }
 
     screenshot = async (path) => {
-        const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/
         const screenshot = await this.driver.takeScreenshot()
-        if (base64regex.test(screenshot)) {
+        if (Base64Regex.test(screenshot)) {
             return fs.writeFileSync(path, screenshot, 'base64')
         }
         return await screenshot(path)

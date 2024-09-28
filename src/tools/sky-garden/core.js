@@ -1,5 +1,18 @@
 const { KeyCode } = require('../../lib/webdriverio')
-const { DelayTime, MakeSlotList, FirstRowSlotList, SecondRowSlotList, DefaultBasket, DefaultProduct, SellOptions, ItemKeys, PlantSlotList, SellItemOptions, SellSlotList } = require('./const')
+const {
+    DelayTime,
+    MakeSlotList,
+    FirstRowSlotList,
+    SecondRowSlotList,
+    DefaultBasket,
+    DefaultProduct,
+    SellOptions,
+    ItemKeys,
+    PlantSlotList,
+    SellItemOptions,
+    SellSlotList,
+    FriendHouseList,
+} = require('./const')
 
 const openGame = async (driver) => {
     await driver.press(KeyCode.HOME)
@@ -344,10 +357,16 @@ const buy8SlotItem = async (driver) => {
     await backToGame(driver)
 }
 
-const goFriendHouse = async (driver) => {
+const goFriendHouse = async (driver, index) => {
+    const { x, y } = FriendHouseList[index]
     await driver.tapItemOnScreen(ItemKeys.friendHouse)
     await driver.sleep(0.5)
-    await driver.tap(22.5, 61.11)
+    await driver.tap(x, y)
+    await driver.sleep(2)
+}
+
+const goMyHouse = async (driver) => {
+    await driver.tapItemOnScreen(ItemKeys.myHouse)
     await driver.sleep(2)
 }
 
@@ -365,7 +384,8 @@ module.exports = {
     findTreeOnScreen,
     sellEventItems,
     buy8SlotItem,
-    goFriendHouse
+    goFriendHouse,
+    goMyHouse,
 }
 
 // private method
