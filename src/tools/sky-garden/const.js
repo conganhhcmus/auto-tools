@@ -111,6 +111,7 @@ const ItemKeys = {
 }
 
 const TreeKeys = {
+    tao: 'tao',
     hong: 'hong',
     chanh: 'chanh',
     tuyet: 'tuyet',
@@ -131,6 +132,7 @@ const ProductKeys = {
     tinhDauDua: 'tinh-dau-dua',
     tinhDauHoaHong: 'tinh-dau-hoa-hong',
     traHoaHong: 'tra-hoa-hong',
+    nuocHoaHuongTao: 'nuoc-hoa-huong-tao',
 }
 
 const EventKeys = {

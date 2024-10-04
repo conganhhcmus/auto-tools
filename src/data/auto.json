@@ -4,8 +4,8 @@
             "key": "kvtm-auto-1",
             "name": "Tinh Dầu Dừa + Trà Hoa Hồng",
             "disabled": false,
-            "order": 2,
-            "recommend": true
+            "order": 4,
+            "recommend": false
         },
         {
             "key": "kvtm-auto-2",
@@ -97,6 +97,13 @@
             "disabled": false,
             "order": 14,
             "recommend": false
+        },
+        {
+            "key": "kvtm-auto-4",
+            "name": "Nước Hoa Hoa Táo",
+            "disabled": false,
+            "order": 2,
+            "recommend": true
         }
     ]
 }
