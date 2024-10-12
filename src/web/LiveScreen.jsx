@@ -4,9 +4,9 @@ import * as styles from './LiveScreen.module.css'
 
 const LiveScreen = (props) => {
     useEffect(() => {
-        var protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
-        var socketURL = protocol + '//' + window.location.host + '/live/' + props.deviceId
-        var jmuxer = new JMuxer({
+        let protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
+        let socketURL = protocol + '//' + window.location.host + '/live/' + props.deviceId
+        let jmuxer = new JMuxer({
             node: `player-${props.deviceId}`,
             mode: 'video',
             flushingTime: 0,
@@ -14,7 +14,7 @@ const LiveScreen = (props) => {
             fps: 60,
             debug: false,
         })
-        var ws = new WebSocket(socketURL)
+        let ws = new WebSocket(socketURL)
         ws.binaryType = 'arraybuffer'
         ws.addEventListener('message', function (event) {
             jmuxer.feed({

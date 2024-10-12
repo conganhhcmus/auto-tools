@@ -267,7 +267,6 @@ const sellItems_3 = async (driver) => {
     await core.sellItems(driver, SellItemOptions.goods, [{ key: ProductKeys.vaiTim, value: 8 }])
 }
 
-
 //#region nuoc hoa huong tao
 const produceItems_4 = async (driver, isLast) => {
     // trong 1 - chanh
