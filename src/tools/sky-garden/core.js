@@ -1,4 +1,4 @@
-const { KeyCode } = require('../../lib/webdriverio')
+const { KeyCode, SwipeDirection } = require('../../lib/webdriverio')
 const {
     DelayTime,
     MakeSlotList,
@@ -8,10 +8,11 @@ const {
     DefaultProduct,
     SellOptions,
     ItemKeys,
-    PlantSlotList,
     SellItemOptions,
     SellSlotList,
     FriendHouseList,
+    PlantSlotList,
+    SlotPositions,
 } = require('./const')
 
 const openGame = async (driver) => {
@@ -23,15 +24,16 @@ const openGame = async (driver) => {
     await driver.setCurrentWindowSize()
 
     let count = 0
-    while (!(await driver.haveItemOnScreen(ItemKeys.game))) {
+    let gamePosition = null
+    while (!gamePosition) {
         if (count > 10) {
             return await openGame(driver)
-        } else {
-            await driver.sleep(1)
-            count++
         }
+        gamePosition = await driver.getCoordinateItemOnScreen(ItemKeys.game, SlotPositions.p2)
+        await driver.sleep(1)
+        count++
     }
-    await driver.tapItemOnScreen(ItemKeys.game)
+    await driver.tap(gamePosition.x, gamePosition.y)
     await driver.sleep(15)
 
     // reset current window size
@@ -43,13 +45,13 @@ const openGame = async (driver) => {
     }
     await driver.tap(58, 72.22)
     await driver.sleep(1)
-    if (!(await driver.haveItemOnScreen(ItemKeys.shopGem))) {
+    if (!(await driver.haveItemOnScreen(ItemKeys.shopGem, SlotPositions.p3))) {
         return await openGame(driver)
     }
 }
 
 const openChests = async (driver) => {
-    let isFound = await driver.haveItemOnScreen(ItemKeys.chest)
+    let isFound = await driver.haveItemOnScreen(ItemKeys.chest, SlotPositions.p1)
     if (isFound) {
         await driver.tap(35.0, 22.22)
         await driver.sleep(0.2)
@@ -81,10 +83,7 @@ const backToGame = async (driver) => {
 
 const goUp = async (driver, times = 1) => {
     for (let i = 0; i < times; i++) {
-        await driver.action([
-            { duration: 0, x: 8.75, y: 53.33 },
-            { duration: DelayTime * 1000, x: 8.75, y: 83.33 },
-        ])
+        await driver.swipe({ x: 50, y: 50 }, { x: 50, y: 90 }, SwipeDirection.DOWN)
         await driver.sleep(10 * DelayTime)
     }
     await driver.sleep(0.5)
@@ -92,41 +91,19 @@ const goUp = async (driver, times = 1) => {
 
 const goDown = async (driver, times = 1) => {
     for (let i = 0; i < times; i++) {
-        await driver.action([
-            { duration: 0, x: 8.75, y: 83.33 },
-            { duration: DelayTime * 1000, x: 8.75, y: 53.33 },
-        ])
+        await driver.swipe({ x: 50, y: 90 }, { x: 50, y: 50 }, SwipeDirection.UP)
         await driver.sleep(10 * DelayTime)
     }
     await driver.sleep(0.5)
 }
 
 const goDownLast = async (driver) => {
-    let count = 0
-    let goDownLastFound = null
-    // go up
-    while (!goDownLastFound) {
-        count++
-        count % 3 == 0 ? await goDown(driver) : await goUp(driver) // 2 up - 1 down
-        goDownLastFound = await driver.getCoordinateItemOnScreen(ItemKeys.goDownLast)
-    }
-
-    // click go down last
-    await driver.tap(goDownLastFound.x, goDownLastFound.y)
+    await goUp(driver)
+    await driver.tap(50.63, 97.78)
     await driver.sleep(0.75)
 }
 
 const harvestTrees = async (driver) => {
-    let count = 0
-    let found = false
-    do {
-        if (count > 10) throw new Error(`Screen is not found ${ItemKeys.harvestBasket} item`)
-        await driver.tap(37.5, 84.44)
-        await driver.sleep(0.5)
-        found = await driver.haveItemOnScreen(ItemKeys.harvestBasket)
-        count++
-    } while (!found)
-
     const { x, y } = DefaultBasket
     const pointList = [{ duration: 0, x: x, y: y }]
     const duration = DelayTime * 1000
@@ -148,6 +125,18 @@ const harvestTrees = async (driver) => {
             y: SecondRowSlotList[i].y,
         })
     }
+
+    await driver.tap(37.5, 84.44)
+    await driver.sleep(0.5)
+
+    let count = 0
+    while (!(await driver.haveItemOnScreen(ItemKeys.harvestBasket, SlotPositions.p3))) {
+        if (count > 5) throw new Error(`Screen is not found ${ItemKeys.harvestBasket} item`)
+        await driver.tap(37.5, 84.44)
+        await driver.sleep(0.5)
+        count++
+    }
+
     await driver.action(pointList)
     await driver.sleep(0.5)
 }
@@ -190,10 +179,13 @@ const makeItems = async (driver, floor = 1, slot = 0, number = 1) => {
         await driver.sleep(0.2)
     }
     // chan chan mo duoc o san xuat
+    let count = 0
     do {
+        if (count > 10) throw new Error(`Screen is not found ${ItemKeys.emptyProductionSlot} item`)
         await driver.tap(position.x, position.y)
         await driver.sleep(0.1)
-    } while (!(await driver.haveItemOnScreen(ItemKeys.emptyProductionSlot)))
+        count++
+    } while (!(await driver.haveItemOnScreen(ItemKeys.emptyProductionSlot, SlotPositions.p4)))
 
     // make goods
     const { x, y } = MakeSlotList[slot]
@@ -238,34 +230,44 @@ const sellItems = async (driver, option, items) => {
     let itemId = _getItemId(items)
     let count = 0
     while (itemId) {
-        if (await driver.haveItemOnScreen(ItemKeys.soldSlot)) {
-            await driver.doubleTapItemOnScreen(ItemKeys.soldSlot)
+        var soldSlot = await driver.getCoordinateItemOnScreen(ItemKeys.soldSlot)
+        if (soldSlot !== null) {
+            await driver.tap(soldSlot.x, soldSlot.y)
+            await driver.sleep(0.5)
+            await driver.tap(soldSlot.x, soldSlot.y)
             await driver.sleep(0.5)
             await driver.tap(option_x, option_y)
             await driver.sleep(0.5)
 
             // choose item by image
-            await driver.tapItemOnScreen(itemId)
+            await driver.tapItemOnScreen(itemId, SlotPositions.p1p3)
             await _sell(driver)
             itemId = _getItemId(items)
-        } else if (await driver.haveItemOnScreen(ItemKeys.emptySellSlot)) {
-            await driver.tapItemOnScreen(ItemKeys.emptySellSlot)
-            await driver.sleep(0.5)
-            await driver.tap(option_x, option_y)
-            await driver.sleep(0.5)
 
-            // choose item by image
-            await driver.tapItemOnScreen(itemId)
-            await _sell(driver)
-            itemId = _getItemId(items)
-        } else {
-            await driver.action([
-                { duration: 0, x: 84.375, y: 60.0 },
-                { duration: 3 * 1000, x: 21.875, y: 60.0 },
-            ])
-            await driver.sleep(0.5)
-            count++
+            continue
         }
+
+        var emptySlot = await driver.getCoordinateItemOnScreen(ItemKeys.emptySellSlot)
+
+        if (emptySlot != null) {
+            await driver.tap(emptySlot.x, emptySlot.y)
+            await driver.sleep(0.5)
+            await driver.tap(option_x, option_y)
+            await driver.sleep(0.5)
+
+            // choose item by image
+            await driver.tapItemOnScreen(itemId, SlotPositions.p1p3)
+            await _sell(driver)
+            itemId = _getItemId(items)
+            continue
+        }
+
+        await driver.action([
+            { duration: 0, x: 84.375, y: 60.0 },
+            { duration: 3 * 1000, x: 21.875, y: 60.0 },
+        ])
+        await driver.sleep(0.5)
+        count++
 
         if (count > 2) {
             // click ads
@@ -289,7 +291,7 @@ const findTreeOnScreen = async (driver, treeKey, isFindNext = true) => {
     await driver.tap(37.5, 84.44)
     await driver.sleep(0.5)
 
-    let slotItem = await driver.getCoordinateItemOnScreen(treeKey)
+    let slotItem = await driver.getCoordinateItemOnScreen(treeKey, SlotPositions.p3)
     let retryCount = 0
 
     while (!slotItem) {
@@ -298,11 +300,12 @@ const findTreeOnScreen = async (driver, treeKey, isFindNext = true) => {
         isFindNext ? await driver.tap(40.625, 67.78) : await driver.tap(10, 67.78)
         await driver.sleep(0.5)
 
-        slotItem = await driver.getCoordinateItemOnScreen(treeKey)
+        slotItem = await driver.getCoordinateItemOnScreen(treeKey, SlotPositions.p3)
         retryCount++
     }
     await driver.press(KeyCode.BACK)
     await driver.sleep(0.5)
+
     return _getSlotNearest(slotItem)
 }
 
@@ -323,7 +326,7 @@ const sellEventItems = async (driver, itemKey, isAds) => {
         await driver.tap(option_x, option_y)
         await driver.sleep(0.5)
 
-        const eventItemSlot = await driver.getCoordinateItemOnScreen(itemKey)
+        const eventItemSlot = await driver.getCoordinateItemOnScreen(itemKey, SlotPositions.p1p3)
         if (!eventItemSlot) throw new Error(`Screen is not found ${itemKey} item`)
 
         await driver.tap(eventItemSlot.x, eventItemSlot.y)
@@ -359,14 +362,14 @@ const buy8SlotItem = async (driver) => {
 
 const goFriendHouse = async (driver, index) => {
     const { x, y } = FriendHouseList[index]
-    await driver.tapItemOnScreen(ItemKeys.friendHouse)
+    await driver.tapItemOnScreen(ItemKeys.friendHouse, SlotPositions.p4)
     await driver.sleep(0.5)
     await driver.tap(x, y)
     await driver.sleep(2)
 }
 
 const goMyHouse = async (driver) => {
-    await driver.tapItemOnScreen(ItemKeys.myHouse)
+    await driver.tapItemOnScreen(ItemKeys.myHouse, SlotPositions.p3)
     await driver.sleep(2)
 }
 

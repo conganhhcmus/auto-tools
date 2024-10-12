@@ -146,6 +146,17 @@ const AchievementKeys = {
     GapNhauMoiNgay: 'gap-nhau-moi-ngay'
 }
 
+const SlotPositions = {
+    p1: '1',
+    p2: '2',
+    p3: '3',
+    p4: '4',
+    p1p2: '12',
+    p1p3: '13',
+    p2p4: '24',
+    p3p4: '34',
+}
+
 module.exports = {
     DelayTime,
     DefaultBasket,
@@ -163,4 +174,5 @@ module.exports = {
     EventKeys,
     AchievementKeys,
     FriendHouseList,
+    SlotPositions
 }
