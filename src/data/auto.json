@@ -11,14 +11,14 @@
             "key": "kvtm-auto-2",
             "name": "Tinh Dầu Chanh + Nước Chanh",
             "disabled": false,
-            "order": 1,
-            "recommend": true
+            "order": 4,
+            "recommend": false
         },
         {
             "key": "kvtm-auto-3",
             "name": "Vải Tím",
             "disabled": false,
-            "order": 3,
+            "order": 2,
             "recommend": false
         },
         {
@@ -102,8 +102,29 @@
             "key": "kvtm-auto-4",
             "name": "Nước Hoa Hoa Táo",
             "disabled": false,
-            "order": 2,
+            "order": 3,
+            "recommend": false
+        },
+        {
+            "key": "kvtm-auto-5",
+            "name": "Vải Xanh Lá",
+            "disabled": false,
+            "order": 0,
             "recommend": true
+        },
+        {
+            "key": "kvtm-auto-6",
+            "name": "Vải Xanh Lá + Tinh Dầu Chanh",
+            "disabled": false,
+            "order": 1,
+            "recommend": true
+        },
+        {
+            "key": "kvtm-auto-7",
+            "name": "Vải Đỏ",
+            "disabled": false,
+            "order": 3,
+            "recommend": false
         }
     ]
 }

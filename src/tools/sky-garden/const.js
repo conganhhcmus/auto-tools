@@ -133,6 +133,7 @@ const ProductKeys = {
     tinhDauHoaHong: 'tinh-dau-hoa-hong',
     traHoaHong: 'tra-hoa-hong',
     nuocHoaHuongTao: 'nuoc-hoa-huong-tao',
+    vaiXanhLa: 'vai-xanh-la',
 }
 
 const EventKeys = {

@@ -31,7 +31,7 @@ const produceItems = async (driver, gameOptions = {}, index, auto, gameName, fre
             break
 
         case auto[gameName][3].key:
-            await plantEventTree(driver)
+            await plantEventTree(driver, index)
             break
 
         case auto[gameName][4].key:
@@ -44,6 +44,18 @@ const produceItems = async (driver, gameOptions = {}, index, auto, gameName, fre
 
         case auto[gameName][14].key:
             await produceItems_4(driver, isLast)
+            break
+
+        case auto[gameName][15].key:
+            await produceItems_5(driver, isLast)
+            break
+
+        case auto[gameName][16].key:
+            await produceItems_6(driver, isLast)
+            break
+
+        case auto[gameName][17].key:
+            await produceItems_7(driver, isLast)
             break
 
         default:
@@ -102,6 +114,18 @@ const sellItems = async (driver, gameOptions, auto, gameName) => {
 
         case auto[gameName][14].key:
             await sellItems_4(driver)
+            break
+
+        case auto[gameName][15].key:
+            await sellItems_5(driver)
+            break
+
+        case auto[gameName][16].key:
+            await sellItems_6(driver)
+            break
+
+        case auto[gameName][17].key:
+            await sellItems_7(driver)
             break
 
         default:
@@ -317,30 +341,185 @@ const sellItems_4 = async (driver) => {
     await core.sellItems(driver, SellItemOptions.goods, [{ key: ProductKeys.nuocHoaHuongTao, value: 6 }])
 }
 
-const plantEventTree = async (driver) => {
-    const slotTree = PlantSlotList[4]
+// #endregion
+
+
+//#region vai xanh la
+const produceItems_5 = async (driver, isLast) => {
+    // trong bong, chanh
     await core.goUp(driver)
-
-    // trong cay
-    for (let j = 0; j < 4; j++) {
-        await core.plantTrees(driver, slotTree, 4)
-        await core.goUp(driver, 2)
-    }
-    await core.plantTrees(driver, slotTree, 4)
-
-    // xuong tang thap nhat
+    let slotTree = await core.findTreeOnScreen(driver, TreeKeys.chanh)
+    await core.plantTrees(driver, slotTree) // trong chanh
+    await core.goUp(driver, 2)
+    await core.plantTrees(driver, slotTree) // trong chanh
     await core.goDownLast(driver)
-    await driver.sleep(1)
-    await core.goUp(driver)
+    await driver.sleep(6)
 
-    // thu hoach cay
-    for (let j = 0; j < 4; j++) {
-        await core.harvestTrees(driver)
-        await core.goUp(driver, 2)
-    }
+    await core.goUp(driver)
     await core.harvestTrees(driver)
-    // xuong tang thap nhat
+    slotTree = await core.findTreeOnScreen(driver, TreeKeys.bong, false)
+    await core.plantTrees(driver, slotTree) // trong bong
+    await core.goUp(driver, 2)
+    await core.harvestTrees(driver)
+    await core.plantTrees(driver, slotTree, 1) // trong bong
     await core.goDownLast(driver)
+
+    // san xuat
+    await core.goUp(driver)
+    await core.makeItems(driver, 2, 3, 6) // sx nuoc chanh
+    await core.harvestTrees(driver)
+    await core.goUp(driver, 2)
+    await core.harvestTrees(driver)
+    await core.makeItems(driver, 1, 3, 6) // sx vai xanh la
+    await core.goDownLast(driver)
+
+    if (!isLast) {
+        await driver.sleep(3)
+    }
+}
+
+const sellItems_5 = async (driver) => {
+    // Sell Goods
+    await core.sellItems(driver, SellItemOptions.goods, [{ key: ProductKeys.vaiXanhLa, value: 6 }])
+}
+
+
+//#region vai xanh la + tinh dau chanh
+const produceItems_6 = async (driver, isLast) => {
+    // trong 1 - chanh
+    await core.goUp(driver)
+    let slotTree = await core.findTreeOnScreen(driver, TreeKeys.chanh)
+    await core.plantTrees(driver, slotTree) // trong chanh
+    await core.goUp(driver, 2)
+    await core.plantTrees(driver, slotTree) // trong chanh
+    await core.goUp(driver, 2)
+    await core.plantTrees(driver, slotTree) // trong chanh
+    await core.goUp(driver, 2)
+    await core.plantTrees(driver, slotTree) // trong chanh
+    await core.goDownLast(driver)
+
+    // thu hoach 1 & trong 2 - bong, tuyet
+    await core.goUp(driver)
+    await core.harvestTrees(driver)
+    await core.plantTrees(driver, slotTree, 1) // trong chanh
+    await core.goUp(driver)
+    slotTree = await core.findTreeOnScreen(driver, TreeKeys.bong, false)
+    await core.plantTrees(driver, slotTree, 1) // trong bong
+    await core.goUp(driver)
+    await core.harvestTrees(driver)
+    await core.plantTrees(driver, slotTree) // trong bong
+    await core.goUp(driver, 2)
+    await core.harvestTrees(driver)
+    slotTree = await core.findTreeOnScreen(driver, TreeKeys.tuyet, false)
+    await core.plantTrees(driver, slotTree) // trong tuyet
+    await core.goUp(driver, 2)
+    await core.harvestTrees(driver)
+    await core.plantTrees(driver, slotTree) // trong tuyet
+    await core.goDownLast(driver)
+
+    // thu hoach 2
+    await core.goUp(driver)
+    await core.harvestTrees(driver)
+    await core.makeItems(driver, 2, 3, 6) // sx nuoc chanh
+    await core.goUp(driver, 2)
+    await core.harvestTrees(driver)
+    await core.makeItems(driver, 1, 3, 6) // sx vai xanh la
+    await core.goUp(driver, 2)
+    await core.harvestTrees(driver)
+    await core.makeItems(driver, 1, 4, 6) // sx tinh dau chanh
+    await core.goUp(driver, 2)
+    await core.harvestTrees(driver)
+    await core.goDownLast(driver)
+}
+
+const sellItems_6 = async (driver) => {
+    // Sell Goods
+    await core.sellItems(driver, SellItemOptions.goods, [
+        { key: ProductKeys.vaiXanhLa, value: 6 },
+        { key: ProductKeys.tinhDauChanh, value: 6 },
+    ])
+}
+//#endregion
+
+
+//#region vai do
+const produceItems_7 = async (driver, isLast) => {
+    await core.goUp(driver)
+    let slotTree = await core.findTreeOnScreen(driver, TreeKeys.hong)
+    await core.plantTrees(driver, slotTree) // trong hong
+    await core.goUp(driver, 2)
+    await core.plantTrees(driver, slotTree) // trong hong
+    await core.goDownLast(driver)
+    await driver.sleep(6)
+
+    // thu hoach 1
+    await core.goUp(driver)
+    await core.harvestTrees(driver)
+    slotTree = await core.findTreeOnScreen(driver, TreeKeys.bong, false)
+    await core.plantTrees(driver, slotTree) // trong bong
+    await core.goUp(driver, 2)
+    await core.harvestTrees(driver)
+    await core.plantTrees(driver, slotTree) // trong bong
+    await core.goDownLast(driver)
+
+    // thu hoach 2
+    await core.goUp(driver)
+    await core.makeItems(driver, 1, 0, 8) // sx hong say
+    await core.harvestTrees(driver)
+    await core.goUp(driver, 2)
+    await core.harvestTrees(driver)
+    await core.makeItems(driver, 1, 0, 8) // sx vai do
+    await core.goDownLast(driver)
+
+    if (!isLast) {
+        await driver.sleep(30)
+    }
+}
+
+const sellItems_7 = async (driver) => {
+    // Sell Goods
+    await core.sellItems(driver, SellItemOptions.goods, [{ key: ProductKeys.vaiDo, value: 8 }])
+}
+
+
+const plantEventTree = async (driver, index) => {
+    const slotTree = PlantSlotList[4]
+
+    if (index == 0) {
+        await core.goUp(driver)
+        // chac chan reset ve ban dau
+        await core.findTreeOnScreen(driver, TreeKeys.hong)
+        // trong cay
+        for (let j = 0; j < 4; j++) {
+            await core.plantTrees(driver, slotTree, 4)
+            await core.goUp(driver, 2)
+        }
+        await core.plantTrees(driver, slotTree, 4)
+        await core.goDownLast(driver)
+        await driver.sleep(1)
+    } else {
+        await core.goUp(driver)
+        // thu hoach cay
+        for (let j = 0; j < 4; j++) {
+            await core.harvestTrees(driver)
+            await core.plantTrees(driver, slotTree, 4)
+            await core.goUp(driver, 2)
+        }
+        await core.harvestTrees(driver)
+        await core.plantTrees(driver, slotTree, 4)
+        await core.goDownLast(driver)
+    }
+
+    if (index == 9) {
+        await core.goUp(driver)
+        // thu hoach cay
+        for (let j = 0; j < 4; j++) {
+            await core.harvestTrees(driver)
+            await core.goUp(driver, 2)
+        }
+        await core.harvestTrees(driver)
+        await core.goDownLast(driver)
+    }
 }
 
 const sellEventItem = async (driver, itemKey, isAds = true) => {
