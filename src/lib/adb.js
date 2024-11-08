@@ -18,7 +18,7 @@ class ADBHelper {
         const deviceIds = output
             .substring(output.indexOf('\n') + 1)
             .match(/[\S]+/g)
-            .filter((text) => !ignoreText.includes(text))
+            ?.filter((text) => !ignoreText.includes(text)) ?? []
 
         return await Bluebird.map(deviceIds, async (id) => ({
             id: id,

@@ -51,7 +51,7 @@ const SkyGarden = (props) => {
                                         showSearch
                                         placeholder="Search to Select"
                                         optionFilterProp="children"
-                                        filterOption={(input, option) => (option?.label ?? '').includes(input)}
+                                        filterOption={(input, option) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase())}
                                         filterSort={(optionA, optionB) => (optionA?.order ?? 0) - (optionB?.order ?? 0)}
                                         options={autoOption.map((item) => ({
                                             value: item.key,

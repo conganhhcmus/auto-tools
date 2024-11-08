@@ -41,11 +41,11 @@ class Runner {
                 automationName: 'UiAutomator2',
                 noReset: true,
                 disableWindowAnimation: true,
-                //skipDeviceInitialization: true,
-                //skipServerInstallation: true,
                 suppressKillServer: true,
                 clearDeviceLogsOnStart: true,
                 skipLogcatCapture: true,
+                allowDelayAdb: false,
+                shutdownOnPowerDisconnect: false,
             },
         }
 
@@ -62,11 +62,15 @@ class Runner {
 
             // run auto
             try {
+                await driver.startRecordingScreen();
                 const autoTool = this.getAutoTool(params.selectedGame)
                 autoTool && (await autoTool({ ...params, index: i }, driver))
             } catch (err) {
                 logErrMsg(err.toString())
                 break
+            } finally {
+                let key = i % 2; // save up to 2 video
+                await driver.stopRecordingScreen(key);
             }
         }
 

@@ -87,6 +87,14 @@ const SellSlotList = [
     { x: 73.75, y: 75.56 },
 ]
 
+const FriendHouseList = [
+    { x: 7.5, y: 61.11 },
+    { x: 22.5, y: 61.11 },
+    { x: 37.5, y: 61.11 },
+    { x: 52.5, y: 61.11 },
+    { x: 67.5, y: 61.11 },
+]
+
 const ItemKeys = {
     nextOption: 'next-option',
     emptyProductionSlot: 'o-trong-san-xuat',
@@ -99,9 +107,11 @@ const ItemKeys = {
     shopGem: 'shop-gem',
     goDownLast: 'xuong-day',
     friendHouse: 'friend-house',
+    myHouse: 'my-house',
 }
 
 const TreeKeys = {
+    tao: 'tao',
     hong: 'hong',
     chanh: 'chanh',
     tuyet: 'tuyet',
@@ -122,6 +132,8 @@ const ProductKeys = {
     tinhDauDua: 'tinh-dau-dua',
     tinhDauHoaHong: 'tinh-dau-hoa-hong',
     traHoaHong: 'tra-hoa-hong',
+    nuocHoaHuongTao: 'nuoc-hoa-huong-tao',
+    vaiXanhLa: 'vai-xanh-la',
 }
 
 const EventKeys = {
@@ -129,6 +141,21 @@ const EventKeys = {
     ga: 'event-ga',
     cuu: 'event-cuu',
     heo: 'event-heo',
+}
+
+const AchievementKeys = {
+    GapNhauMoiNgay: 'gap-nhau-moi-ngay'
+}
+
+const SlotPositions = {
+    p1: '1',
+    p2: '2',
+    p3: '3',
+    p4: '4',
+    p1p2: '12',
+    p1p3: '13',
+    p2p4: '24',
+    p3p4: '34',
 }
 
 module.exports = {
@@ -146,4 +173,7 @@ module.exports = {
     ProductKeys,
     TreeKeys,
     EventKeys,
+    AchievementKeys,
+    FriendHouseList,
+    SlotPositions
 }
