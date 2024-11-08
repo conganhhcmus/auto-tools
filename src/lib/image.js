@@ -5,9 +5,95 @@ const { resolve } = require('path')
 
 const exactRate = 0.9 // 90%
 const defaultSize = [800, 450]
+const cropPositionSize = [
+    [0, 0], [400, 0],
+    [0, 225], [400, 225],
+]
 
-readAndResizeImage = async (filePath) => {
-    const imageSource = await Jimp.read(filePath)
+getCropInfo = (findPosition, isRotated) => {
+    let result = null
+    switch (findPosition) {
+        case '1':
+            result = {
+                x: cropPositionSize[0][0],
+                y: cropPositionSize[0][1],
+                w: 400,
+                h: 225,
+            }
+            break
+        case '2':
+            result = {
+                x: cropPositionSize[1][0],
+                y: cropPositionSize[1][1],
+                w: 400,
+                h: 225,
+            }
+            break
+        case '3':
+            result = {
+                x: cropPositionSize[2][0],
+                y: cropPositionSize[2][1],
+                w: 400,
+                h: 225,
+            }
+            break
+        case '4':
+            result = {
+                x: cropPositionSize[3][0],
+                y: cropPositionSize[3][1],
+                w: 400,
+                h: 225,
+            }
+            break
+        case '12':
+            result = {
+                x: cropPositionSize[0][0],
+                y: cropPositionSize[0][1],
+                w: 800,
+                h: 225,
+            }
+            break
+        case '34':
+            result = {
+                x: cropPositionSize[2][0],
+                y: cropPositionSize[2][1],
+                w: 800,
+                h: 225,
+            }
+            break
+        case '13':
+            result = {
+                x: cropPositionSize[0][0],
+                y: cropPositionSize[0][1],
+                w: 400,
+                h: 450,
+            }
+            break
+        case '24':
+            result = {
+                x: cropPositionSize[1][0],
+                y: cropPositionSize[1][1],
+                w: 400,
+                h: 450,
+            }
+            break
+        default:
+            return null
+    }
+
+    if (isRotated) {
+        return {
+            x: result.y,
+            y: result.x,
+            w: result.h,
+            h: result.w,
+        }
+    }
+    return result
+}
+
+readAndResizeImage = async (data, findPosition) => {
+    const imageSource = await Jimp.read(data)
     let isRotated = false
     if (imageSource.bitmap.width > imageSource.bitmap.height) {
         imageSource.resize(defaultSize[0], defaultSize[1])
@@ -16,14 +102,32 @@ readAndResizeImage = async (filePath) => {
         isRotated = true
     }
 
+    var cropInfo = getCropInfo(findPosition, isRotated)
+    cropInfo && imageSource.crop(cropInfo.x, cropInfo.y, cropInfo.w, cropInfo.h)
+
     return [imageSource, isRotated]
 }
 
-async function findCoordinates(deviceId, itemId) {
+getPercentByPoint = (point, isRotated, findPosition) => {
+    var cropInfo = getCropInfo(findPosition, isRotated)
+
+    if (cropInfo == null) {
+        return {
+            x: (point.x / defaultSize[isRotated ? 1 : 0]) * 100.0,
+            y: (point.y / defaultSize[isRotated ? 0 : 1]) * 100.0,
+        }
+    }
+
+    return {
+        x: ((point.x + cropInfo.x) / defaultSize[isRotated ? 1 : 0]) * 100.0,
+        y: ((point.y + cropInfo.y) / defaultSize[isRotated ? 0 : 1]) * 100.0,
+    }
+}
+
+async function findCoordinates(data, itemId, findPosition = null) {
     try {
-        const screenCapPath = resolve(__dirname, `../assets/device/${deviceId}.png`)
         const itemFilePath = resolve(__dirname, `../assets/items/${itemId}.png`)
-        const [imageSource, isRotated] = await readAndResizeImage(screenCapPath)
+        const [imageSource, isRotated] = await readAndResizeImage(data, findPosition)
         const imageTemplate = await Jimp.read(itemFilePath)
         let src = cv.matFromImageData(imageSource.bitmap)
         let templ = cv.matFromImageData(imageTemplate.bitmap)
@@ -56,10 +160,7 @@ async function findCoordinates(deviceId, itemId) {
         contours.delete()
         hierarchy.delete()
 
-        return result.map((point) => ({
-            x: (point.x / defaultSize[isRotated ? 1 : 0]) * 100.0,
-            y: (point.y / defaultSize[isRotated ? 0 : 1]) * 100.0,
-        }))
+        return result.map((point) => getPercentByPoint(point, isRotated, findPosition))
     } catch (err) {
         logErrMsg(cvTranslateError(cv, err))
         return []

@@ -1,10 +1,12 @@
-const fs = require('fs')
 const { remote } = require('webdriverio')
 const { resolve } = require('path')
 const { findCoordinates } = require('./image')
+const { logErrMsg } = require('../utils/log')
 
 const MIN = -1
 const MAX = 1
+const Base64Regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/
+const SupportRecordVideo = false
 
 const getRandomInt = (min, max) => {
     min = Math.ceil(min)
@@ -18,6 +20,25 @@ class Driver {
         this.deviceId = deviceId
         this.width = 0
         this.height = 0
+    }
+
+    startRecordingScreen = async () => {
+        if (!SupportRecordVideo) {
+            return
+        }
+        await this.driver.startRecordingScreen({ timeLimit: 30 * 60 })
+    }
+
+    stopRecordingScreen = async (key) => {
+        if (!SupportRecordVideo) {
+            return
+        }
+        let path = resolve(__dirname, `../assets/screen/${this.deviceId}_${key}.mp4`)
+        try {
+            await this.driver.saveRecordingScreen(path)
+        } catch (err) {
+            logErrMsg(`Error saving recording to ${this.deviceId}_${key}: ${err.toString()}`)
+        }
     }
 
     setCurrentWindowSize = async () => {
@@ -37,11 +58,11 @@ class Driver {
     tap = async (x, y) => {
         const pointX = this.getX(x)
         const pointY = this.getY(y)
-        await this.driver.executeScript('mobile: clickGesture', [{ x: pointX, y: pointY }])
+        await this.driver.executeScript('mobile:clickGesture', [{ x: pointX, y: pointY }])
     }
 
     press = async (key) => {
-        await this.driver.executeScript('mobile: pressKey', [{ keycode: key }])
+        await this.driver.executeScript('mobile:pressKey', [{ keycode: key }])
     }
 
     finish = async () => {
@@ -60,13 +81,27 @@ class Driver {
         await this.driver.pause(s * 1000)
     }
 
-    screenshot = async (path) => {
-        const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/
+    swipe = async (pointA, pointB, direction) => {
+        const w = Math.abs(pointA.x - pointB.x)
+        const h = Math.abs(pointA.y - pointB.y)
+        await this.driver.executeScript('mobile:swipeGesture', [
+            {
+                left: this.getX(pointA.x),
+                top: this.getY(pointA.y),
+                width: this.getX(w > 0 ? w : 1),
+                height: this.getY(h > 0 ? h : 1),
+                direction: direction,
+                percent: 1.0,
+            },
+        ])
+    }
+
+    screenshot = async () => {
         const screenshot = await this.driver.takeScreenshot()
-        if (base64regex.test(screenshot)) {
-            return fs.writeFileSync(path, screenshot, 'base64')
+        if (Base64Regex.test(screenshot)) {
+            return new Buffer.from(screenshot, 'base64')
         }
-        return await screenshot(path)
+        return await screenshot()
     }
 
     action = async (points) => {
@@ -85,13 +120,13 @@ class Driver {
         return await action.perform()
     }
 
-    haveItemOnScreen = async (itemId) => {
+    haveItemOnScreen = async (itemId, findPosition = null) => {
         if (!itemId) return false
         let count = 5
         while (count > 0) {
             count--
-            await this.screenshot(resolve(__dirname, `../assets/device/${this.deviceId}.png`))
-            const points = await findCoordinates(this.deviceId, itemId)
+            let data = await this.screenshot()
+            const points = await findCoordinates(data, itemId, findPosition)
 
             if (points.length > 0) return true
             await this.sleep(0.2)
@@ -99,14 +134,14 @@ class Driver {
         return false
     }
 
-    getCoordinateItemOnScreen = async (itemId) => {
+    getCoordinateItemOnScreen = async (itemId, findPosition = null) => {
         if (!itemId) return null
 
         let count = 5
         while (count > 0) {
             count--
-            await this.screenshot(resolve(__dirname, `../assets/device/${this.deviceId}.png`))
-            const points = await findCoordinates(this.deviceId, itemId)
+            let data = await this.screenshot()
+            const points = await findCoordinates(data, itemId, findPosition)
 
             if (points.length > 0) {
                 return { x: points[points.length - 1].x, y: points[points.length - 1].y }
@@ -117,13 +152,13 @@ class Driver {
         return null
     }
 
-    tapItemOnScreen = async (itemId) => {
+    tapItemOnScreen = async (itemId, findPosition = null) => {
         if (!itemId) return
         let count = 5
         while (count > 0) {
             count--
-            await this.screenshot(resolve(__dirname, `../assets/device/${this.deviceId}.png`))
-            const points = await findCoordinates(this.deviceId, itemId)
+            let data = await this.screenshot()
+            const points = await findCoordinates(data, itemId, findPosition)
 
             if (points.length > 0) {
                 return await this.tap(points[points.length - 1].x, points[points.length - 1].y)
@@ -132,13 +167,13 @@ class Driver {
         }
     }
 
-    doubleTapItemOnScreen = async (itemId) => {
+    doubleTapItemOnScreen = async (itemId, findPosition = null) => {
         if (!itemId) return
         let count = 5
         while (count > 0) {
             count--
-            await this.screenshot(resolve(__dirname, `../assets/device/${this.deviceId}.png`))
-            const points = await findCoordinates(this.deviceId, itemId)
+            let data = await this.screenshot()
+            const points = await findCoordinates(data, itemId, findPosition)
 
             if (points.length > 0) {
                 await this.tap(points[points.length - 1].x, points[points.length - 1].y)
@@ -170,7 +205,15 @@ const KeyCode = {
     BACK: 4,
 }
 
+const SwipeDirection = {
+    UP: 'up',
+    DOWN: 'down',
+    LEFT: 'left',
+    RIGHT: 'right',
+}
+
 module.exports = {
     KeyCode,
+    SwipeDirection,
     connectAppium,
 }
