@@ -2,10 +2,10 @@ const fs = require('fs')
 const { resolve } = require('path')
 
 const filePath = {
-    log: resolve(__dirname, '../data/log.json'),
-    device: resolve(__dirname, '../data/device.json'),
-    game: resolve(__dirname, '../data/game.json'),
-    auto: resolve(__dirname, '../data/auto.json'),
+    log: resolve(__dirname, '../../data/log.json'),
+    device: resolve(__dirname, '../../data/device.json'),
+    game: resolve(__dirname, '../../data/game.json'),
+    auto: resolve(__dirname, '../../data/auto.json'),
 }
 
 function getLogData() {

@@ -1,7 +1,7 @@
 const { remote } = require('webdriverio')
 const { resolve } = require('path')
 const { findCoordinates } = require('./image')
-const { logErrMsg } = require('../utils/log')
+const { logErrMsg } = require('../service/log')
 
 const MIN = -1
 const MAX = 1
@@ -33,7 +33,7 @@ class Driver {
         if (!SupportRecordVideo) {
             return
         }
-        let path = resolve(__dirname, `../assets/screen/${this.deviceId}_${key}.mp4`)
+        let path = resolve(__dirname, `../../screen/${this.deviceId}_${key}.mp4`)
         try {
             await this.driver.saveRecordingScreen(path)
         } catch (err) {
@@ -120,13 +120,13 @@ class Driver {
         return await action.perform()
     }
 
-    haveItemOnScreen = async (itemId, findPosition = null) => {
-        if (!itemId) return false
+    haveItemOnScreen = async (itemFilePath, findPosition = null) => {
+        if (!itemFilePath) return false
         let count = 5
         while (count > 0) {
             count--
             let data = await this.screenshot()
-            const points = await findCoordinates(data, itemId, findPosition)
+            const points = await findCoordinates(data, itemFilePath, findPosition)
 
             if (points.length > 0) return true
             await this.sleep(0.2)
@@ -134,14 +134,13 @@ class Driver {
         return false
     }
 
-    getCoordinateItemOnScreen = async (itemId, findPosition = null) => {
-        if (!itemId) return null
-
+    getCoordinateItemOnScreen = async (itemFilePath, findPosition = null) => {
+        if (!itemFilePath) return null
         let count = 5
         while (count > 0) {
             count--
             let data = await this.screenshot()
-            const points = await findCoordinates(data, itemId, findPosition)
+            const points = await findCoordinates(data, itemFilePath, findPosition)
 
             if (points.length > 0) {
                 return { x: points[points.length - 1].x, y: points[points.length - 1].y }
@@ -152,13 +151,13 @@ class Driver {
         return null
     }
 
-    tapItemOnScreen = async (itemId, findPosition = null) => {
-        if (!itemId) return
+    tapItemOnScreen = async (itemFilePath, findPosition = null) => {
+        if (!itemFilePath) return
         let count = 5
         while (count > 0) {
             count--
             let data = await this.screenshot()
-            const points = await findCoordinates(data, itemId, findPosition)
+            const points = await findCoordinates(data, itemFilePath, findPosition)
 
             if (points.length > 0) {
                 return await this.tap(points[points.length - 1].x, points[points.length - 1].y)
@@ -167,13 +166,13 @@ class Driver {
         }
     }
 
-    doubleTapItemOnScreen = async (itemId, findPosition = null) => {
-        if (!itemId) return
+    doubleTapItemOnScreen = async (itemFilePath, findPosition = null) => {
+        if (!itemFilePath) return
         let count = 5
         while (count > 0) {
             count--
             let data = await this.screenshot()
-            const points = await findCoordinates(data, itemId, findPosition)
+            const points = await findCoordinates(data, itemFilePath, findPosition)
 
             if (points.length > 0) {
                 await this.tap(points[points.length - 1].x, points[points.length - 1].y)

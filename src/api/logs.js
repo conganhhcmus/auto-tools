@@ -1,4 +1,4 @@
-const { getLogData, clearLogData } = require('../utils/data')
+const { getLogData, clearLogData } = require('../service/data')
 
 function getLogs(req, res, next) {
     let device = req.query.device

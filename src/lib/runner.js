@@ -1,7 +1,7 @@
 const moment = require('moment')
-const { logErrMsg } = require('../utils/log')
+const { logErrMsg } = require('../service/log')
 const { connectAppium } = require('./webdriverio')
-const { writeLogData, getLogData, writeDeviceData, getDeviceData, getGamesData } = require('../utils/data')
+const { writeLogData, getLogData, writeDeviceData, getDeviceData, getGamesData } = require('../service/data')
 
 class Runner {
     constructor() {

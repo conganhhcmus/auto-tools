@@ -15,6 +15,8 @@ const {
     SlotPositions,
 } = require('./const')
 
+const { resolve } = require('path')
+
 const openGame = async (driver) => {
     await driver.press(KeyCode.HOME)
     await driver.closeApp(ItemKeys.gameId)
@@ -29,7 +31,7 @@ const openGame = async (driver) => {
         if (count > 10) {
             return await openGame(driver)
         }
-        gamePosition = await driver.getCoordinateItemOnScreen(ItemKeys.game, SlotPositions.p2)
+        gamePosition = await driver.getCoordinateItemOnScreen(_getItemPath(ItemKeys.game), SlotPositions.p2)
         await driver.sleep(1)
         count++
     }
@@ -45,13 +47,13 @@ const openGame = async (driver) => {
     }
     await driver.tap(58, 72.22)
     await driver.sleep(1)
-    if (!(await driver.haveItemOnScreen(ItemKeys.shopGem, SlotPositions.p3))) {
+    if (!(await driver.haveItemOnScreen(_getItemPath(ItemKeys.shopGem), SlotPositions.p3))) {
         return await openGame(driver)
     }
 }
 
 const openChests = async (driver) => {
-    let isFound = await driver.haveItemOnScreen(ItemKeys.chest, SlotPositions.p1)
+    let isFound = await driver.haveItemOnScreen(_getItemPath(ItemKeys.chest), SlotPositions.p1)
     if (isFound) {
         await driver.tap(35.0, 22.22)
         await driver.sleep(0.2)
@@ -130,7 +132,7 @@ const harvestTrees = async (driver) => {
     await driver.sleep(0.5)
 
     let count = 0
-    while (!(await driver.haveItemOnScreen(ItemKeys.harvestBasket, SlotPositions.p3))) {
+    while (!(await driver.haveItemOnScreen(_getItemPath(ItemKeys.harvestBasket), SlotPositions.p3))) {
         if (count > 5) throw new Error(`Screen is not found ${ItemKeys.harvestBasket} item`)
         await driver.tap(37.5, 84.44)
         await driver.sleep(0.5)
@@ -185,7 +187,7 @@ const makeItems = async (driver, floor = 1, slot = 0, number = 1) => {
         await driver.tap(position.x, position.y)
         await driver.sleep(0.1)
         count++
-    } while (!(await driver.haveItemOnScreen(ItemKeys.emptyProductionSlot, SlotPositions.p4)))
+    } while (!(await driver.haveItemOnScreen(_getItemPath(ItemKeys.emptyProductionSlot), SlotPositions.p4)))
 
     // make goods
     const { x, y } = MakeSlotList[slot]
@@ -230,7 +232,7 @@ const sellItems = async (driver, option, items) => {
     let itemId = _getItemId(items)
     let count = 0
     while (itemId) {
-        var soldSlot = await driver.getCoordinateItemOnScreen(ItemKeys.soldSlot)
+        var soldSlot = await driver.getCoordinateItemOnScreen(_getItemPath(ItemKeys.soldSlot))
         if (soldSlot !== null) {
             await driver.tap(soldSlot.x, soldSlot.y)
             await driver.sleep(0.5)
@@ -240,14 +242,13 @@ const sellItems = async (driver, option, items) => {
             await driver.sleep(0.5)
 
             // choose item by image
-            await driver.tapItemOnScreen(itemId, SlotPositions.p1p3)
+            await driver.tapItemOnScreen(_getItemPath(itemId), SlotPositions.p1p3)
             await _sell(driver)
             itemId = _getItemId(items)
-
             continue
         }
 
-        var emptySlot = await driver.getCoordinateItemOnScreen(ItemKeys.emptySellSlot)
+        var emptySlot = await driver.getCoordinateItemOnScreen(_getItemPath(ItemKeys.emptySellSlot))
 
         if (emptySlot != null) {
             await driver.tap(emptySlot.x, emptySlot.y)
@@ -256,7 +257,7 @@ const sellItems = async (driver, option, items) => {
             await driver.sleep(0.5)
 
             // choose item by image
-            await driver.tapItemOnScreen(itemId, SlotPositions.p1p3)
+            await driver.tapItemOnScreen(_getItemPath(itemId), SlotPositions.p1p3)
             await _sell(driver)
             itemId = _getItemId(items)
             continue
@@ -291,7 +292,7 @@ const findTreeOnScreen = async (driver, treeKey, isFindNext = true) => {
     await driver.tap(37.5, 84.44)
     await driver.sleep(0.5)
 
-    let slotItem = await driver.getCoordinateItemOnScreen(treeKey, SlotPositions.p3)
+    let slotItem = await driver.getCoordinateItemOnScreen(_getItemPath(treeKey), SlotPositions.p3)
     let retryCount = 0
 
     while (!slotItem) {
@@ -300,7 +301,7 @@ const findTreeOnScreen = async (driver, treeKey, isFindNext = true) => {
         isFindNext ? await driver.tap(40.625, 67.78) : await driver.tap(10, 67.78)
         await driver.sleep(0.5)
 
-        slotItem = await driver.getCoordinateItemOnScreen(treeKey, SlotPositions.p3)
+        slotItem = await driver.getCoordinateItemOnScreen(_getItemPath(treeKey), SlotPositions.p3)
         retryCount++
     }
     await driver.press(KeyCode.BACK)
@@ -326,7 +327,7 @@ const sellEventItems = async (driver, itemKey, isAds) => {
         await driver.tap(option_x, option_y)
         await driver.sleep(0.5)
 
-        const eventItemSlot = await driver.getCoordinateItemOnScreen(itemKey, SlotPositions.p1p3)
+        const eventItemSlot = await driver.getCoordinateItemOnScreen(_getItemPath(itemKey), SlotPositions.p1p3)
         if (!eventItemSlot) throw new Error(`Screen is not found ${itemKey} item`)
 
         await driver.tap(eventItemSlot.x, eventItemSlot.y)
@@ -392,6 +393,11 @@ module.exports = {
 }
 
 // private method
+
+const _getItemPath = (itemId) => {
+    if (!itemId) return null
+    return resolve(__dirname, `./item/${itemId}.png`)
+}
 
 const _getItemId = (items) => {
     if (typeof items === 'object') {

@@ -1,5 +1,5 @@
 const { Runner } = require('../lib/runner')
-const { getDeviceData, getGamesData, getAutoData, writeDeviceData } = require('../utils/data')
+const { getDeviceData, getGamesData, getAutoData, writeDeviceData } = require('../service/data')
 
 const runner = new Runner()
 

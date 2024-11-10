@@ -144,7 +144,7 @@ const EventKeys = {
 }
 
 const AchievementKeys = {
-    GapNhauMoiNgay: 'gap-nhau-moi-ngay'
+    GapNhauMoiNgay: 'gap-nhau-moi-ngay',
 }
 
 const SlotPositions = {
@@ -175,5 +175,5 @@ module.exports = {
     EventKeys,
     AchievementKeys,
     FriendHouseList,
-    SlotPositions
+    SlotPositions,
 }

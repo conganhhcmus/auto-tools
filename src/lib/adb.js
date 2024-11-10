@@ -1,5 +1,5 @@
 const Bluebird = require('bluebird')
-const { runExecAsync, runSpawn } = require('../utils/shell')
+const { runExecAsync, runSpawn } = require('../helper/shell')
 
 const getDeviceNameById = async (deviceId) => {
     switch (process.platform) {
