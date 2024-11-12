@@ -22,12 +22,9 @@ const getAuto = (autoKey) => {
 module.exports = async (data, driver) => {
     const { gameOptions, index } = data
     const { runAuto } = gameOptions
-    try {
-        await openGame(driver, gameOptions, index)
-        await openChests(driver, gameOptions)
-        var auto = getAuto(runAuto)
-        auto && (await auto(driver))
-    } catch (err) {
-        throw err
-    }
+
+    await openGame(driver, gameOptions, index)
+    await openChests(driver, gameOptions)
+    var auto = getAuto(runAuto)
+    auto && (await auto(driver))
 }

@@ -74,7 +74,7 @@ const Filter = (props) => {
                                     style={{ width: '80%' }}
                                     mode="multiple"
                                     placeholder="Select Devices ..."
-                                    maxTagCount="responsive"
+                                    // maxTagCount="responsive"
                                     value={selectedDevices}
                                     onChange={onSelectedDevice}
                                     options={devicesOption.map((item) => ({

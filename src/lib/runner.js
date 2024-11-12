@@ -62,15 +62,15 @@ class Runner {
 
             // run auto
             try {
-                await driver.startRecordingScreen();
+                await driver.startRecordingScreen()
                 const autoTool = this.getAutoTool(params.selectedGame)
                 autoTool && (await autoTool({ ...params, index: i }, driver))
             } catch (err) {
                 logErrMsg(err.toString())
                 break
             } finally {
-                let key = i % 2; // save up to 2 video
-                await driver.stopRecordingScreen(key);
+                let key = i % 2 // save up to 2 video
+                await driver.stopRecordingScreen(key)
             }
         }
 
