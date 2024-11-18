@@ -363,14 +363,14 @@ const buy8SlotItem = async (driver) => {
 
 const goFriendHouse = async (driver, index) => {
     const { x, y } = FriendHouseList[index]
-    await driver.tapItemOnScreen(ItemKeys.friendHouse, SlotPositions.p4)
+    await driver.tapItemOnScreen(_getItemPath(ItemKeys.friendHouse), SlotPositions.p4)
     await driver.sleep(0.5)
     await driver.tap(x, y)
     await driver.sleep(2)
 }
 
 const goMyHouse = async (driver) => {
-    await driver.tapItemOnScreen(ItemKeys.myHouse, SlotPositions.p3)
+    await driver.tapItemOnScreen(_getItemPath(ItemKeys.myHouse), SlotPositions.p3)
     await driver.sleep(2)
 }
 
