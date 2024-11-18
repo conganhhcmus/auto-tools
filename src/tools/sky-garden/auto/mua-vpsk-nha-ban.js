@@ -6,4 +6,5 @@ module.exports = async (driver) => {
     for (let i = 0; i < 10; i++) {
         await core.buy8SlotItem(driver)
     }
+    await core.goMyHouse(driver);
 }
