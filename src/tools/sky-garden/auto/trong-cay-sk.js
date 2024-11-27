@@ -1,5 +1,5 @@
 const core = require('../core')
-const { TreeKeys } = require('../const')
+const { TreeKeys, PlantSlotList } = require('../const')
 
 const plantEventTree = async (driver, index) => {
     const slotTree = PlantSlotList[4]

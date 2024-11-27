@@ -12,4 +12,7 @@ else
     echo "built before"
 fi
 
-npm run all
+npm run start
+
+# display monitoring information
+npm run monitor
