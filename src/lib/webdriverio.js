@@ -5,6 +5,7 @@ const { logErrMsg } = require('../service/log')
 
 const MIN = -1
 const MAX = 1
+const MAX_RETRY = 3
 const Base64Regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/
 const SupportRecordVideo = false
 
@@ -122,9 +123,8 @@ class Driver {
 
     haveItemOnScreen = async (itemFilePath, findPosition = null) => {
         if (!itemFilePath) return false
-        let count = 5
-        while (count > 0) {
-            count--
+        let count = 0
+        while (++count < MAX_RETRY) {
             let data = await this.screenshot()
             const points = await findCoordinates(data, itemFilePath, findPosition)
 
@@ -136,9 +136,8 @@ class Driver {
 
     getCoordinateItemOnScreen = async (itemFilePath, findPosition = null) => {
         if (!itemFilePath) return null
-        let count = 5
-        while (count > 0) {
-            count--
+        let count = 0
+        while (++count < MAX_RETRY) {
             let data = await this.screenshot()
             const points = await findCoordinates(data, itemFilePath, findPosition)
 
@@ -153,32 +152,13 @@ class Driver {
 
     tapItemOnScreen = async (itemFilePath, findPosition = null) => {
         if (!itemFilePath) return
-        let count = 5
-        while (count > 0) {
-            count--
+        let count = 0
+        while (++count < MAX_RETRY) {
             let data = await this.screenshot()
             const points = await findCoordinates(data, itemFilePath, findPosition)
 
             if (points.length > 0) {
                 return await this.tap(points[points.length - 1].x, points[points.length - 1].y)
-            }
-            await this.sleep(0.2)
-        }
-    }
-
-    doubleTapItemOnScreen = async (itemFilePath, findPosition = null) => {
-        if (!itemFilePath) return
-        let count = 5
-        while (count > 0) {
-            count--
-            let data = await this.screenshot()
-            const points = await findCoordinates(data, itemFilePath, findPosition)
-
-            if (points.length > 0) {
-                await this.tap(points[points.length - 1].x, points[points.length - 1].y)
-                await this.sleep(0.5)
-                await this.tap(points[points.length - 1].x, points[points.length - 1].y)
-                return
             }
             await this.sleep(0.2)
         }

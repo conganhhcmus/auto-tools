@@ -44,8 +44,7 @@ class Runner {
                 suppressKillServer: true,
                 clearDeviceLogsOnStart: true,
                 skipLogcatCapture: true,
-                allowDelayAdb: false,
-                shutdownOnPowerDisconnect: false,
+                allowDelayAdb: false
             },
         }
 

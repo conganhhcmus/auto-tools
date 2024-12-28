@@ -128,6 +128,7 @@ const harvestTrees = async (driver) => {
         })
     }
 
+    await driver.sleep(0.5)
     await driver.tap(37.5, 84.44)
     await driver.sleep(0.5)
 
@@ -166,6 +167,7 @@ const plantTrees = async (driver, slotTree, floor = 2, pot = 5) => {
         if (i > 2 * pot && floor == 2) break
     }
 
+    await driver.sleep(0.5)
     await driver.tap(37.5, 84.44)
     await driver.sleep(0.5)
     await driver.action(pointList)
@@ -295,15 +297,15 @@ const findTreeOnScreen = async (driver, treeKey, isFindNext = true) => {
     let slotItem = await driver.getCoordinateItemOnScreen(_getItemPath(treeKey), SlotPositions.p3)
     let retryCount = 0
 
-    while (!slotItem) {
-        if (retryCount > 10) throw new Error(`Screen is not found ${treeKey} item`)
-
+    while (!slotItem && retryCount++ < 10) {
         isFindNext ? await driver.tap(40.625, 67.78) : await driver.tap(10, 67.78)
         await driver.sleep(0.5)
 
         slotItem = await driver.getCoordinateItemOnScreen(_getItemPath(treeKey), SlotPositions.p3)
-        retryCount++
     }
+
+    if (retryCount > 10) throw new Error(`Screen is not found ${treeKey} item`)
+
     await driver.press(KeyCode.BACK)
     await driver.sleep(0.5)
 
@@ -340,22 +342,16 @@ const buy8SlotItem = async (driver) => {
     await driver.tap(66.25, 71.11)
     await driver.sleep(1)
 
-    for (let i = 0; i < SellSlotList.length; i++) {
-        const slot = SellSlotList[i]
-        // double tap on slot for buy
-        await driver.tap(slot.x, slot.y)
-        await driver.sleep(0.1)
-        await driver.tap(slot.x, slot.y)
-        await driver.sleep(0.5)
-    }
-
-    for (let i = 0; i < SellSlotList.length; i++) {
-        const slot = SellSlotList[i]
-        // double tap on slot for buy
-        await driver.tap(slot.x, slot.y)
-        await driver.sleep(0.1)
-        await driver.tap(slot.x, slot.y)
-        await driver.sleep(0.1)
+    let count = 5;
+    while (count-- > 0) {
+        for (let i = 0; i < SellSlotList.length; i++) {
+            const slot = SellSlotList[i]
+            // double tap on slot for buy
+            await driver.tap(slot.x, slot.y)
+            await driver.sleep(0.1)
+            await driver.tap(slot.x, slot.y)
+            await driver.sleep(0.1)
+        }
     }
 
     await backToGame(driver)
