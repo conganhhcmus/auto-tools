@@ -108,6 +108,7 @@ const ItemKeys = {
     goDownLast: 'xuong-day',
     friendHouse: 'friend-house',
     myHouse: 'my-house',
+    livestockEvents: 'livestock-events',
 }
 
 const TreeKeys = {

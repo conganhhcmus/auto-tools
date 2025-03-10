@@ -370,6 +370,27 @@ const goMyHouse = async (driver) => {
     await driver.sleep(2)
 }
 
+const makeFoods = async (driver) => {
+    if (await driver.tapItemOnScreen(_getItemPath(ItemKeys.livestockEvents))) {
+        await driver.sleep(2)
+        for (let i = 0; i < 5; i++) {
+            await driver.tap(17, 70)
+            await driver.sleep(1)
+        }
+
+        for (let i = 0; i < 3; i++) {
+            await driver.action([
+                { duration: 0, x: 40, y: 26 },
+                { duration: 100, x: 17, y: 62.5 },
+            ])
+            await driver.sleep(1)
+        }
+        await backToGame(driver)
+        await driver.sleep(1)
+        await backToGame(driver)
+    }
+}
+
 module.exports = {
     openGame,
     openChests,
@@ -386,6 +407,7 @@ module.exports = {
     buy8SlotItem,
     goFriendHouse,
     goMyHouse,
+    makeFoods
 }
 
 // private method

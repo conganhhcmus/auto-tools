@@ -158,10 +158,13 @@ class Driver {
             const points = await findCoordinates(data, itemFilePath, findPosition)
 
             if (points.length > 0) {
-                return await this.tap(points[points.length - 1].x, points[points.length - 1].y)
+                await this.tap(points[points.length - 1].x, points[points.length - 1].y)
+                return true
             }
             await this.sleep(0.2)
         }
+
+        return false
     }
 }
 

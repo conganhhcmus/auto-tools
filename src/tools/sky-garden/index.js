@@ -11,6 +11,10 @@ const openChests = async (driver, gameOptions = {}) => {
     openChests && (await core.openChests(driver))
 }
 
+const makeFoods = async (driver) => {
+    await core.makeFoods(driver)
+}
+
 const getAuto = (autoKey) => {
     try {
         return require(`./auto/${autoKey}`)
@@ -25,6 +29,7 @@ module.exports = async (data, driver) => {
 
     await openGame(driver, gameOptions, index)
     await openChests(driver, gameOptions)
+    await makeFoods(driver)
     var auto = getAuto(runAuto)
     auto && (await auto(driver))
 }
