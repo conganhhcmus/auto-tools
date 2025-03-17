@@ -29,7 +29,8 @@ const openGame = async (driver) => {
     let gamePosition = null
     while (!gamePosition) {
         if (count > 10) {
-            return await openGame(driver)
+            gamePosition = { x: 17.55, y: 62.125 }
+            break
         }
         gamePosition = await driver.getCoordinateItemOnScreen(_getItemPath(ItemKeys.game), SlotPositions.p2)
         await driver.sleep(1)
