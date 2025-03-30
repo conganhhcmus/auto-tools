@@ -42,7 +42,7 @@ const plantEventTree = async (driver, index) => {
 }
 
 // trong cay su kien
-module.exports = async (driver) => {
+module.exports = async (driver, gameOptions) => {
     for (let i = 0; i < 10; i++) {
         await plantEventTree(driver, i);
     }

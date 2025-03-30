@@ -31,5 +31,5 @@ module.exports = async (data, driver) => {
     await openChests(driver, gameOptions)
     await makeFoods(driver)
     var auto = getAuto(runAuto)
-    auto && (await auto(driver))
+    auto && (await auto(driver, gameOptions))
 }

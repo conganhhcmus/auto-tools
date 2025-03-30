@@ -52,9 +52,11 @@ const sellItems = async (driver) => {
 }
 
 // nuoc hoa huong tao
-module.exports = async (driver) => {
+module.exports = async (driver, gameOptions) => {
+    const { sellItems: sell } = gameOptions;
+
     for (let i = 0; i < 10; i++) {
         await produceItems(driver, i == 9);
     }
-    await sellItems(driver);
+    sell && await sellItems(driver);
 }
