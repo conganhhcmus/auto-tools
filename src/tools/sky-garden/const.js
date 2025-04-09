@@ -108,6 +108,7 @@ const ItemKeys = {
     goDownLast: 'xuong-day',
     friendHouse: 'friend-house',
     myHouse: 'my-house',
+    livestockEvents: 'livestock-events',
 }
 
 const TreeKeys = {
@@ -144,7 +145,7 @@ const EventKeys = {
 }
 
 const AchievementKeys = {
-    GapNhauMoiNgay: 'gap-nhau-moi-ngay'
+    GapNhauMoiNgay: 'gap-nhau-moi-ngay',
 }
 
 const SlotPositions = {
@@ -175,5 +176,5 @@ module.exports = {
     EventKeys,
     AchievementKeys,
     FriendHouseList,
-    SlotPositions
+    SlotPositions,
 }

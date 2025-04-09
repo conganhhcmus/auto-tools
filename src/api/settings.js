@@ -1,4 +1,4 @@
-const { getDeviceData, getGamesData, getAutoData } = require('../utils/data')
+const { getDeviceData, getGamesData, getAutoData } = require('../service/data')
 const { ADBHelper } = require('../lib/adb')
 
 async function getSettings(req, res, next) {

@@ -1,13 +1,21 @@
 const Bluebird = require('bluebird')
-const { runExecAsync, runSpawn } = require('../utils/shell')
+const { runExecAsync, runSpawn } = require('../helper/shell')
+const { logErrMsg } = require('../service/log')
 
 const getDeviceNameById = async (deviceId) => {
-    switch (process.platform) {
-        case 'darwin':
-            const output = await runExecAsync(`adb -s ${deviceId} emu avd name`)
-            return output.match(/([^\r\n|OK]+)/g)[0].replaceAll('_', ' ')
-        default:
-            return deviceId
+    if (!deviceId.includes("emulator")) return deviceId
+    try {
+        switch (process.platform) {
+            case 'darwin':
+                const output = await runExecAsync(`adb -s ${deviceId} emu avd name`)
+                return output.match(/([^\r\n]+)/g)[0].replaceAll('_', ' ')
+            default:
+                return deviceId
+        }
+    }
+    catch (err) {
+        logErrMsg(`Error getting device - ${deviceId}: ${err.message}`)
+        return deviceId
     }
 }
 

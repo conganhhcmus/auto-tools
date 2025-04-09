@@ -4,8 +4,8 @@ import { Layout } from 'antd'
 const { Header, Content, Footer } = Layout
 import * as styles from './App.module.css'
 
-import Filter from './Filter'
-import Table from './Table'
+import Filter from './component/Filter/Filter'
+import Table from './component/Content/Table'
 
 const App = (props) => {
     const [refreshTime, setRefreshTime] = useState(moment().format('LTS'))

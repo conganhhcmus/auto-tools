@@ -1,21 +1,35 @@
-const { getAutoData } = require('../../utils/data')
-const autoFunc = require('./auto')
+const core = require('./core')
 
-async function Auto(data, driver) {
-    const auto = getAutoData()
-    const gameName = 'sky-garden'
-    const { gameOptions, index } = data
+const openGame = async (driver, gameOptions = {}, index) => {
+    const { openGame } = gameOptions
+    const needOpen = openGame && index == 0
+    needOpen ? await core.openGame(driver) : await driver.setCurrentWindowSize()
+}
+
+const openChests = async (driver, gameOptions = {}) => {
+    const { openChests } = gameOptions
+    openChests && (await core.openChests(driver))
+}
+
+const makeFoods = async (driver) => {
+    await core.makeFoods(driver)
+}
+
+const getAuto = (autoKey) => {
     try {
-        await autoFunc.openGame(driver, gameOptions, index)
-        for (let i = 0; i < 10; i++) {
-            await autoFunc.produceItems(driver, gameOptions, i, auto, gameName, index)
-        }
-        await autoFunc.openChests(driver, gameOptions)
-        await autoFunc.sellItems(driver, gameOptions, auto, gameName)
-    }
-    catch (err) {
-        throw err
+        return require(`./auto/${autoKey}`)
+    } catch (e) {
+        return null
     }
 }
 
-module.exports = Auto;
+module.exports = async (data, driver) => {
+    const { gameOptions, index } = data
+    const { runAuto } = gameOptions
+
+    await openGame(driver, gameOptions, index)
+    await openChests(driver, gameOptions)
+    await makeFoods(driver)
+    var auto = getAuto(runAuto)
+    auto && (await auto(driver, gameOptions))
+}
