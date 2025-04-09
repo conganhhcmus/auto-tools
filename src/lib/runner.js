@@ -44,7 +44,29 @@ class Runner {
                 suppressKillServer: true,
                 clearDeviceLogsOnStart: true,
                 skipLogcatCapture: true,
-                allowDelayAdb: false
+                allowDelayAdb: false,
+                // Performance optimizations
+                newCommandTimeout: 0, // Disable command timeout for long sessions
+                autoGrantPermissions: true, // Automatically grant permissions
+                ignoreUnimportantViews: true, // Improve performance by ignoring unimportant views
+                disableAndroidWatchers: true, // Disable Android watchers to reduce overhead
+                // Memory and stability optimizations
+                enforceAppInstall: false, // Don't reinstall app on each session
+                skipDeviceInitialization: true, // Skip device initialization to save time
+                skipServerInstallation: true, // Skip server installation if already installed
+                // Session handling
+                sessionOverride: true, // Allow session override
+                unicodeKeyboard: true, // Use Unicode keyboard
+                resetKeyboard: true, // Reset keyboard state
+                // Network optimizations
+                disableSuppressAccessibilityService: true, // Disable accessibility service suppression
+                // System optimizations
+                systemPort: 8200, // Fixed system port to avoid conflicts
+                adbExecTimeout: 120000, // Increase ADB execution timeout
+                androidInstallTimeout: 120000, // Increase install timeout
+                // Debugging and logging
+                enablePerformanceLogging: false, // Disable performance logging to reduce overhead
+                logLevel: 'error' // Only log errors to reduce log size
             },
         }
 

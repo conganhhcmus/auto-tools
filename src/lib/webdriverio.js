@@ -15,6 +15,8 @@ const getRandomInt = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
+const getSafeDuration = (duration) => Math.max(5, Math.round(duration))
+
 class Driver {
     constructor(driver, deviceId) {
         this.driver = driver
@@ -106,19 +108,26 @@ class Driver {
     }
 
     action = async (points) => {
-        const action = this.driver
-            .action('pointer', { parameters: { pointerType: 'touch' } })
-            .move({ duration: Math.round(points[0].duration), x: this.getX(points[0].x), y: this.getY(points[0].y) })
+        let actionChain = this.driver.action('pointer', { parameters: { pointerType: 'touch' } })
+        const startPoint = points[0]
+        actionChain = actionChain
+            .move({ duration: getSafeDuration(startPoint.duration), x: this.getX(startPoint.x), y: this.getY(startPoint.y) })
             .down()
             .pause(100)
 
-        for (let i = 1; i < points.length; i++) {
+        for (let i = 1; i < points.length - 1; i++) {
             const { duration, x, y } = points[i]
-            action.move({ duration: Math.round(duration), x: this.getX(x), y: this.getY(y) })
-            i === points.length - 1 && action.up()
+            actionChain = actionChain
+                .move({ duration: getSafeDuration(duration), x: this.getX(x), y: this.getY(y) })
         }
 
-        return await action.perform()
+        const lastPoint = points[points.length - 1]
+        actionChain = actionChain
+            .move({ duration: getSafeDuration(lastPoint.duration), x: this.getX(lastPoint.x), y: this.getY(lastPoint.y) })
+            .pause(100)
+            .up()
+
+        await actionChain.perform()
     }
 
     haveItemOnScreen = async (itemFilePath, findPosition = null) => {
