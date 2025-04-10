@@ -1,10 +1,11 @@
 const { remote } = require('webdriverio')
 const { resolve } = require('path')
 const { findCoordinates } = require('./image')
-const { logErrMsg } = require('../utils/log')
+const { logErrMsg } = require('../service/log')
 
 const MIN = -1
 const MAX = 1
+const MAX_RETRY = 3
 const Base64Regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/
 const SupportRecordVideo = false
 
@@ -13,6 +14,8 @@ const getRandomInt = (min, max) => {
     max = Math.floor(max)
     return Math.floor(Math.random() * (max - min + 1)) + min
 }
+
+const getSafeDuration = (duration) => Math.max(5, Math.round(duration))
 
 class Driver {
     constructor(driver, deviceId) {
@@ -33,7 +36,7 @@ class Driver {
         if (!SupportRecordVideo) {
             return
         }
-        let path = resolve(__dirname, `../assets/screen/${this.deviceId}_${key}.mp4`)
+        let path = resolve(__dirname, `../../screen/${this.deviceId}_${key}.mp4`)
         try {
             await this.driver.saveRecordingScreen(path)
         } catch (err) {
@@ -105,28 +108,34 @@ class Driver {
     }
 
     action = async (points) => {
-        const action = this.driver
-            .action('pointer', { parameters: { pointerType: 'touch' } })
-            .move({ duration: Math.round(points[0].duration), x: this.getX(points[0].x), y: this.getY(points[0].y) })
+        let actionChain = this.driver.action('pointer', { parameters: { pointerType: 'touch' } })
+        const startPoint = points[0]
+        actionChain = actionChain
+            .move({ duration: getSafeDuration(startPoint.duration), x: this.getX(startPoint.x), y: this.getY(startPoint.y) })
             .down()
             .pause(100)
 
-        for (let i = 1; i < points.length; i++) {
+        for (let i = 1; i < points.length - 1; i++) {
             const { duration, x, y } = points[i]
-            action.move({ duration: Math.round(duration), x: this.getX(x), y: this.getY(y) })
-            i === points.length - 1 && action.up()
+            actionChain = actionChain
+                .move({ duration: getSafeDuration(duration), x: this.getX(x), y: this.getY(y) })
         }
 
-        return await action.perform()
+        const lastPoint = points[points.length - 1]
+        actionChain = actionChain
+            .move({ duration: getSafeDuration(lastPoint.duration), x: this.getX(lastPoint.x), y: this.getY(lastPoint.y) })
+            .pause(100)
+            .up()
+
+        await actionChain.perform()
     }
 
-    haveItemOnScreen = async (itemId, findPosition = null) => {
-        if (!itemId) return false
-        let count = 5
-        while (count > 0) {
-            count--
+    haveItemOnScreen = async (itemFilePath, findPosition = null) => {
+        if (!itemFilePath) return false
+        let count = 0
+        while (++count < MAX_RETRY) {
             let data = await this.screenshot()
-            const points = await findCoordinates(data, itemId, findPosition)
+            const points = await findCoordinates(data, itemFilePath, findPosition)
 
             if (points.length > 0) return true
             await this.sleep(0.2)
@@ -134,14 +143,12 @@ class Driver {
         return false
     }
 
-    getCoordinateItemOnScreen = async (itemId, findPosition = null) => {
-        if (!itemId) return null
-
-        let count = 5
-        while (count > 0) {
-            count--
+    getCoordinateItemOnScreen = async (itemFilePath, findPosition = null) => {
+        if (!itemFilePath) return null
+        let count = 0
+        while (++count < MAX_RETRY) {
             let data = await this.screenshot()
-            const points = await findCoordinates(data, itemId, findPosition)
+            const points = await findCoordinates(data, itemFilePath, findPosition)
 
             if (points.length > 0) {
                 return { x: points[points.length - 1].x, y: points[points.length - 1].y }
@@ -152,37 +159,21 @@ class Driver {
         return null
     }
 
-    tapItemOnScreen = async (itemId, findPosition = null) => {
-        if (!itemId) return
-        let count = 5
-        while (count > 0) {
-            count--
+    tapItemOnScreen = async (itemFilePath, findPosition = null) => {
+        if (!itemFilePath) return
+        let count = 0
+        while (++count < MAX_RETRY) {
             let data = await this.screenshot()
-            const points = await findCoordinates(data, itemId, findPosition)
-
-            if (points.length > 0) {
-                return await this.tap(points[points.length - 1].x, points[points.length - 1].y)
-            }
-            await this.sleep(0.2)
-        }
-    }
-
-    doubleTapItemOnScreen = async (itemId, findPosition = null) => {
-        if (!itemId) return
-        let count = 5
-        while (count > 0) {
-            count--
-            let data = await this.screenshot()
-            const points = await findCoordinates(data, itemId, findPosition)
+            const points = await findCoordinates(data, itemFilePath, findPosition)
 
             if (points.length > 0) {
                 await this.tap(points[points.length - 1].x, points[points.length - 1].y)
-                await this.sleep(0.5)
-                await this.tap(points[points.length - 1].x, points[points.length - 1].y)
-                return
+                return true
             }
             await this.sleep(0.2)
         }
+
+        return false
     }
 }
 

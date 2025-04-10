@@ -28,5 +28,8 @@ if not !IS_BUILDED!==TRUE (
 )
 
 call cd ..
-call npm run all
+call npm run stop
+call npm run clear
+call npm run start
+call npm run monitor
 pause

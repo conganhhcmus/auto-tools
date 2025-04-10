@@ -1,4 +1,4 @@
-const { getDeviceData, readFileData } = require('../utils/data')
+const { getDeviceData, readFileData } = require('../service/data')
 const { ADBHelper } = require('../lib/adb')
 const { resolve } = require('path')
 const Promise = require('bluebird')
@@ -20,7 +20,7 @@ async function getRunningDevice(req, res, next) {
 
 async function viewCurrentScreenDevice(req, res, next) {
     const deviceId = req.query.device
-    const filePath = resolve(__dirname, `../assets/screen/${deviceId}.png`)
+    const filePath = resolve(__dirname, `../../screen/${deviceId}.png`)
     await ADBHelper.screenCap(deviceId, filePath)
     const data = readFileData(filePath)
 

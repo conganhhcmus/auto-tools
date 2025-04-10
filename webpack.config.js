@@ -8,7 +8,7 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 
 let webpackConfig = {
     watch: false,
-    entry: './src/web/index.js',
+    entry: './src/ui/index.js',
     output: {
         filename: 'main.js',
         path: path.resolve(__dirname, 'dist'),

@@ -1,5 +1,5 @@
 const { spawn, exec } = require('child_process')
-const { logErrMsg } = require('./log')
+const { logErrMsg } = require('../service/log')
 const Promise = require('bluebird')
 
 function runExecAsync(command) {

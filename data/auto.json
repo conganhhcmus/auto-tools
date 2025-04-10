@@ -1,126 +1,126 @@
 {
     "sky-garden": [
         {
-            "key": "kvtm-auto-1",
+            "key": "vp-1",
             "name": "Tinh Dầu Dừa + Trà Hoa Hồng",
             "disabled": false,
             "order": 4,
             "recommend": false
         },
         {
-            "key": "kvtm-auto-2",
+            "key": "vp-2",
             "name": "Tinh Dầu Chanh + Nước Chanh",
             "disabled": false,
             "order": 4,
             "recommend": false
         },
         {
-            "key": "kvtm-auto-3",
+            "key": "vp-3",
             "name": "Vải Tím",
             "disabled": false,
             "order": 2,
             "recommend": false
         },
         {
-            "key": "kvtm-event-tree",
+            "key": "trong-cay-sk",
             "name": "Trồng Cây Sự Kiện",
             "disabled": false,
             "order": 4,
             "recommend": false
         },
         {
-            "key": "kvtm-event-buy",
+            "key": "mua-vpsk-nha-ban",
             "name": "Mua VPSK - Nhà Bạn",
             "disabled": false,
             "order": 5,
             "recommend": false
         },
         {
-            "key": "kvtm-event-ga",
+            "key": "chuyen-vpsk-ga",
             "name": "Chuyển VPSK - Gà",
             "disabled": false,
             "order": 6,
             "recommend": false
         },
         {
-            "key": "kvtm-event-bo",
+            "key": "chuyen-vpsk-bo",
             "name": "Chuyển VPSK - Bò",
             "disabled": false,
             "order": 7,
             "recommend": false
         },
         {
-            "key": "kvtm-event-heo",
+            "key": "chuyen-vpsk-heo",
             "name": "Chuyển VPSK - Heo",
             "disabled": false,
             "order": 8,
             "recommend": false
         },
         {
-            "key": "kvtm-event-cuu",
+            "key": "chuyen-vpsk-cuu",
             "name": "Chuyển VPSK - Cừu",
             "disabled": false,
             "order": 9,
             "recommend": false
         },
         {
-            "key": "kvtm-event-ga-sell",
+            "key": "xa-vpsk-ga",
             "name": "Xả VPSK - Gà",
             "disabled": false,
             "order": 10,
             "recommend": false
         },
         {
-            "key": "kvtm-event-bo-sell",
+            "key": "xa-vpsk-bo",
             "name": "Xả VPSK - Bò",
             "disabled": false,
             "order": 11,
             "recommend": false
         },
         {
-            "key": "kvtm-event-heo-sell",
+            "key": "xa-vpsk-heo",
             "name": "Xả VPSK - Heo",
             "disabled": false,
             "order": 12,
             "recommend": false
         },
         {
-            "key": "kvtm-event-cuu-sell",
+            "key": "xa-vpsk-cuu",
             "name": "Xả VPSK - Cừu",
             "disabled": false,
             "order": 13,
             "recommend": false
         },
         {
-            "key": "kvtm-achievement-1",
+            "key": "thanh-tuu-1",
             "name": "TT - Gặp Nhau Mỗi Ngày",
             "disabled": false,
             "order": 14,
             "recommend": false
         },
         {
-            "key": "kvtm-auto-4",
+            "key": "vp-4",
             "name": "Nước Hoa Hoa Táo",
             "disabled": false,
             "order": 3,
             "recommend": false
         },
         {
-            "key": "kvtm-auto-5",
+            "key": "vp-5",
             "name": "Vải Xanh Lá",
             "disabled": false,
             "order": 0,
             "recommend": true
         },
         {
-            "key": "kvtm-auto-6",
+            "key": "vp-6",
             "name": "Vải Xanh Lá + Tinh Dầu Chanh",
             "disabled": false,
             "order": 1,
             "recommend": true
         },
         {
-            "key": "kvtm-auto-7",
+            "key": "vp-7",
             "name": "Vải Đỏ",
             "disabled": false,
             "order": 3,

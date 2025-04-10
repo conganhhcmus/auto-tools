@@ -1,6 +1,6 @@
 const Jimp = require('jimp')
 const { cv, cvTranslateError } = require('opencv-wasm')
-const { logErrMsg } = require('../utils/log')
+const { logErrMsg } = require('../service/log')
 const { resolve } = require('path')
 
 const exactRate = 0.9 // 90%
@@ -124,9 +124,8 @@ getPercentByPoint = (point, isRotated, findPosition) => {
     }
 }
 
-async function findCoordinates(data, itemId, findPosition = null) {
+async function findCoordinates(data, itemFilePath, findPosition = null) {
     try {
-        const itemFilePath = resolve(__dirname, `../assets/items/${itemId}.png`)
         const [imageSource, isRotated] = await readAndResizeImage(data, findPosition)
         const imageTemplate = await Jimp.read(itemFilePath)
         let src = cv.matFromImageData(imageSource.bitmap)

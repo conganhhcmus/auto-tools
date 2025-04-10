@@ -1,0 +1,6 @@
+2025-04-10 00:52:35:189 [AndroidUiautomator2Driver@a6f0] The following provided capabilities were not recognized by this driver:
+2025-04-10 00:52:35:191 [AndroidUiautomator2Driver@a6f0]   disableAndroidWatchers
+2025-04-10 00:52:35:191 [AndroidUiautomator2Driver@a6f0]   sessionOverride
+2025-04-10 00:52:35:191 [AndroidUiautomator2Driver@a6f0]   resetKeyboard
+2025-04-10 00:52:35:191 [AndroidUiautomator2Driver@a6f0]   logLevel
+2025-04-10 00:52:35:386 [a5fe09cd][AndroidUiautomator2Driver@a6f0] The 'unicodeKeyboard' capability has been deprecated and will be removed. Set the 'hideKeyboard' capability to 'true' in order to make the on-screen keyboard invisible.
