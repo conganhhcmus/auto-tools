@@ -6,6 +6,7 @@ const { logErrMsg } = require('../service/log')
 const MIN = -1
 const MAX = 1
 const MAX_RETRY = 3
+const TAP_HOLD_TIME = 50 // or 30 for faster response
 const Base64Regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/
 const SupportRecordVideo = false
 
@@ -15,7 +16,7 @@ const getRandomInt = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
-const getSafeDuration = (duration) => Math.max(5, Math.round(duration))
+const getSafeDuration = (duration) => Math.max(20, Math.round(duration))
 
 class Driver {
     constructor(driver, deviceId) {
@@ -84,21 +85,6 @@ class Driver {
         await this.driver.pause(s * 1000)
     }
 
-    swipe = async (pointA, pointB, direction) => {
-        const w = Math.abs(pointA.x - pointB.x)
-        const h = Math.abs(pointA.y - pointB.y)
-        await this.driver.executeScript('mobile:swipeGesture', [
-            {
-                left: this.getX(pointA.x),
-                top: this.getY(pointA.y),
-                width: this.getX(w > 0 ? w : 1),
-                height: this.getY(h > 0 ? h : 1),
-                direction: direction,
-                percent: 1.0,
-            },
-        ])
-    }
-
     screenshot = async () => {
         const screenshot = await this.driver.takeScreenshot()
         if (Base64Regex.test(screenshot)) {
@@ -107,13 +93,30 @@ class Driver {
         return await screenshot()
     }
 
+    swipe = async (pointA, pointB, direction) => {
+        const left = Math.min(pointA.x, pointB.x);
+        const top = Math.min(pointA.y, pointB.y);
+        const width = Math.max(Math.abs(pointA.x - pointB.x), 1);
+        const height = Math.max(Math.abs(pointA.y - pointB.y), 1);
+        await this.driver.executeScript('mobile:swipeGesture', [
+            {
+                left: this.getX(left),
+                top: this.getY(top),
+                width: this.getX(width),
+                height: this.getY(height),
+                direction: direction,
+                percent: 1.0,
+            },
+        ])
+    }
+
     action = async (points) => {
         let actionChain = this.driver.action('pointer', { parameters: { pointerType: 'touch' } })
         const startPoint = points[0]
         actionChain = actionChain
             .move({ duration: getSafeDuration(startPoint.duration), x: this.getX(startPoint.x), y: this.getY(startPoint.y) })
             .down()
-            .pause(100)
+            .pause(TAP_HOLD_TIME)
 
         for (let i = 1; i < points.length - 1; i++) {
             const { duration, x, y } = points[i]
@@ -124,7 +127,7 @@ class Driver {
         const lastPoint = points[points.length - 1]
         actionChain = actionChain
             .move({ duration: getSafeDuration(lastPoint.duration), x: this.getX(lastPoint.x), y: this.getY(lastPoint.y) })
-            .pause(100)
+            .pause(TAP_HOLD_TIME)
             .up()
 
         await actionChain.perform()
