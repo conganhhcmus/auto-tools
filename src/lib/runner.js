@@ -56,12 +56,10 @@ class Runner {
                 skipServerInstallation: true, // Skip server installation if already installed
                 // Session handling
                 sessionOverride: true, // Allow session override
-                unicodeKeyboard: true, // Use Unicode keyboard
                 resetKeyboard: true, // Reset keyboard state
                 // Network optimizations
                 disableSuppressAccessibilityService: true, // Disable accessibility service suppression
                 // System optimizations
-                systemPort: 8200, // Fixed system port to avoid conflicts
                 adbExecTimeout: 120000, // Increase ADB execution timeout
                 androidInstallTimeout: 120000, // Increase install timeout
                 // Debugging and logging

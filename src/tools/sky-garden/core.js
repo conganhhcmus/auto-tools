@@ -112,21 +112,13 @@ const harvestTrees = async (driver) => {
     const duration = DelayTime * 1000
 
     // floor 1
-    for (let i = 0; i < FirstRowSlotList.length; i++) {
-        pointList.push({
-            duration: duration,
-            x: FirstRowSlotList[i].x,
-            y: FirstRowSlotList[i].y,
-        })
+    for (const slot of FirstRowSlotList) {
+        pointList.push({ duration, x: slot.x, y: slot.y })
     }
 
     // floor 2
-    for (let i = 0; i < SecondRowSlotList.length; i++) {
-        pointList.push({
-            duration: duration,
-            x: SecondRowSlotList[i].x,
-            y: SecondRowSlotList[i].y,
-        })
+    for (const slot of SecondRowSlotList) {
+        pointList.push({ duration, x: slot.x, y: slot.y })
     }
 
     await driver.sleep(0.5)
@@ -152,7 +144,7 @@ const plantTrees = async (driver, slotTree, floor = 2, pot = 5) => {
     for (let i = 0; i < FirstRowSlotList.length && floor >= 1; i++) {
         if (i > 2 * pot && floor == 1) break
         pointList.push({
-            duration: duration,
+            duration,
             x: FirstRowSlotList[i].x,
             y: FirstRowSlotList[i].y,
         })
@@ -161,7 +153,7 @@ const plantTrees = async (driver, slotTree, floor = 2, pot = 5) => {
     // floor 2
     for (let i = 0; i < SecondRowSlotList.length && floor >= 2; i++) {
         pointList.push({
-            duration: duration,
+            duration,
             x: SecondRowSlotList[i].x,
             y: SecondRowSlotList[i].y,
         })
@@ -371,7 +363,7 @@ const goMyHouse = async (driver) => {
     await driver.sleep(2)
 }
 
-const makeFoods = async (driver) => {
+const makeEvents = async (driver) => {
     if (await driver.tapItemOnScreen(_getItemPath(ItemKeys.livestockEvents))) {
         await driver.sleep(2)
         for (let i = 0; i < 5; i++) {
@@ -408,7 +400,7 @@ module.exports = {
     buy8SlotItem,
     goFriendHouse,
     goMyHouse,
-    makeFoods
+    makeEvents
 }
 
 // private method

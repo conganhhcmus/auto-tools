@@ -6,6 +6,7 @@ const { logErrMsg } = require('../service/log')
 const MIN = -1
 const MAX = 1
 const MAX_RETRY = 3
+const TAP_HOLD_TIME = 50 // or 30 for faster response
 const Base64Regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/
 const SupportRecordVideo = false
 
@@ -15,7 +16,7 @@ const getRandomInt = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
-const getSafeDuration = (duration) => Math.max(5, Math.round(duration))
+const getSafeDuration = (duration) => Math.max(20, Math.round(duration))
 
 class Driver {
     constructor(driver, deviceId) {
@@ -113,7 +114,7 @@ class Driver {
         actionChain = actionChain
             .move({ duration: getSafeDuration(startPoint.duration), x: this.getX(startPoint.x), y: this.getY(startPoint.y) })
             .down()
-            .pause(100)
+            .pause(TAP_HOLD_TIME)
 
         for (let i = 1; i < points.length - 1; i++) {
             const { duration, x, y } = points[i]
@@ -124,7 +125,7 @@ class Driver {
         const lastPoint = points[points.length - 1]
         actionChain = actionChain
             .move({ duration: getSafeDuration(lastPoint.duration), x: this.getX(lastPoint.x), y: this.getY(lastPoint.y) })
-            .pause(100)
+            .pause(TAP_HOLD_TIME)
             .up()
 
         await actionChain.perform()

@@ -31,7 +31,7 @@ const produceItems = async (driver, isLast) => {
     await core.goDownLast(driver)
 
     if (!isLast) {
-        await driver.sleep(30)
+        await driver.sleep(22)
     }
 }
 
